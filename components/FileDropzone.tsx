@@ -9,7 +9,7 @@ interface FileDropzoneProps {
   help?: string;
   error?: string;
   onChange: (file: ImageFile | null) => void;
-  value?: ImageFile | null;
+  value?: ImageFile | null | undefined;
   id?: string;
 }
 

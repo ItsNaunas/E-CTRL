@@ -46,7 +46,7 @@ export default function ToolPage() {
     desc: '',
     keywords: [],
     fulfilmentIntent: undefined,
-    image: null,
+    image: undefined,
     name: '',
     email: '',
     phone: '',
@@ -305,8 +305,8 @@ export default function ToolPage() {
           <FileDropzone
             label={copy.form.image.label}
             help={copy.form.image.help}
-            value={newForm.image}
-            onChange={(image: ImageFile | null) => setNewForm(prev => ({ ...prev, image }))}
+            value={newForm.image || null}
+            onChange={(image: ImageFile | null) => setNewForm(prev => ({ ...prev, image: image || undefined }))}
             error={errors.image}
           />
           
