@@ -111,7 +111,7 @@ export default function AboutPage() {
               </p>
               <p>
                 The e-ctrl tool distills this expertise into actionable insights that you can 
-                implement immediately, whether you're just getting started or looking to scale 
+                implement immediately, whether you&apos;re just getting started or looking to scale 
                 your existing Amazon business.
               </p>
             </div>

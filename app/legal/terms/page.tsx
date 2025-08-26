@@ -27,7 +27,7 @@ export default function TermsPage() {
                 <h2 className="text-xl font-semibold text-foreground">Acceptance of Terms</h2>
                 <div className="mt-4 text-muted-foreground">
                   <p>
-                    By accessing and using the e-ctrl Amazon audit tool ("Service"), you accept and agree to be bound by 
+                    By accessing and using the e-ctrl Amazon audit tool (&quot;Service&quot;), you accept and agree to be bound by 
                     the terms and provision of this agreement.
                   </p>
                 </div>
@@ -73,7 +73,7 @@ export default function TermsPage() {
                     <li>Use the service only for legitimate business purposes</li>
                     <li>Not attempt to circumvent usage limitations</li>
                     <li>Not upload inappropriate, copyrighted, or harmful content</li>
-                    <li>Comply with all applicable laws and Amazon's terms of service</li>
+                    <li>Comply with all applicable laws and Amazon&apos;s terms of service</li>
                   </ul>
                 </div>
               </section>
@@ -82,7 +82,7 @@ export default function TermsPage() {
                 <h2 className="text-xl font-semibold text-foreground">Disclaimer of Warranties</h2>
                 <div className="mt-4 text-muted-foreground">
                   <p>
-                    The service is provided "as is" without warranties of any kind. We do not guarantee that:
+                    The service is provided &quot;as is&quot; without warranties of any kind. We do not guarantee that:
                   </p>
                   <ul className="list-disc pl-6 space-y-2 mt-4">
                     <li>The service will meet your specific requirements</li>
@@ -112,7 +112,7 @@ export default function TermsPage() {
                     <li>Infringes on intellectual property rights</li>
                     <li>Contains malicious code or viruses</li>
                     <li>Is illegal, harmful, threatening, abusive, or offensive</li>
-                    <li>Violates Amazon's terms of service or community guidelines</li>
+                    <li>Violates Amazon&apos;s terms of service or community guidelines</li>
                     <li>Contains personal information of third parties without consent</li>
                   </ul>
                 </div>
