@@ -1,6 +1,6 @@
 'use client';
 
-import CTAButton from '@/components/CTAButton';
+import CTAButton from '../../components/CTAButton';
 
 interface PartialResultProps {
   score: number;

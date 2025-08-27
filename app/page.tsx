@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import Hero from '@/components/Hero';
-import TrustBar from '@/components/TrustBar';
-import UsageCounter from '@/components/UsageCounter';
-import HowItWorks from '@/components/HowItWorks';
-import Benefits from '@/components/Benefits';
-import Testimonials from '@/components/Testimonials';
-import FAQ from '@/components/FAQ';
-import RepeatCTA from '@/components/RepeatCTA';
-import PartialResult from '@/components/PartialResult';
+import TrustBar from './components/TrustBar';
+import UsageCounter from './components/UsageCounter';
+import HowItWorks from './components/HowItWorks';
+import Benefits from './components/Benefits';
+import Testimonials from './components/Testimonials';
+import FAQ from './components/FAQ';
+import RepeatCTA from './components/RepeatCTA';
+import PartialResult from './components/PartialResult';
 import EmailCapture from '@/components/EmailCapture';
-import ReportDeliveryNote from '@/components/ReportDeliveryNote';
+import ReportDeliveryNote from './components/ReportDeliveryNote';
 
 export default function HomePage() {
   // Client-side state for the audit flow
