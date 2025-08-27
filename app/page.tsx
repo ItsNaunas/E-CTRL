@@ -1,35 +1,21 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Users, Zap } from 'lucide-react';
 import Container from '@/components/Container';
 import Section from '@/components/Section';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import CTAButton from '@/components/CTAButton';
+import EmailCapture from '@/components/EmailCapture';
+import Hero from '@/components/Hero';
 import { copy } from '@/lib/copy';
 
 export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <Section className="pt-24 pb-16 sm:pt-32 sm:pb-24">
-        <Container>
-          <div className="text-center">
-            <h1 className="mx-auto max-w-4xl">
-              {copy.heroTitle}
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-              {copy.heroSub}
-            </p>
-            <div className="mt-10">
-              <Link href="/tool">
-                <Button size="lg" className="group">
-                  Use the Free Tool
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </Section>
+      <Hero />
 
       {/* Value Proposition Cards */}
       <Section className="py-16 bg-muted">
@@ -103,31 +89,36 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* CTA Section */}
-      <Section className="bg-accent text-accent-foreground">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-accent-foreground">
-              Ready to optimize your Amazon business?
-            </h2>
-            <p className="mt-4 text-lg text-accent-foreground/90 max-w-2xl mx-auto">
-              Get started with our free audit tool and discover opportunities to grow your sales.
-            </p>
-            <div className="mt-8">
-              <Link href="/tool">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="bg-accent-foreground text-accent hover:bg-accent-foreground/90 group"
-                >
-                  Start Your Free Audit
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </Section>
+             {/* Email Capture Section */}
+       <EmailCapture 
+         onEmailSubmit={(email) => {
+           console.log('Email submitted:', email);
+           // TODO: Send email to backend
+         }}
+       />
+
+       {/* CTA Section */}
+       <Section className="bg-accent text-accent-foreground">
+         <Container>
+           <div className="text-center">
+             <h2 className="text-accent-foreground">
+               Ready to optimize your Amazon business?
+             </h2>
+             <p className="mt-4 text-lg text-accent-foreground/90 max-w-2xl mx-auto">
+               Get started with our free audit tool and discover opportunities to grow your sales.
+             </p>
+             <div className="mt-8">
+               <CTAButton
+                 variant="secondary"
+                 size="lg"
+                 text="audit"
+                 href="/tool"
+                 className="bg-accent-foreground text-accent hover:bg-accent-foreground/90 group"
+               />
+             </div>
+           </div>
+         </Container>
+       </Section>
     </>
   );
 }
