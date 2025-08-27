@@ -11,6 +11,8 @@ interface CTAButtonProps {
   href?: string;
   onClick?: () => void;
   className?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
 const ctaTexts = {
@@ -28,7 +30,9 @@ export default function CTAButton({
   text = 'audit',
   href,
   onClick,
-  className = ''
+  className = '',
+  type = 'button',
+  disabled = false
 }: CTAButtonProps) {
   const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
@@ -54,7 +58,8 @@ export default function CTAButton({
     <button
       onClick={onClick}
       className={buttonClasses}
-      type="button"
+      type={type}
+      disabled={disabled}
     >
       {buttonContent}
     </button>
