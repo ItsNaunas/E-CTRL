@@ -97,7 +97,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="text-orange-500 mt-1">💡</span>
-                      <span className="text-sm text-gray-700">Keyword gap: 'eco friendly' missing</span>
+                      <span className="text-sm text-gray-700">Keyword gap: &apos;eco friendly&apos; missing</span>
                     </div>
                   </div>
                 </div>
