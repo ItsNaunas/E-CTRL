@@ -17,7 +17,7 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
             Your Amazon Listing Audit
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Here's what we found in your listing analysis:
+            Here&apos;s what we found in your listing analysis:
           </p>
           
           <div className="bg-background rounded-lg border border-border p-8 mb-8">

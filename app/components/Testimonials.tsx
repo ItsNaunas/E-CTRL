@@ -42,7 +42,7 @@ export default function Testimonials() {
                 <span className="text-2xl">⭐</span>
               </div>
               <blockquote className="text-foreground mb-4 italic">
-                "{testimonial.quote}"
+                &quot;{testimonial.quote}&quot;
               </blockquote>
               <div className="text-sm">
                 <div className="font-semibold text-foreground">{testimonial.author}</div>

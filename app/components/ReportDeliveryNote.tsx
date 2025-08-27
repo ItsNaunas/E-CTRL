@@ -17,11 +17,11 @@ export default function ReportDeliveryNote({ email }: { email: string }) {
             Your complete Amazon audit report is on its way to <strong>{email}</strong>
           </p>
           <p className="text-sm text-muted-foreground mb-8">
-            Didn't receive it? Check your spam folder or contact us at hello@e-ctrl.example
+            Didn&apos;t receive it? Check your spam folder or contact us at hello@e-ctrl.example
           </p>
           
           <div className="bg-background rounded-lg border border-border p-6">
-            <h3 className="font-semibold text-foreground mb-3">What's in your report:</h3>
+            <h3 className="font-semibold text-foreground mb-3">What&apos;s in your report:</h3>
             <div className="grid gap-3 text-sm text-left">
               <div className="flex items-center gap-3">
                 <span className="text-accent">📊</span>

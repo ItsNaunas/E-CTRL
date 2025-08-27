@@ -11,7 +11,7 @@ export default function RepeatCTA() {
             Ready to optimize your Amazon business?
           </h2>
           <p className="text-lg text-accent-foreground/90 max-w-2xl mx-auto mb-8">
-            Join thousands of sellers who've improved their listings with our free audit tool.
+            Join thousands of sellers who&apos;ve improved their listings with our free audit tool.
           </p>
           <CTAButton
             variant="secondary"
