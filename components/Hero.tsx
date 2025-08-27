@@ -64,17 +64,58 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
             </form>
           </div>
           
-          {/* Right Column - Preview Image */}
+          {/* Right Column - Realistic Audit Preview */}
           <div className="relative">
-            <div className="aspect-[4/3] w-full rounded-lg bg-muted border border-border overflow-hidden flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+            <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+              {/* Report Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-white font-semibold text-lg">Amazon Listing Audit Report</h3>
+                  <div className="text-white text-sm">Score: 74/100</div>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Audit Preview</h3>
-                <p className="text-muted-foreground">See your optimization insights here</p>
+              </div>
+              
+              {/* Report Content */}
+              <div className="p-6 space-y-4">
+                {/* Score Section */}
+                <div className="text-center py-4">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">74/100</div>
+                  <div className="text-sm text-gray-600">Overall Listing Score</div>
+                </div>
+                
+                {/* Key Findings */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Key Findings:</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">⚠️</span>
+                      <span className="text-sm text-gray-700">Bullet clarity needs improvement</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-500 mt-1">✅</span>
+                      <span className="text-sm text-gray-700">Image size meets requirements</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-orange-500 mt-1">💡</span>
+                      <span className="text-sm text-gray-700">Keyword gap: 'eco friendly' missing</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Action Items */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Quick Wins:</h4>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    <li>• Add missing keywords to title</li>
+                    <li>• Improve bullet point clarity</li>
+                    <li>• Optimize image background</li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Watermark */}
+              <div className="absolute top-2 right-2 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded">
+                Sample Report
               </div>
             </div>
           </div>
