@@ -1,124 +1,116 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowRight, CheckCircle, Users, Zap } from 'lucide-react';
-import Container from '@/components/Container';
-import Section from '@/components/Section';
-import Card from '@/components/Card';
-import Button from '@/components/Button';
-import CTAButton from '@/components/CTAButton';
-import EmailCapture from '@/components/EmailCapture';
+import { useState } from 'react';
 import Hero from '@/components/Hero';
-import { copy } from '@/lib/copy';
+import TrustBar from '@/components/TrustBar';
+import UsageCounter from '@/components/UsageCounter';
+import HowItWorks from '@/components/HowItWorks';
+import Benefits from '@/components/Benefits';
+import Testimonials from '@/components/Testimonials';
+import FAQ from '@/components/FAQ';
+import RepeatCTA from '@/components/RepeatCTA';
+import PartialResult from '@/components/PartialResult';
+import EmailCapture from '@/components/EmailCapture';
+import ReportDeliveryNote from '@/components/ReportDeliveryNote';
 
 export default function HomePage() {
+  // Client-side state for the audit flow
+  const [asinOrUrl, setAsinOrUrl] = useState('');
+  const [showPartial, setShowPartial] = useState(false);
+  const [showEmailGate, setShowEmailGate] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState('');
+
+  // Mock partial result data
+  const mockPartialResult = {
+    score: 74,
+    highlights: [
+      "Bullet clarity needs improvement",
+      "Image size meets requirements",
+      "Keyword gap: 'eco friendly' missing"
+    ]
+  };
+
+  // Handle ASIN submission from Hero
+  const handleAsinSubmit = (asin: string) => {
+    setAsinOrUrl(asin);
+    setShowPartial(true);
+    // Scroll to partial result
+    setTimeout(() => {
+      document.getElementById('partial-result')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Handle unlock from PartialResult
+  const handleUnlock = () => {
+    setShowEmailGate(true);
+    // Scroll to email gate
+    setTimeout(() => {
+      document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Handle email submission
+  const handleEmailSubmit = (email: string) => {
+    setEmailSubmitted(true);
+    setSubmittedEmail(email);
+    // Scroll to delivery note
+    setTimeout(() => {
+      document.getElementById('delivery-note')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   return (
     <>
-      {/* Hero Section */}
-      <Hero />
+      {/* Hero Section - Primary Action */}
+      <Hero onAsinSubmit={handleAsinSubmit} />
 
-      {/* Value Proposition Cards */}
-      <Section className="py-16 bg-muted">
-        <Container>
-          <div className="grid gap-8 md:grid-cols-3">
-            {copy.valueCards.map((card, index) => {
-              const icons = [CheckCircle, Users, Zap];
-              const Icon = icons[index];
-              
-              return (
-                <Card key={index}>
-                  <div className="text-center">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                      <Icon className="h-6 w-6" />
-                    </div>
-                    <h3 className="mt-4 text-lg font-semibold">
-                      {card.title}
-                    </h3>
-                    <p className="mt-2 text-muted-foreground">
-                      {card.body}
-                    </p>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </Container>
-      </Section>
+      {/* Trust Bar - Build Credibility */}
+      <TrustBar />
 
-      {/* How It Works */}
-      <Section>
-        <Container>
-          <div className="text-center">
-            <h2>How it works</h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Get actionable insights for your Amazon business in three simple steps.
-            </p>
-          </div>
-          
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
-            {[
-              {
-                step: "1",
-                title: "Choose your path",
-                description: "Tell us if you're already selling on Amazon or just getting started"
-              },
-              {
-                step: "2", 
-                title: "Share your details",
-                description: "Provide your product info — we only ask for what's needed"
-              },
-              {
-                step: "3",
-                title: "Get instant insights", 
-                description: "See your summary immediately, with the full report delivered by email"
-              }
-            ].map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground text-lg font-semibold">
-                  {item.step}
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
+      {/* Usage Counter - Social Proof */}
+      <UsageCounter />
 
-             {/* Email Capture Section */}
-       <EmailCapture 
-         onEmailSubmit={(email) => {
-           console.log('Email submitted:', email);
-           // TODO: Send email to backend
-         }}
-       />
+      {/* How It Works - Process Explanation */}
+      <HowItWorks />
 
-       {/* CTA Section */}
-       <Section className="bg-accent text-accent-foreground">
-         <Container>
-           <div className="text-center">
-             <h2 className="text-accent-foreground">
-               Ready to optimize your Amazon business?
-             </h2>
-             <p className="mt-4 text-lg text-accent-foreground/90 max-w-2xl mx-auto">
-               Get started with our free audit tool and discover opportunities to grow your sales.
-             </p>
-             <div className="mt-8">
-               <CTAButton
-                 variant="secondary"
-                 size="lg"
-                 text="audit"
-                 href="/tool"
-                 className="bg-accent-foreground text-accent hover:bg-accent-foreground/90 group"
-               />
-             </div>
-           </div>
-         </Container>
-       </Section>
+      {/* Benefits - Value Proposition */}
+      <Benefits />
+
+      {/* Testimonials - Social Proof */}
+      <Testimonials />
+
+      {/* FAQ - Address Objections */}
+      <FAQ />
+
+      {/* Conditional Flow Components */}
+      {showPartial && (
+        <div id="partial-result">
+          <PartialResult
+            score={mockPartialResult.score}
+            highlights={mockPartialResult.highlights}
+            onUnlock={handleUnlock}
+          />
+        </div>
+      )}
+
+      {showEmailGate && !emailSubmitted && (
+        <div id="email-gate">
+          <EmailCapture
+            onEmailSubmit={handleEmailSubmit}
+            isLoading={false}
+          />
+        </div>
+      )}
+
+      {emailSubmitted && (
+        <div id="delivery-note">
+          <ReportDeliveryNote email={submittedEmail} />
+        </div>
+      )}
+
+      {/* Repeat CTA - Footer Variant */}
+      <RepeatCTA />
     </>
   );
 }

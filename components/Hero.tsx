@@ -3,13 +3,18 @@
 import { useState } from 'react';
 import CTAButton from './CTAButton';
 
-export default function Hero() {
+interface HeroProps {
+  onAsinSubmit: (asin: string) => void;
+}
+
+export default function Hero({ onAsinSubmit }: HeroProps) {
   const [asinInput, setAsinInput] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Handle ASIN submission and show partial results
-    console.log('ASIN submitted:', asinInput);
+    if (asinInput.trim()) {
+      onAsinSubmit(asinInput.trim());
+    }
   };
 
   return (
