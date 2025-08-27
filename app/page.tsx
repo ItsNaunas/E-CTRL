@@ -8,6 +8,7 @@ import HowItWorks from './components/HowItWorks';
 import Benefits from './components/Benefits';
 import Testimonials from './components/Testimonials';
 import FAQ from './components/FAQ';
+import Recommendations from './components/Recommendations';
 import RepeatCTA from './components/RepeatCTA';
 import PartialResult from './components/PartialResult';
 import EmailCapture from '@/components/EmailCapture';
@@ -82,6 +83,9 @@ export default function HomePage() {
 
       {/* FAQ - Address Objections */}
       <FAQ />
+
+      {/* Recommendations - Trust Building */}
+      <Recommendations />
 
       {/* Conditional Flow Components */}
       {showPartial && (
