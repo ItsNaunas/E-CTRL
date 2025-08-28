@@ -98,8 +98,9 @@ export default function EmailGate({ onEmailSubmit, isLoading = false }: EmailGat
 
               <div className="space-y-3">
                 <p id="email-help" className="text-sm text-gray-600" data-testid="microcopy-free">
-                  No credit card needed. We never share your data.
+                  No credit card needed. Secure & private.
                 </p>
+                {/* TODO: Update with client-provided privacy/legal copy */}
                 
                 <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
                   <div className="flex items-center gap-1">
@@ -123,6 +124,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false }: EmailGat
             <p className="text-sm text-gray-500">
               💡 <strong>What&apos;s included:</strong> Keyword analysis, image optimization tips, conversion rate improvements, and competitor insights.
             </p>
+            {/* TODO: Add client-provided legal disclaimer or terms */}
           </div>
         </div>
       </div>

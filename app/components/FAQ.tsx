@@ -8,24 +8,24 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "Is the Amazon audit tool really free?",
-      answer: "Yes, our Amazon audit tool is completely free forever. There are no hidden costs, premium tiers, or credit card requirements. We believe in helping Amazon sellers succeed with transparent, accessible tools."
+      question: "Is this really free?", // TODO: replace with client-approved question
+      answer: "Yes, our Amazon audit tool is completely free forever. There are no hidden costs, premium tiers, or credit card requirements. We believe in helping Amazon sellers succeed with transparent, accessible tools." // TODO: replace with client-approved answer
     },
     {
-      question: "How accurate are the audit results?",
-      answer: "Our AI-powered audit analyzes your listing against Amazon's best practices and current market data. The recommendations are based on proven optimization strategies used by successful sellers. Results typically show improvement within 2-4 weeks of implementation."
+      question: "Do I need my Amazon login?", // TODO: replace with client-approved question
+      answer: "No, you don't need to log into Amazon. Just paste your product URL or ASIN and we'll analyze the public listing data." // TODO: replace with client-approved answer
     },
     {
-      question: "What information do you need for the audit?",
-      answer: "We only need your Amazon ASIN (product ID) or product URL. We don't require access to your seller account, personal information, or any sensitive data. The audit is performed using publicly available listing information."
+      question: "How accurate is the audit?", // TODO: replace with client-approved question
+      answer: "Our AI has been trained on thousands of successful Amazon listings and follows Amazon's best practices. While we can't guarantee specific results, our recommendations are based on proven optimization strategies." // TODO: replace with client-approved answer
     },
     {
-      question: "How long does the audit take?",
-      answer: "The initial audit analysis takes just a few seconds. You'll get immediate insights and a score. The detailed report with specific recommendations is delivered to your email within minutes."
+      question: "How long does it take?", // TODO: replace with client-approved question
+      answer: "The audit analysis takes just a few seconds. You'll see partial results immediately, and the full detailed report will be emailed to you within 2 minutes." // TODO: replace with client-approved answer
     },
     {
-      question: "Will you spam my email?",
-      answer: "No, we respect your privacy. You'll only receive your audit report and occasional helpful Amazon selling tips. You can unsubscribe at any time, and we never share your email with third parties."
+      question: "What happens to my data?", // TODO: replace with client-approved question
+      answer: "We only use your data to generate your audit report. We don't store product images, and your email is only used to send you the report. You can read our full privacy policy for details." // TODO: replace with client-approved answer
     }
   ];
 
@@ -67,7 +67,7 @@ export default function FAQ() {
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg">
+            <div key={index} className="border border-gray-200 rounded-lg" data-testid="faq-item">
               <button
                 className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
                 onClick={() => toggleFAQ(index)}
@@ -109,6 +109,7 @@ export default function FAQ() {
           <p className="text-sm text-gray-500">
             Still have questions? Contact us at support@e-ctrl.com
           </p>
+          {/* TODO: Replace with client-provided contact information */}
         </div>
       </div>
     </section>

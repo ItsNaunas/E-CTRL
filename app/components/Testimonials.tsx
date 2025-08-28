@@ -6,27 +6,27 @@ export default function Testimonials() {
   const testimonials = [
     {
       id: 1,
-      name: "Sarah Johnson",
-      role: "Amazon Seller",
-      location: "UK",
-      content: "The audit helped me identify missing keywords that boosted my sales by 40% in just 2 weeks.",
-      avatar: "/avatars/sarah.jpg" // TODO: Add real avatar images
+      name: "Placeholder Name", // TODO: replace with real customer name
+      role: "Amazon Seller", // TODO: replace with real role/title
+      location: "UK", // TODO: replace with real location
+      content: "The audit helped me identify missing keywords that boosted my sales by 40% in just 2 weeks.", // TODO: replace with real testimonial
+      avatar: "/avatars/placeholder.png" // TODO: replace with real customer photo
     },
     {
       id: 2,
-      name: "Michael Chen",
-      role: "E-commerce Entrepreneur", 
-      location: "Germany",
-      content: "Finally found a tool that actually gives actionable insights. My conversion rate improved significantly.",
-      avatar: "/avatars/michael.jpg"
+      name: "Placeholder Name", // TODO: replace with real customer name
+      role: "E-commerce Entrepreneur", // TODO: replace with real role/title
+      location: "Germany", // TODO: replace with real location
+      content: "Finally found a tool that actually gives actionable insights. My conversion rate improved significantly.", // TODO: replace with real testimonial
+      avatar: "/avatars/placeholder.png" // TODO: replace with real customer photo
     },
     {
       id: 3,
-      name: "Emma Rodriguez",
-      role: "Amazon FBA Seller",
-      location: "Spain", 
-      content: "Free tool that actually works! The recommendations were spot-on and easy to implement.",
-      avatar: "/avatars/emma.jpg"
+      name: "Placeholder Name", // TODO: replace with real customer name
+      role: "Amazon FBA Seller", // TODO: replace with real role/title
+      location: "Spain", // TODO: replace with real location
+      content: "Free tool that actually works! The recommendations were spot-on and easy to implement.", // TODO: replace with real testimonial
+      avatar: "/avatars/placeholder.png" // TODO: replace with real customer photo
     }
   ];
 
@@ -44,7 +44,7 @@ export default function Testimonials() {
 
         <div className="grid gap-8 md:grid-cols-3">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-gray-50 rounded-lg p-6 border border-gray-100">
+            <div key={testimonial.id} className="bg-gray-50 rounded-lg p-6 border border-gray-100" data-testid="testimonial-card">
               <div className="flex items-start gap-4 mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                   {testimonial.name.charAt(0)}
@@ -67,6 +67,7 @@ export default function Testimonials() {
           <p className="text-sm text-gray-500">
             * Results may vary. These testimonials represent individual experiences.
           </p>
+          {/* TODO: Add client-provided disclaimer or legal text */}
         </div>
       </div>
     </section>

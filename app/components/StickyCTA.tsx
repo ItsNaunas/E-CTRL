@@ -46,6 +46,7 @@ export default function StickyCTA({ onCtaClick }: StickyCTAProps) {
           <div className="flex items-center">
             <span className="text-lg font-bold text-gray-900">e-ctrl</span>
             <span className="ml-2 text-sm text-gray-500">Amazon Audit Tool</span>
+            {/* TODO: Update text if client changes CTA phrasing */}
           </div>
           
           <CTAButton

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import CTAButton from '@/components/CTAButton';
 
 interface PartialResultProps {
@@ -10,6 +10,8 @@ interface PartialResultProps {
 }
 
 export default function PartialResult({ score, highlights, onUnlock }: PartialResultProps) {
+  const [animatedScore, setAnimatedScore] = useState(0);
+
   useEffect(() => {
     // Track partial view
     if (typeof window !== 'undefined' && window.gtag) {
@@ -18,7 +20,25 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
         event_label: 'partial_results'
       });
     }
-  }, []);
+
+    // Animate score from 0 to target
+    const duration = 1500; // 1.5 seconds
+    const steps = 60;
+    const increment = score / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= score) {
+        setAnimatedScore(score);
+        clearInterval(timer);
+      } else {
+        setAnimatedScore(Math.floor(current));
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, [score]);
 
   const handleUnlock = () => {
     // Track unlock click
@@ -30,6 +50,13 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
     }
     onUnlock();
   };
+
+  // TODO: Replace with real audit data from API
+  const placeholderHighlights = [
+    "Bullet clarity issues", // TODO: bind to actual audit finding
+    "Keyword gap: eco friendly", // TODO: bind to actual keyword analysis
+    "Image compliance not met" // TODO: bind to actual image audit
+  ];
 
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -48,7 +75,7 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
             <div className="text-center">
               <div className="text-4xl font-bold text-white mb-2">
-                {score}/100
+                {animatedScore}/100
               </div>
               <div className="text-blue-100 text-lg">
                 Your Listing Score
@@ -63,7 +90,7 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
             </h3>
             
             <div className="space-y-4 mb-8">
-              {highlights.map((highlight, index) => (
+              {placeholderHighlights.map((highlight, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
                     <span className="text-blue-600 text-sm font-semibold">
