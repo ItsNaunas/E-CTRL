@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/CTAButton';
 
 interface StickyCTAProps {
   onCtaClick: () => void;

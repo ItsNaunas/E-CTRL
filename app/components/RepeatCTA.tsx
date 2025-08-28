@@ -1,6 +1,6 @@
 'use client';
 
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/CTAButton';
 
 interface RepeatCTAProps {
   variant?: 'mid' | 'footer';

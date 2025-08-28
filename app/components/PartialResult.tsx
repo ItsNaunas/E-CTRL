@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/CTAButton';
 
 interface PartialResultProps {
   score: number;
