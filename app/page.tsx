@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useCROChecks } from './hooks/useCROChecks';
 import Hero from '@/components/Hero';
 import TrustBar from './components/TrustBar';
 import UsageCounter from './components/UsageCounter';
@@ -8,13 +9,17 @@ import HowItWorks from './components/HowItWorks';
 import Benefits from './components/Benefits';
 import Testimonials from './components/Testimonials';
 import FAQ from './components/FAQ';
-import Recommendations from './components/Recommendations';
+import Guarantees from './components/Guarantees';
 import RepeatCTA from './components/RepeatCTA';
 import PartialResult from './components/PartialResult';
-import EmailCapture from '@/components/EmailCapture';
+import EmailGate from './components/EmailGate';
+import StickyCTA from './components/StickyCTA';
 import ReportDeliveryNote from './components/ReportDeliveryNote';
 
 export default function HomePage() {
+  // CRO audit hook (development only)
+  useCROChecks();
+
   // Client-side state for the audit flow
   const [asinOrUrl, setAsinOrUrl] = useState('');
   const [showPartial, setShowPartial] = useState(false);
@@ -27,7 +32,7 @@ export default function HomePage() {
     score: 74,
     highlights: [
       "Bullet clarity needs improvement",
-      "Image size meets requirements",
+      "Image size meets requirements", 
       "Keyword gap: 'eco friendly' missing"
     ]
   };
@@ -61,8 +66,23 @@ export default function HomePage() {
     }, 100);
   };
 
+  // Handle CTA clicks (sticky and repeat CTAs)
+  const handleCtaClick = () => {
+    // Scroll to hero for new users, or to appropriate section for existing users
+    if (!showPartial) {
+      document.getElementById('hero-input')?.focus();
+    } else if (!showEmailGate) {
+      document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      document.getElementById('delivery-note')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
+      {/* Sticky CTA - Appears on scroll */}
+      <StickyCTA onCtaClick={handleCtaClick} />
+
       {/* Hero Section - Primary Action */}
       <Hero onAsinSubmit={handleAsinSubmit} />
 
@@ -81,11 +101,14 @@ export default function HomePage() {
       {/* Testimonials - Social Proof */}
       <Testimonials />
 
+      {/* Guarantees - Trust Building */}
+      <Guarantees />
+
       {/* FAQ - Address Objections */}
       <FAQ />
 
-      {/* Recommendations - Trust Building */}
-      <Recommendations />
+      {/* Mid-page Repeat CTA */}
+      <RepeatCTA variant="mid" onCtaClick={handleCtaClick} />
 
       {/* Conditional Flow Components */}
       {showPartial && (
@@ -100,7 +123,7 @@ export default function HomePage() {
 
       {showEmailGate && !emailSubmitted && (
         <div id="email-gate">
-          <EmailCapture
+          <EmailGate
             onEmailSubmit={handleEmailSubmit}
             isLoading={false}
           />
@@ -113,8 +136,31 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Repeat CTA - Footer Variant */}
-      <RepeatCTA />
+      {/* Footer Repeat CTA */}
+      <RepeatCTA variant="footer" onCtaClick={handleCtaClick} />
+
+      {/* Minimal Footer with Legal Links */}
+      <footer className="py-8 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <span className="text-lg font-bold">e-ctrl</span>
+              <span className="ml-2 text-gray-400">Amazon Audit Tool</span>
+            </div>
+            <div className="flex gap-6 text-sm">
+              <a href="/legal/privacy" className="text-gray-400 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+              <a href="/legal/terms" className="text-gray-400 hover:text-white transition-colors">
+                Terms of Service
+              </a>
+            </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-gray-800 text-center text-xs text-gray-400">
+            © 2024 e-ctrl. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

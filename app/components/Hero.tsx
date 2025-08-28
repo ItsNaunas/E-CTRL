@@ -2,14 +2,44 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import CTAButton from './CTAButton';
+import { parseAsinOrUrl } from '@/app/utils/validators';
 
-export default function Hero() {
+interface HeroProps {
+  onAsinSubmit: (asin: string) => void;
+}
+
+export default function Hero({ onAsinSubmit }: HeroProps) {
   const [asinInput, setAsinInput] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Handle ASIN submission and show partial results
-    console.log('ASIN submitted:', asinInput);
+    setError('');
+    setIsSubmitting(true);
+
+    const validation = parseAsinOrUrl(asinInput);
+    
+    if (!validation.isValid) {
+      setError(validation.error || 'Invalid input');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Track audit start
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'audit_start', {
+        event_category: 'engagement',
+        event_label: 'hero_form'
+      });
+    }
+
+    // Simulate processing delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    onAsinSubmit(validation.parsedValue!);
+    setIsSubmitting(false);
   };
 
   return (
@@ -34,40 +64,106 @@ export default function Hero() {
                 </label>
                 <input
                   id="asin-input"
+                  data-testid="hero-input"
                   type="text"
                   value={asinInput}
-                  onChange={(e) => setAsinInput(e.target.value)}
+                  onChange={(e) => {
+                    setAsinInput(e.target.value);
+                    if (error) setError('');
+                  }}
                   placeholder="Enter your Amazon ASIN or product URL"
-                  className="block w-full rounded-lg border border-border bg-input px-4 py-3 text-foreground placeholder-muted-foreground transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 sm:text-lg"
+                  className={`block w-full rounded-lg border px-4 py-3 text-foreground placeholder-muted-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-lg ${
+                    error 
+                      ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500' 
+                      : 'border-border bg-input focus:border-accent focus:ring-accent'
+                  }`}
                   required
-                  aria-describedby="asin-help"
+                  aria-describedby={error ? "asin-error" : "asin-help"}
+                  aria-invalid={!!error}
                 />
+                {error && (
+                  <p id="asin-error" className="mt-2 text-sm text-red-600" role="alert">
+                    {error}
+                  </p>
+                )}
               </div>
               
-              <button
+              <CTAButton
                 type="submit"
-                className="w-full rounded-lg bg-accent px-6 py-3 text-lg font-semibold text-accent-foreground transition-colors hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 sm:text-xl"
-              >
-                Run My Free Audit
-              </button>
+                variant="primary"
+                size="lg"
+                text="audit"
+                fullWidth
+                className="w-full"
+                disabled={isSubmitting}
+                data-testid="hero-cta"
+              />
               
-              <p id="asin-help" className="text-sm text-muted-foreground text-center">
+              <p id="asin-help" className="text-sm text-muted-foreground text-center" data-testid="microcopy-free">
                 Instant results. 100% free. Secure & private.
               </p>
             </form>
           </div>
           
-          {/* Right Column - Preview Image */}
+          {/* Right Column - Blurred Preview */}
           <div className="relative">
-            <div className="aspect-[4/3] w-full rounded-lg bg-muted border border-border overflow-hidden flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+            <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+              {/* Blurred Report Preview */}
+              <div className="relative">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-white font-semibold text-lg">Amazon Listing Audit Report</h3>
+                    <div className="text-white text-sm">Score: 74/100</div>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Audit Preview</h3>
-                <p className="text-muted-foreground">See your optimization insights here</p>
+                
+                <div className="p-6 space-y-4">
+                  <div className="text-center py-4">
+                    <div className="text-3xl font-bold text-blue-600 mb-2">74/100</div>
+                    <div className="text-sm text-gray-600">Overall Listing Score</div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Key Findings:</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-red-500 mt-1">⚠️</span>
+                        <span className="text-sm text-gray-700">Bullet clarity needs improvement</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✅</span>
+                        <span className="text-sm text-gray-700">Image size meets requirements</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-orange-500 mt-1">💡</span>
+                        <span className="text-sm text-gray-700">Keyword gap: &apos;eco friendly&apos; missing</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">Quick Wins:</h4>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      <li>• Add missing keywords to title</li>
+                      <li>• Improve bullet point clarity</li>
+                      <li>• Optimize image background</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                {/* Blur Overlay */}
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-2xl mb-2">🔍</div>
+                    <p className="text-gray-600 font-medium">Enter your ASIN to see your audit</p>
+                    <p className="text-sm text-gray-500 mt-1">Sample report preview</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Watermark */}
+              <div className="absolute top-2 right-2 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded">
+                Sample Report
               </div>
             </div>
           </div>

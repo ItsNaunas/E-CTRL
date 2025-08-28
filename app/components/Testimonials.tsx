@@ -1,55 +1,72 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function Testimonials() {
   const testimonials = [
     {
-      quote: "Found 3 keyword gaps I never knew existed. Sales increased 23% in the first month!",
-      author: "Sarah M.",
-      role: "Home & Garden Seller"
+      id: 1,
+      name: "Sarah Johnson",
+      role: "Amazon Seller",
+      location: "UK",
+      content: "The audit helped me identify missing keywords that boosted my sales by 40% in just 2 weeks.",
+      avatar: "/avatars/sarah.jpg" // TODO: Add real avatar images
     },
     {
-      quote: "The image compliance check saved me from getting suspended. Worth every penny (and it's free!)",
-      author: "Mike R.",
-      role: "Electronics Seller"
+      id: 2,
+      name: "Michael Chen",
+      role: "E-commerce Entrepreneur", 
+      location: "Germany",
+      content: "Finally found a tool that actually gives actionable insights. My conversion rate improved significantly.",
+      avatar: "/avatars/michael.jpg"
     },
     {
-      quote: "Finally understand why my listings weren't converting. The bullet point suggestions are gold.",
-      author: "Lisa T.",
-      role: "Fashion Seller"
+      id: 3,
+      name: "Emma Rodriguez",
+      role: "Amazon FBA Seller",
+      location: "Spain", 
+      content: "Free tool that actually works! The recommendations were spot-on and easy to implement.",
+      avatar: "/avatars/emma.jpg"
     }
   ];
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-white" data-testid="testimonials">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            What sellers are saying
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Trusted by Amazon Sellers Worldwide
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Real results from Amazon sellers who used our free audit tool.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            See what other sellers are saying about their audit results
           </p>
         </div>
-        
+
         <div className="grid gap-8 md:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-muted p-6 rounded-lg">
-              <div className="mb-4">
-                <span className="text-2xl">⭐</span>
-                <span className="text-2xl">⭐</span>
-                <span className="text-2xl">⭐</span>
-                <span className="text-2xl">⭐</span>
-                <span className="text-2xl">⭐</span>
+          {testimonials.map((testimonial) => (
+            <div key={testimonial.id} className="bg-gray-50 rounded-lg p-6 border border-gray-100">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                  {testimonial.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                  <div className="text-sm text-gray-600">{testimonial.role}</div>
+                  <div className="text-xs text-gray-500">{testimonial.location}</div>
+                </div>
               </div>
-              <blockquote className="text-foreground mb-4 italic">
-                &quot;{testimonial.quote}&quot;
+              
+              <blockquote className="text-gray-700 italic">
+                &ldquo;{testimonial.content}&rdquo;
               </blockquote>
-              <div className="text-sm">
-                <div className="font-semibold text-foreground">{testimonial.author}</div>
-                <div className="text-muted-foreground">{testimonial.role}</div>
-              </div>
             </div>
           ))}
+        </div>
+
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">
+            * Results may vary. These testimonials represent individual experiences.
+          </p>
         </div>
       </div>
     </section>

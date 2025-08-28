@@ -1,43 +1,44 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { StickyCTA } from '@/components/CTAButton';
-import { copy } from '@/lib/copy';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    default: `${copy.brand} — Free Amazon Growth Audit (UK/EU)`,
-    template: `%s | ${copy.brand}`,
+    default: 'e-ctrl — Free Amazon Growth Audit Tool (UK/EU)',
+    template: '%s | e-ctrl',
   },
-  description: copy.heroSub,
-  keywords: ['Amazon', 'marketplace', 'audit', 'UK', 'EU', 'seller', 'consultant', 'listing optimization'],
-  authors: [{ name: copy.brand }],
-  creator: copy.brand,
+  description: 'Free AI-powered Amazon listing audit tool for UK/EU sellers. Get instant insights to boost sales. No credit card required.',
+  keywords: ['Amazon', 'marketplace', 'audit', 'UK', 'EU', 'seller', 'listing optimization', 'free tool', 'ASIN analysis'],
+  authors: [{ name: 'e-ctrl' }],
+  creator: 'e-ctrl',
+  metadataBase: new URL('https://e-ctrl.com'), // TODO: Replace with actual domain
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_GB',
-    url: 'https://e-ctrl.example', // TODO: Replace with actual domain
-    title: `${copy.brand} — Free Amazon Growth Audit (UK/EU)`,
-    description: copy.heroSub,
-    siteName: copy.brand,
+    url: 'https://e-ctrl.com', // TODO: Replace with actual domain
+    title: 'e-ctrl — Free Amazon Growth Audit Tool (UK/EU)',
+    description: 'Free AI-powered Amazon listing audit tool for UK/EU sellers. Get instant insights to boost sales. No credit card required.',
+    siteName: 'e-ctrl',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: `${copy.brand} - Amazon Growth Audit Tool`,
+        alt: 'e-ctrl - Free Amazon Growth Audit Tool',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${copy.brand} — Free Amazon Growth Audit (UK/EU)`,
-    description: copy.heroSub,
+    title: 'e-ctrl — Free Amazon Growth Audit Tool (UK/EU)',
+    description: 'Free AI-powered Amazon listing audit tool for UK/EU sellers. Get instant insights to boost sales. No credit card required.',
     images: ['/og-image.png'],
+    creator: '@e_ctrl', // TODO: Replace with actual Twitter handle
   },
   robots: {
     index: true,
@@ -75,14 +76,27 @@ export default function RootLayout({
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Google Analytics placeholder */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'GA_MEASUREMENT_ID');
+            `,
+          }}
+        />
       </head>
       <body className={`${inter.className} h-full flex flex-col`}>
-        <Header />
-        <StickyCTA />
         <main className="flex-1">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );

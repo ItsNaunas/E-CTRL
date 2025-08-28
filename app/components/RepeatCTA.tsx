@@ -1,26 +1,75 @@
 'use client';
 
-import CTAButton from '../../components/CTAButton';
+import CTAButton from './CTAButton';
 
-export default function RepeatCTA() {
-  return (
-    <section className="py-16 bg-accent text-accent-foreground">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-accent-foreground mb-4">
-            Ready to optimize your Amazon business?
+interface RepeatCTAProps {
+  variant?: 'mid' | 'footer';
+  onCtaClick: () => void;
+}
+
+export default function RepeatCTA({ variant = 'mid', onCtaClick }: RepeatCTAProps) {
+  const handleClick = () => {
+    // Track repeat CTA click
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'repeat_cta_click', {
+        event_category: 'engagement',
+        event_label: `repeat_cta_${variant}`
+      });
+    }
+    onCtaClick();
+  };
+
+  if (variant === 'mid') {
+    return (
+      <section className="py-16 bg-gradient-to-r from-orange-50 to-red-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Ready to Optimize Your Amazon Listing?
           </h2>
-          <p className="text-lg text-accent-foreground/90 max-w-2xl mx-auto mb-8">
-            Join thousands of sellers who&apos;ve improved their listings with our free audit tool.
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Join thousands of sellers who&apos;ve improved their sales with our AI-powered audit tool.
           </p>
+          
           <CTAButton
-            variant="secondary"
+            variant="primary"
             size="lg"
-            text="audit"
-            href="/tool"
-            className="bg-accent-foreground text-accent hover:bg-accent-foreground/90"
+            text="report"
+            onClick={handleClick}
+            className="mb-4"
+            data-testid="repeat-cta-mid"
           />
+          
+          <p className="text-sm text-gray-500" data-testid="microcopy-free">
+            Free forever • No credit card required • Get results in minutes
+          </p>
         </div>
+      </section>
+    );
+  }
+
+  // Footer variant
+  return (
+    <section className="py-12 bg-gray-50 border-t border-gray-200">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          Start Your Free Amazon Audit Today
+        </h2>
+        <p className="text-gray-600 mb-6 max-w-xl mx-auto">
+          Get actionable insights to boost your Amazon sales. No strings attached.
+        </p>
+        
+        <CTAButton
+          variant="secondary"
+          size="lg"
+          text="unlock"
+          onClick={handleClick}
+          className="mb-4"
+          data-testid="repeat-cta-footer"
+        />
+        
+        <p className="text-sm text-gray-500" data-testid="microcopy-free">
+          Secure & private • No spam • Instant results
+        </p>
       </div>
     </section>
   );
