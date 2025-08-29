@@ -5,9 +5,10 @@ import CTAButton from '@/components/CTAButton';
 
 interface StickyCTAProps {
   onCtaClick: () => void;
+  mode?: 'audit' | 'create';
 }
 
-export default function StickyCTA({ onCtaClick }: StickyCTAProps) {
+export default function StickyCTA({ onCtaClick, mode = 'audit' }: StickyCTAProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -45,18 +46,19 @@ export default function StickyCTA({ onCtaClick }: StickyCTAProps) {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <span className="text-lg font-bold text-gray-900">e-ctrl</span>
-            <span className="ml-2 text-sm text-gray-500">Amazon Audit Tool</span>
-            {/* TODO: Update text if client changes CTA phrasing */}
+            <span className="ml-2 text-sm text-gray-500">
+              {mode === 'audit' ? 'Amazon Audit Tool' : 'Amazon Listing Creator'}
+            </span>
           </div>
           
-          <CTAButton
-            variant="primary"
-            size="sm"
-            text="audit"
-            onClick={handleClick}
-            className="ml-4"
-            data-testid="sticky-cta"
-          />
+                     <CTAButton
+             variant="primary"
+             size="sm"
+             text={mode === 'audit' ? 'audit my listing' : 'create listing now'}
+             onClick={handleClick}
+             className="ml-4"
+             data-testid="sticky-cta"
+           />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ interface CTAButtonProps {
   variant?: 'primary' | 'secondary' | 'sticky';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
-  text?: 'audit' | 'report' | 'unlock';
+  text?: string;
   href?: string;
   onClick?: () => void;
   className?: string;
@@ -52,7 +52,7 @@ export default function CTAButton({
 
   const buttonClasses = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${widthClasses} ${className}`;
 
-  const buttonContent = variant === 'sticky' ? stickyText : ctaTexts[text];
+  const buttonContent = text || (variant === 'sticky' ? stickyText : ctaTexts.audit);
 
   const ButtonContent = (
     <button
@@ -101,7 +101,7 @@ export function StickyCTA() {
           <CTAButton
             variant="sticky"
             size="sm"
-            text="audit"
+            text="Get Free Audit"
             href="/tool"
             className="ml-4"
           />

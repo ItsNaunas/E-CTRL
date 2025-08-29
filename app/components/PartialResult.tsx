@@ -116,7 +116,7 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
               <CTAButton
                 variant="primary"
                 size="lg"
-                text="unlock"
+                text="unlock my full report now"
                 onClick={handleUnlock}
                 className="mb-4"
               />

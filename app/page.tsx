@@ -3,25 +3,34 @@
 import { useState } from 'react';
 import { useCROChecks } from './hooks/useCROChecks';
 import Hero from '@/components/Hero';
+import NewSellerHero from '@/components/NewSellerHero';
+import ModeToggle from '@/components/ModeToggle';
 import TrustBar from './components/TrustBar';
 import UsageCounter from './components/UsageCounter';
 import HowItWorks from './components/HowItWorks';
+import NewSellerHowItWorks from './components/NewSellerHowItWorks';
 import Benefits from './components/Benefits';
+import NewSellerBenefits from './components/NewSellerBenefits';
 import Testimonials from './components/Testimonials';
 import FAQ from './components/FAQ';
+import NewSellerFAQ from './components/NewSellerFAQ';
 import Guarantees from './components/Guarantees';
 import RepeatCTA from './components/RepeatCTA';
 import PartialResult from './components/PartialResult';
+import NewSellerPartialResult from './components/NewSellerPartialResult';
 import EmailGate from './components/EmailGate';
 import StickyCTA from './components/StickyCTA';
 import ReportDeliveryNote from './components/ReportDeliveryNote';
+import NewSellerDeliveryNote from './components/NewSellerDeliveryNote';
 
 export default function HomePage() {
   // CRO audit hook (development only)
   useCROChecks();
 
   // Client-side state for the audit flow
+  const [mode, setMode] = useState<'audit' | 'create'>('audit');
   const [asinOrUrl, setAsinOrUrl] = useState('');
+  const [productUrl, setProductUrl] = useState('');
   const [showPartial, setShowPartial] = useState(false);
   const [showEmailGate, setShowEmailGate] = useState(false);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -40,6 +49,16 @@ export default function HomePage() {
   // Handle ASIN submission from Hero
   const handleAsinSubmit = (asin: string) => {
     setAsinOrUrl(asin);
+    setShowPartial(true);
+    // Scroll to partial result
+    setTimeout(() => {
+      document.getElementById('partial-result')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Handle product URL submission from NewSellerHero
+  const handleProductUrlSubmit = (url: string) => {
+    setProductUrl(url);
     setShowPartial(true);
     // Scroll to partial result
     setTimeout(() => {
@@ -70,7 +89,11 @@ export default function HomePage() {
   const handleCtaClick = () => {
     // Scroll to hero for new users, or to appropriate section for existing users
     if (!showPartial) {
-      document.getElementById('hero-input')?.focus();
+      if (mode === 'audit') {
+        document.getElementById('hero-input')?.focus();
+      } else {
+        document.getElementById('new-seller-input')?.focus();
+      }
     } else if (!showEmailGate) {
       document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
     } else {
@@ -81,10 +104,19 @@ export default function HomePage() {
   return (
     <>
       {/* Sticky CTA - Appears on scroll */}
-      <StickyCTA onCtaClick={handleCtaClick} />
+      <StickyCTA onCtaClick={handleCtaClick} mode={mode} />
+
+      {/* Mode Toggle */}
+      <div className="pt-8">
+        <ModeToggle mode={mode} onModeChange={setMode} />
+      </div>
 
       {/* Hero Section - Primary Action */}
-      <Hero onAsinSubmit={handleAsinSubmit} />
+      {mode === 'audit' ? (
+        <Hero onAsinSubmit={handleAsinSubmit} />
+      ) : (
+        <NewSellerHero onUrlSubmit={handleProductUrlSubmit} />
+      )}
 
       {/* Trust Bar - Build Credibility */}
       <TrustBar />
@@ -93,10 +125,18 @@ export default function HomePage() {
       <UsageCounter />
 
       {/* How It Works - Process Explanation */}
-      <HowItWorks />
+      {mode === 'audit' ? (
+        <HowItWorks />
+      ) : (
+        <NewSellerHowItWorks />
+      )}
 
       {/* Benefits - Value Proposition */}
-      <Benefits />
+      {mode === 'audit' ? (
+        <Benefits />
+      ) : (
+        <NewSellerBenefits />
+      )}
 
       {/* Testimonials - Social Proof */}
       <Testimonials />
@@ -105,19 +145,30 @@ export default function HomePage() {
       <Guarantees />
 
       {/* FAQ - Address Objections */}
-      <FAQ />
+      {mode === 'audit' ? (
+        <FAQ />
+      ) : (
+        <NewSellerFAQ />
+      )}
 
       {/* Mid-page Repeat CTA */}
-      <RepeatCTA variant="mid" onCtaClick={handleCtaClick} />
+      <RepeatCTA variant="mid" onCtaClick={handleCtaClick} mode={mode} />
 
       {/* Conditional Flow Components */}
       {showPartial && (
         <div id="partial-result">
-          <PartialResult
-            score={mockPartialResult.score}
-            highlights={mockPartialResult.highlights}
-            onUnlock={handleUnlock}
-          />
+          {mode === 'audit' ? (
+            <PartialResult
+              score={mockPartialResult.score}
+              highlights={mockPartialResult.highlights}
+              onUnlock={handleUnlock}
+            />
+          ) : (
+            <NewSellerPartialResult
+              productUrl={productUrl}
+              onUnlock={handleUnlock}
+            />
+          )}
         </div>
       )}
 
@@ -132,12 +183,16 @@ export default function HomePage() {
 
       {emailSubmitted && (
         <div id="delivery-note">
-          <ReportDeliveryNote email={submittedEmail} />
+          {mode === 'audit' ? (
+            <ReportDeliveryNote email={submittedEmail} />
+          ) : (
+            <NewSellerDeliveryNote email={submittedEmail} />
+          )}
         </div>
       )}
 
       {/* Footer Repeat CTA */}
-      <RepeatCTA variant="footer" onCtaClick={handleCtaClick} />
+      <RepeatCTA variant="footer" onCtaClick={handleCtaClick} mode={mode} />
 
       {/* Minimal Footer with Legal Links */}
       <footer className="py-8 bg-gray-900 text-white">

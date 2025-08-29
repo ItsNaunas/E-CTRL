@@ -92,7 +92,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                 type="submit"
                 variant="primary"
                 size="lg"
-                text="audit"
+                text="audit my listing now"
                 fullWidth
                 className="w-full"
                 disabled={isSubmitting}

@@ -5,9 +5,10 @@ import CTAButton from '@/components/CTAButton';
 interface RepeatCTAProps {
   variant?: 'mid' | 'footer';
   onCtaClick: () => void;
+  mode?: 'audit' | 'create';
 }
 
-export default function RepeatCTA({ variant = 'mid', onCtaClick }: RepeatCTAProps) {
+export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' }: RepeatCTAProps) {
   const handleClick = () => {
     // Track repeat CTA click
     if (typeof window !== 'undefined' && window.gtag) {
@@ -24,16 +25,22 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick }: RepeatCTAProp
       <section className="py-16 bg-gradient-to-r from-orange-50 to-red-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to Optimize Your Amazon Listing?
+            {mode === 'audit' 
+              ? 'Ready to Optimize Your Amazon Listing?' 
+              : 'Ready to Create Your Amazon Listing?'
+            }
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of sellers who&apos;ve improved their sales with our AI-powered audit tool.
+            {mode === 'audit'
+              ? 'Join thousands of sellers who\'ve improved their sales with our AI-powered audit tool.'
+              : 'Join thousands of brand owners who\'ve successfully launched on Amazon using our AI-powered listing creation tool.'
+            }
           </p>
           
           <CTAButton
             variant="primary"
             size="lg"
-            text="report"
+            text={mode === 'audit' ? 'get my free audit report' : 'create my listing now'}
             onClick={handleClick}
             className="mb-4"
             data-testid="repeat-cta-mid"
@@ -52,16 +59,22 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick }: RepeatCTAProp
     <section className="py-12 bg-gray-50 border-t border-gray-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Start Your Free Amazon Audit Today
+          {mode === 'audit' 
+            ? 'Start Your Free Amazon Audit Today' 
+            : 'Create Your Amazon Listing Today'
+          }
         </h2>
         <p className="text-gray-600 mb-6 max-w-xl mx-auto">
-          Get actionable insights to boost your Amazon sales. No strings attached.
+          {mode === 'audit'
+            ? 'Get actionable insights to boost your Amazon sales. No strings attached.'
+            : 'Get your complete Amazon listing with 6 optimized images. No strings attached.'
+          }
         </p>
         
         <CTAButton
           variant="secondary"
           size="lg"
-          text="unlock"
+          text={mode === 'audit' ? 'unlock my audit report' : 'get my listing now'}
           onClick={handleClick}
           className="mb-4"
           data-testid="repeat-cta-footer"

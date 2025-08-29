@@ -90,7 +90,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false }: EmailGat
                 type="submit"
                 variant="primary"
                 size="lg"
-                text="report"
+                text="send me my report now"
                 fullWidth
                 disabled={isSubmitting}
                 data-testid="email-submit"
