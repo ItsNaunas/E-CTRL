@@ -20,8 +20,8 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
       "Optimize main image size (currently 85% coverage)"
     ],
     blurredImages: [
-      { type: "Main Image", issue: "Size optimization needed" },
-      { type: "Lifestyle Shot", issue: "Missing product context" }
+      { type: "Main Image", description: "Size optimization needed" },
+      { type: "Lifestyle Shot", description: "Missing product context" }
     ],
     checklistPreview: [
       { item: "Title optimization", status: "needs work" },
@@ -34,8 +34,8 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
       "Competitive analysis shows opportunity for differentiation"
     ],
     blurredImages: [
-      { type: "Main Product Image", status: "ready to create" },
-      { type: "Lifestyle Image", status: "concept ready" }
+      { type: "Main Product Image", description: "ready to create" },
+      { type: "Lifestyle Image", description: "concept ready" }
     ],
     checklistPreview: [
       { item: "Product positioning", status: "optimized" },
@@ -100,7 +100,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
                         <span className="font-medium text-gray-900">{image.type}</span>
                       </div>
                       <p className="text-sm text-gray-600 mb-3">
-                        {isAuditMode ? image.issue : image.status}
+                        {image.description}
                       </p>
                       
                       {/* Blurred/Watermarked Preview */}
