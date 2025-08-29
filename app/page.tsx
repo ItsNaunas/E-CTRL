@@ -22,6 +22,8 @@ import EmailGate from './components/EmailGate';
 import StickyCTA from './components/StickyCTA';
 import ReportDeliveryNote from './components/ReportDeliveryNote';
 import NewSellerDeliveryNote from './components/NewSellerDeliveryNote';
+import AccessControl from './components/AccessControl';
+import GuestResult from './components/GuestResult';
 
 export default function HomePage() {
   // CRO audit hook (development only)
@@ -35,6 +37,12 @@ export default function HomePage() {
   const [showEmailGate, setShowEmailGate] = useState(false);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
+  
+  // Access control state
+  const [showAccessControl, setShowAccessControl] = useState(false);
+  const [accessType, setAccessType] = useState<'guest' | 'account' | null>(null);
+  const [userEmail, setUserEmail] = useState('');
+  const [showGuestResult, setShowGuestResult] = useState(false);
 
   // Mock partial result data
   const mockPartialResult = {
@@ -66,22 +74,53 @@ export default function HomePage() {
     }, 100);
   };
 
-  // Handle unlock from PartialResult
+  // Handle unlock from PartialResult - now shows access control
   const handleUnlock = () => {
+    setShowAccessControl(true);
+    // Scroll to access control
+    setTimeout(() => {
+      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Handle guest access (email only)
+  const handleGuestAccess = (email: string) => {
+    setAccessType('guest');
+    setUserEmail(email);
+    setShowGuestResult(true);
+    // Scroll to guest result
+    setTimeout(() => {
+      document.getElementById('guest-result')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Handle account access (full registration)
+  const handleAccountAccess = (email: string, password: string) => {
+    setAccessType('account');
+    setUserEmail(email);
     setShowEmailGate(true);
-    // Scroll to email gate
+    // Scroll to email gate for full access
     setTimeout(() => {
       document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
-  // Handle email submission
+  // Handle email submission (for account access)
   const handleEmailSubmit = (email: string) => {
     setEmailSubmitted(true);
     setSubmittedEmail(email);
     // Scroll to delivery note
     setTimeout(() => {
       document.getElementById('delivery-note')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Handle upgrade from guest to account
+  const handleUpgrade = () => {
+    setShowAccessControl(true);
+    // Scroll to access control
+    setTimeout(() => {
+      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
@@ -94,7 +133,13 @@ export default function HomePage() {
       } else {
         document.getElementById('new-seller-input')?.focus();
       }
-    } else if (!showEmailGate) {
+    } else if (!showAccessControl) {
+      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (!showGuestResult && !showEmailGate) {
+      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (showGuestResult) {
+      document.getElementById('guest-result')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (showEmailGate) {
       document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
     } else {
       document.getElementById('delivery-note')?.scrollIntoView({ behavior: 'smooth' });
@@ -172,6 +217,29 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Access Control System */}
+      {showAccessControl && !showGuestResult && !showEmailGate && (
+        <div id="access-control">
+          <AccessControl
+            mode={mode}
+            onGuestAccess={handleGuestAccess}
+            onAccountAccess={handleAccountAccess}
+          />
+        </div>
+      )}
+
+      {/* Guest Result (Limited Preview) */}
+      {showGuestResult && (
+        <div id="guest-result">
+          <GuestResult
+            mode={mode}
+            email={userEmail}
+            onUpgrade={handleUpgrade}
+          />
+        </div>
+      )}
+
+      {/* Email Gate (for Account Access) */}
       {showEmailGate && !emailSubmitted && (
         <div id="email-gate">
           <EmailGate
@@ -181,6 +249,7 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Full Result Delivery (Account Access) */}
       {emailSubmitted && (
         <div id="delivery-note">
           {mode === 'audit' ? (
