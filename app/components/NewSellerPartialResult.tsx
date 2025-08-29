@@ -14,25 +14,25 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           
           {/* Header */}
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-8 py-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-white">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 sm:px-8 py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-white break-words">
                   Amazon Listing Creation Preview
                 </h2>
-                <p className="text-orange-100 mt-1">
+                <p className="text-orange-100 mt-1 text-sm break-all">
                   Generated from: {productUrl}
                 </p>
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-white">6 Images</div>
+              <div className="text-center sm:text-right flex-shrink-0">
+                <div className="text-2xl sm:text-3xl font-bold text-white">6 Images</div>
                 <div className="text-orange-100 text-sm">Ready to Create</div>
               </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-8">
+          <div className="p-4 sm:p-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
               {/* Left Column - Image Preview */}
@@ -43,51 +43,63 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                 
                 <div className="space-y-4">
                   <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">📸</span>
-                      <span className="font-medium text-gray-900">Main Product Image</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="text-2xl flex-shrink-0">📸</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-gray-900 block">Main Product Image</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product on white background, 85% frame coverage</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">Product on white background, 85% frame coverage</p>
                   </div>
                   
                   <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">🎯</span>
-                      <span className="font-medium text-gray-900">Lifestyle Image</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="text-2xl flex-shrink-0">🎯</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-gray-900 block">Lifestyle Image</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product in use, showing real-world application</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">Product in use, showing real-world application</p>
                   </div>
                   
                   <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">📊</span>
-                      <span className="font-medium text-gray-900">Benefits Infographic</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="text-2xl flex-shrink-0">📊</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-gray-900 block">Benefits Infographic</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Key product benefits and features visualization</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">Key product benefits and features visualization</p>
                   </div>
                   
                   <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">📏</span>
-                      <span className="font-medium text-gray-900">Measurements Image</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="text-2xl flex-shrink-0">📏</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-gray-900 block">Measurements Image</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product dimensions and sizing information</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">Product dimensions and sizing information</p>
                   </div>
                   
                   <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">🔍</span>
-                      <span className="font-medium text-gray-900">Cross-Section View</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="text-2xl flex-shrink-0">🔍</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-gray-900 block">Cross-Section View</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product anatomy showing quality construction</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">Product anatomy showing quality construction</p>
                   </div>
                   
                   <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">⚔️</span>
-                      <span className="font-medium text-gray-900">Competitive Comparison</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="text-2xl flex-shrink-0">⚔️</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-gray-900 block">Competitive Comparison</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Your product vs competitors (optional)</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">Your product vs competitors (optional)</p>
                   </div>
                 </div>
               </div>
@@ -102,7 +114,7 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Listing Title Structure:</h4>
                     <div className="bg-blue-50 rounded-lg p-3 text-sm">
-                      <p className="text-gray-700">
+                      <p className="text-gray-700 break-words leading-relaxed">
                         <span className="font-medium">[Brand Name] [Product Name] for [Target Avatar/Use Case], [Relevant High-Intent Keywords] [Material/Size/Special Features/Quantity]</span>
                       </p>
                     </div>
@@ -111,7 +123,7 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Example Title:</h4>
                     <div className="bg-gray-50 rounded-lg p-3 text-sm">
-                      <p className="text-gray-700 italic">
+                      <p className="text-gray-700 italic break-words leading-relaxed">
                         &quot;DIY Doctor Heavy Duty Gardening Gloves for Men, Thorn Proof Leather Garden Work Gloves, One Size Fits Most Unisex - (1 Pair)&quot;
                       </p>
                     </div>
@@ -120,7 +132,7 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Bullet Points Structure:</h4>
                     <div className="bg-green-50 rounded-lg p-3 text-sm">
-                      <p className="text-gray-700">
+                      <p className="text-gray-700 break-words leading-relaxed">
                         <span className="font-medium">[PRODUCT BENEFIT] - [feature description using relevant key words/search terms related to product]</span>
                       </p>
                     </div>
