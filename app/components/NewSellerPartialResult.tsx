@@ -107,37 +107,10 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
               {/* Right Column - Listing Preview */}
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Optimized Listing Preview
+                  Your Complete Amazon Listing
                 </h3>
                 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Listing Title Structure:</h4>
-                    <div className="bg-blue-50 rounded-lg p-3 text-sm">
-                      <p className="text-gray-700 break-words leading-relaxed">
-                        <span className="font-medium">[Brand Name] [Product Name] for [Target Avatar/Use Case], [Relevant High-Intent Keywords] [Material/Size/Special Features/Quantity]</span>
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Example Title:</h4>
-                    <div className="bg-gray-50 rounded-lg p-3 text-sm">
-                      <p className="text-gray-700 italic break-words leading-relaxed">
-                        &quot;DIY Doctor Heavy Duty Gardening Gloves for Men, Thorn Proof Leather Garden Work Gloves, One Size Fits Most Unisex - (1 Pair)&quot;
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Bullet Points Structure:</h4>
-                    <div className="bg-green-50 rounded-lg p-3 text-sm">
-                      <p className="text-gray-700 break-words leading-relaxed">
-                        <span className="font-medium">[PRODUCT BENEFIT] - [feature description using relevant key words/search terms related to product]</span>
-                      </p>
-                    </div>
-                  </div>
-                  
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">What You&apos;ll Get:</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
