@@ -81,7 +81,7 @@ export default function Testimonials() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
               <div className="bg-white rounded-lg p-4 shadow-sm">
-                <div className="font-semibold text-gray-900">5+ Years at Amazon</div>
+                                 <div className="font-semibold text-gray-900">4+ Years at Amazon</div>
                 <div className="text-gray-600">Seller growth & optimization</div>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm">

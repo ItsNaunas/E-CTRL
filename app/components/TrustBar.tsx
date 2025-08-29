@@ -47,7 +47,7 @@ export default function TrustBar() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
               <div className="bg-white rounded-lg p-3 shadow-sm">
-                <div className="font-semibold text-orange-600">5+ Years</div>
+                                 <div className="font-semibold text-orange-600">4+ Years</div>
                 <div className="text-gray-600">Amazon Experience</div>
               </div>
               <div className="bg-white rounded-lg p-3 shadow-sm">

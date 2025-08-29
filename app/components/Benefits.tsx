@@ -10,7 +10,7 @@ export default function Benefits() {
     {
       title: "Find Keywords",
       description: "Discover high-impact keywords you're missing",
-      expertNote: "Amazon SEO expertise from 5+ years optimizing listings"
+      expertNote: "Amazon SEO expertise from 4+ years optimizing listings"
     },
     {
       title: "Optimize Images",
@@ -66,7 +66,7 @@ export default function Benefits() {
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <span className="text-green-600">✓</span>
-                <span className="text-gray-700">5+ years at Amazon</span>
+                                 <span className="text-gray-700">4+ years at Amazon</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-green-600">✓</span>
