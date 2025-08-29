@@ -17,10 +17,7 @@ export default function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
-                     <div className="flex items-center gap-2">
-             <span className="text-lg">🔍</span>
-             <span>Audit Existing Amazon Listing</span>
-           </div>
+                               <span>Audit Existing Amazon Listing</span>
          </button>
          <button
            onClick={() => onModeChange('create')}
@@ -30,10 +27,7 @@ export default function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
                : 'text-gray-600 hover:text-gray-900'
            }`}
          >
-           <div className="flex items-center gap-2">
-             <span className="text-lg">🚀</span>
-             <span>Create New Amazon Listing</span>
-           </div>
+                     <span>Create New Amazon Listing</span>
         </button>
       </div>
     </div>
