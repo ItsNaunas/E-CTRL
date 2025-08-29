@@ -152,7 +152,7 @@ export default function HomePage() {
       <StickyCTA onCtaClick={handleCtaClick} mode={mode} />
 
       {/* Mode Toggle */}
-      <div className="pt-8">
+      <div className="pt-24">
         <ModeToggle mode={mode} onModeChange={setMode} />
       </div>
 
