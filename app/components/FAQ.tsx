@@ -20,6 +20,14 @@ export default function FAQ() {
       answer: "Our AI has been trained on thousands of successful Amazon listings and follows Amazon's best practices. While we can't guarantee specific results, our recommendations are based on proven optimization strategies." // TODO: replace with client-approved answer
     },
     {
+      question: "Do I need to create an account?", // TODO: replace with client-approved question
+      answer: "No for the basic audit (email required). Yes for the full report, advanced checks, and PDF export." // TODO: replace with client-approved answer
+    },
+    {
+      question: "What's included in the basic vs full report?", // TODO: replace with client-approved question
+      answer: "Basic: top findings + 2–3 quick wins. Full (account): complete audit, prioritized checklist, detailed image/SEO recommendations, and PDF export." // TODO: replace with client-approved answer
+    },
+    {
       question: "How long does it take?", // TODO: replace with client-approved question
       answer: "The audit analysis takes just a few seconds. You'll see partial results immediately, and the full detailed report will be emailed to you within 2 minutes." // TODO: replace with client-approved answer
     },

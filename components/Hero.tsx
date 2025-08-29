@@ -54,7 +54,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
             </h1>
             
             <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Enter your ASIN or product link to get instant insights. No credit card required.
+              Enter your ASIN or product link. Get a basic audit via email. Create an account anytime for the full report.
             </p>
             
             <form onSubmit={handleSubmit} className="mt-8 space-y-4">

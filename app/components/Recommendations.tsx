@@ -8,7 +8,7 @@ export default function Recommendations() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      text: "See partial results before giving email (no tricks)."
+      text: "Basic audit with email; full report when you create an account."
     },
     {
       icon: (

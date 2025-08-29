@@ -4,18 +4,18 @@ export default function HowItWorks() {
   const steps = [
     {
       icon: "🔍",
-      title: "Enter your ASIN",
-      description: "Paste your Amazon product URL or ASIN"
+      title: "Enter ASIN + Email",
+      description: "Paste your product URL/ASIN and your email to unlock the basic audit"
     },
     {
       icon: "🤖", 
-      title: "AI Audit",
-      description: "Our AI analyzes your listing in seconds"
+      title: "Instant AI Audit (Basic)",
+      description: "We email you the key findings and quick wins"
     },
     {
       icon: "📧",
-      title: "Report Delivered",
-      description: "Get your detailed report via email"
+      title: "Create Account for Full Report",
+      description: "Register to unlock the full audit, detailed recommendations, and export"
     }
   ];
 
