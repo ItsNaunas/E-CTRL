@@ -112,7 +112,7 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                     <h4 className="font-medium text-gray-900 mb-2">Example Title:</h4>
                     <div className="bg-gray-50 rounded-lg p-3 text-sm">
                       <p className="text-gray-700 italic">
-                        "DIY Doctor Heavy Duty Gardening Gloves for Men, Thorn Proof Leather Garden Work Gloves, One Size Fits Most Unisex - (1 Pair)"
+                        &quot;DIY Doctor Heavy Duty Gardening Gloves for Men, Thorn Proof Leather Garden Work Gloves, One Size Fits Most Unisex - (1 Pair)&quot;
                       </p>
                     </div>
                   </div>
@@ -127,7 +127,7 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                   </div>
                   
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">What You'll Get:</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">What You&apos;ll Get:</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
                       <li>• 5-10 benefit-focused bullet points</li>
                       <li>• SEO-optimized product description</li>

@@ -67,7 +67,7 @@ export default function NewSellerBenefits() {
                Ready to create your Amazon listing?
              </h3>
             <p className="text-orange-100 mb-6 max-w-2xl mx-auto">
-              Join thousands of brand owners who've successfully launched their products on Amazon using our AI-powered listing creation tool.
+              Join thousands of brand owners who&apos;ve successfully launched their products on Amazon using our AI-powered listing creation tool.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <div className="bg-white/20 rounded-lg px-4 py-2">

@@ -23,7 +23,7 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
           <div className="p-8">
             <div className="text-center mb-8">
               <p className="text-lg text-gray-600 mb-4">
-                We've sent your complete Amazon listing to:
+                We&apos;ve sent your complete Amazon listing to:
               </p>
               <div className="bg-gray-50 rounded-lg p-4 inline-block">
                 <span className="font-medium text-gray-900">{email}</span>
@@ -35,7 +35,7 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
               {/* What's in your email */}
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  📧 What's in your email:
+                  📧 What&apos;s in your email:
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
@@ -94,7 +94,7 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
                 <div>
-                  <strong>Image Optimization:</strong> Use all 6 images to maximize your listing's conversion potential.
+                  <strong>Image Optimization:</strong> Use all 6 images to maximize your listing&apos;s conversion potential.
                 </div>
                 <div>
                   <strong>Keyword Research:</strong> The title and description are already optimized for search visibility.
@@ -115,7 +115,7 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
                   Need help with your Amazon seller account?
                 </h3>
                 <p className="text-orange-100 mb-4">
-                  We've got resources to help you get started and succeed on Amazon.
+                  We&apos;ve got resources to help you get started and succeed on Amazon.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <a 

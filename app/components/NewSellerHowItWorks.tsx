@@ -51,7 +51,7 @@ export default function NewSellerHowItWorks() {
         <div className="mt-12 bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-8">
           <div className="text-center">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              What You'll Get
+              What You&apos;ll Get
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               <div className="bg-white rounded-lg p-4 shadow-sm">

@@ -84,7 +84,7 @@ export default function NewSellerFAQ() {
                Ready to generate your Amazon listing?
              </h3>
             <p className="text-gray-600 mb-6">
-              Join thousands of brand owners who've successfully launched on Amazon using our tool.
+              Join thousands of brand owners who&apos;ve successfully launched on Amazon using our tool.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm text-gray-600">
               <div className="flex items-center gap-2">

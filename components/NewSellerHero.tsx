@@ -123,7 +123,7 @@ export default function NewSellerHero({ onUrlSubmit }: NewSellerHeroProps) {
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">What You'll Get:</h4>
+                    <h4 className="font-semibold text-gray-900 mb-3">What You&apos;ll Get:</h4>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
                         <span className="text-green-500 mt-1">📸</span>
