@@ -383,14 +383,14 @@ export default function ToolPage() {
               <label className="text-sm font-medium text-foreground">
                 {copy.form.keywordsRequired.label}
               </label>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={generateKeywordSuggestions}
-                loading={isGeneratingSuggestions}
-                disabled={!newForm.category || !newForm.desc}
-              >
+                             <Button
+                 type="button"
+                 variant="secondary"
+                 size="sm"
+                 onClick={generateKeywordSuggestions}
+                 loading={isGeneratingSuggestions}
+                 disabled={!newForm.category || !newForm.desc}
+               >
                 {isGeneratingSuggestions ? 'Generating...' : '🤖 AI Suggestions'}
               </Button>
             </div>
