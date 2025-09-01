@@ -5,6 +5,26 @@ export interface SummaryResult {
   score: number;
   bullets: string[];
   note: string;
+  highlights?: string[];
+  recommendations?: string[];
+  listingPack?: {
+    title: string;
+    bullets: string[];
+    description: string;
+    keywords: {
+      primary: string[];
+      secondary: string[];
+      longTail: string[];
+    };
+    imageGallery: {
+      mainImage: string;
+      lifestyleImage: string;
+      benefitsInfographic: string;
+      howToUse: string;
+      measurements: string;
+      comparison: string;
+    };
+  };
 }
 
 // Mock summary generator for existing Amazon sellers
@@ -34,6 +54,16 @@ export function mockExistingSummary(input: ExistingSellerData): SummaryResult {
       ...selectedSuggestions,
     ],
     note: "We'll email your comprehensive report with detailed recommendations.",
+    highlights: [
+      "Listing structure follows Amazon best practices",
+      "Keyword optimization shows good market understanding",
+      "Product presentation is competitive in your category"
+    ],
+    recommendations: [
+      "Optimize backend keywords for better discoverability",
+      "Enhance bullet points with more specific benefits",
+      "Consider adding A+ Content to improve conversion rates"
+    ]
   };
 }
 
@@ -68,6 +98,32 @@ export function mockNewSummary(input: NewSellerData): SummaryResult {
     .filter((_, index) => (categoryHash + index) % 2 === 0)
     .slice(0, 3);
 
+  // Generate mock listing pack data
+  const mockListingPack = {
+    title: `${input.desc} - Premium ${input.category} Solution`,
+    bullets: [
+      `High-quality ${input.category.toLowerCase()} designed for optimal performance`,
+      `Easy to use and maintain with clear instructions included`,
+      `Competitive pricing with excellent value for money`,
+      `Fast shipping and reliable customer support available`,
+      `Perfect for both beginners and experienced users`
+    ],
+    description: `Experience the difference with our premium ${input.category.toLowerCase()} solution. This carefully crafted product offers exceptional quality and performance, making it the ideal choice for your needs. With our commitment to customer satisfaction and competitive pricing, you can trust that you're getting the best value available.`,
+    keywords: {
+      primary: [input.category.toLowerCase(), input.desc.split(' ')[0], "premium"],
+      secondary: ["quality", "performance", "reliable", "affordable"],
+      longTail: [`best ${input.category.toLowerCase()}`, `${input.desc} review`, "top rated"]
+    },
+    imageGallery: {
+      mainImage: "Professional product shot on white background",
+      lifestyleImage: "Product in use showing real-world application",
+      benefitsInfographic: "Visual chart highlighting key benefits and features",
+      howToUse: "Step-by-step usage instructions with clear visuals",
+      measurements: "Detailed size and dimension specifications",
+      comparison: "Side-by-side comparison with competitor products"
+    }
+  };
+
   return {
     title: "Readiness Summary (Mock)",
     score: baseScore,
@@ -76,6 +132,17 @@ export function mockNewSummary(input: NewSellerData): SummaryResult {
       ...selectedTips,
     ],
     note: "We'll email your full report with image recommendations and next steps.",
+    highlights: [
+      "Your product concept shows strong market potential",
+      "Category selection aligns with current market trends",
+      "Description effectively communicates value proposition"
+    ],
+    recommendations: [
+      "Invest in professional product photography",
+      "Develop comprehensive keyword strategy",
+      "Create compelling A+ Content for enhanced conversion"
+    ],
+    listingPack: mockListingPack
   };
 }
 
