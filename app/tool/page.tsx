@@ -12,6 +12,8 @@ import Tabs from '@/components/Tabs';
 import ChipsInput from '@/components/ChipsInput';
 import FileDropzone from '@/components/FileDropzone';
 import SummaryCard from '@/components/SummaryCard';
+import EmailGate from '@/components/EmailGate';
+import ListingPackCard from '@/components/ListingPackCard';
 import { copy } from '@/lib/copy';
 import { 
   existingSellerSchema, 
@@ -27,6 +29,8 @@ export default function ToolPage() {
   const [activeTab, setActiveTab] = useState('existing');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [summary, setSummary] = useState<SummaryResult | null>(null);
+  const [showEmailGate, setShowEmailGate] = useState(false);
+  const [isEmailSubmitting, setIsEmailSubmitting] = useState(false);
   
   // Form state for existing sellers
   const [existingForm, setExistingForm] = useState<Partial<ExistingSellerData>>({
@@ -53,6 +57,7 @@ export default function ToolPage() {
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
 
   const handleExistingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,18 +67,25 @@ export default function ToolPage() {
     try {
       const validatedData = existingSellerSchema.parse(existingForm);
       
-      // TODO: Connect to backend API
-      // const response = await fetch('/api/report', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ type: 'existing', data: validatedData }),
-      // });
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'existing_seller', data: validatedData }),
+      });
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.error === 'Rate limit exceeded. One report per email per day.') {
+          setErrors({ email: 'You can only request one report per email per day. Please try again tomorrow.' });
+        } else {
+          setErrors({ general: errorData.error || 'Failed to generate report' });
+        }
+        return;
+      }
       
-      const mockResult = mockExistingSummary(validatedData);
-      setSummary(mockResult);
+      const result = await response.json();
+      setSummary(result.result);
+      setShowEmailGate(true); // Show email gate for guests
       
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -84,6 +96,8 @@ export default function ToolPage() {
           }
         });
         setErrors(fieldErrors);
+      } else {
+        setErrors({ general: 'An unexpected error occurred. Please try again.' });
       }
     } finally {
       setIsSubmitting(false);
@@ -98,18 +112,25 @@ export default function ToolPage() {
     try {
       const validatedData = newSellerSchema.parse(newForm);
       
-      // TODO: Connect to backend API
-      // const response = await fetch('/api/report', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ type: 'new', data: validatedData }),
-      // });
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'new_seller', data: validatedData }),
+      });
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.error === 'Rate limit exceeded. One report per email per day.') {
+          setErrors({ email: 'You can only request one report per email per day. Please try again tomorrow.' });
+        } else {
+          setErrors({ general: errorData.error || 'Failed to generate report' });
+        }
+        return;
+      }
       
-      const mockResult = mockNewSummary(validatedData);
-      setSummary(mockResult);
+      const result = await response.json();
+      setSummary(result.result);
+      setShowEmailGate(true); // Show email gate for guests
       
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -120,9 +141,61 @@ export default function ToolPage() {
           }
         });
         setErrors(fieldErrors);
+      } else {
+        setErrors({ general: 'An unexpected error occurred. Please try again.' });
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const generateKeywordSuggestions = async () => {
+    if (!newForm.category || !newForm.desc) {
+      setErrors({ general: 'Please fill in category and description first' });
+      return;
+    }
+
+    setIsGeneratingSuggestions(true);
+    try {
+      const response = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'keywords',
+          data: {
+            category: newForm.category,
+            description: newForm.desc
+          }
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setNewForm(prev => ({ 
+          ...prev, 
+          keywords: result.suggestions.slice(0, 5) // Take first 5 suggestions
+        }));
+      } else {
+        setErrors({ general: 'Failed to generate keyword suggestions' });
+      }
+    } catch (error) {
+      setErrors({ general: 'Failed to generate suggestions' });
+    } finally {
+      setIsGeneratingSuggestions(false);
+    }
+  };
+
+  const handleEmailSubmit = async (email: string, name: string) => {
+    setIsEmailSubmitting(true);
+    try {
+      // Here you would typically send the email to your database
+      // For now, we'll just unlock the full report
+      setShowEmailGate(false);
+      // TODO: Send email to database and trigger email delivery
+    } catch (error) {
+      console.error('Email submission failed:', error);
+    } finally {
+      setIsEmailSubmitting(false);
     }
   };
 
@@ -204,6 +277,12 @@ export default function ToolPage() {
       </Card>
       
       <div className="space-y-4">
+        {errors.general && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{errors.general}</p>
+          </div>
+        )}
+        
         <p className="text-sm text-muted-foreground">
           {copy.consentLine}
         </p>
@@ -276,9 +355,24 @@ export default function ToolPage() {
             required
           />
           
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-foreground">
+                {copy.form.keywordsRequired.label}
+              </label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={generateKeywordSuggestions}
+                loading={isGeneratingSuggestions}
+                disabled={!newForm.category || !newForm.desc}
+              >
+                {isGeneratingSuggestions ? 'Generating...' : '🤖 AI Suggestions'}
+              </Button>
+            </div>
+            
             <ChipsInput
-              label={copy.form.keywordsRequired.label}
               placeholder={copy.form.keywordsRequired.placeholder}
               help={copy.form.keywordsRequired.help}
               value={newForm.keywords || []}
@@ -286,21 +380,21 @@ export default function ToolPage() {
               maxChips={5}
               error={errors.keywords}
             />
-            
-            <Select
-              label={copy.form.fulfilmentIntent.label}
-              placeholder={copy.form.fulfilmentIntent.placeholder}
-              options={[
-                { value: 'FBA', label: copy.form.fulfilmentIntent.options.fba },
-                { value: 'FBM', label: copy.form.fulfilmentIntent.options.fbm },
-                { value: 'Unsure', label: copy.form.fulfilmentIntent.options.unsure },
-              ]}
-              value={newForm.fulfilmentIntent || ''}
-              onChange={(e) => setNewForm(prev => ({ ...prev, fulfilmentIntent: e.target.value as 'FBA' | 'FBM' | 'Unsure' || undefined }))}
-              error={errors.fulfilmentIntent}
-              required
-            />
           </div>
+          
+          <Select
+            label={copy.form.fulfilmentIntent.label}
+            placeholder={copy.form.fulfilmentIntent.placeholder}
+            options={[
+              { value: 'FBA', label: copy.form.fulfilmentIntent.options.fba },
+              { value: 'FBM', label: copy.form.fulfilmentIntent.options.fbm },
+              { value: 'Unsure', label: copy.form.fulfilmentIntent.options.unsure },
+            ]}
+            value={newForm.fulfilmentIntent || ''}
+            onChange={(e) => setNewForm(prev => ({ ...prev, fulfilmentIntent: e.target.value as 'FBA' | 'FBM' | 'Unsure' || undefined }))}
+            error={errors.fulfilmentIntent}
+            required
+          />
           
           <FileDropzone
             label={copy.form.image.label}
@@ -343,6 +437,12 @@ export default function ToolPage() {
       </Card>
       
       <div className="space-y-4">
+        {errors.general && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{errors.general}</p>
+          </div>
+        )}
+        
         <p className="text-sm text-muted-foreground">
           {copy.consentLine}
         </p>
@@ -393,6 +493,7 @@ export default function ToolPage() {
             onChange={(tabId) => {
               setActiveTab(tabId);
               setSummary(null);
+              setShowEmailGate(false);
               setErrors({});
             }}
           />
@@ -401,7 +502,17 @@ export default function ToolPage() {
         {/* Summary Results */}
         {summary && (
           <div className="mt-12 max-w-4xl mx-auto">
-            <SummaryCard result={summary} />
+            {showEmailGate ? (
+              <EmailGate 
+                result={summary} 
+                onEmailSubmit={handleEmailSubmit}
+                isSubmitting={isEmailSubmitting}
+              />
+            ) : activeTab === 'new' && summary.listingPack ? (
+              <ListingPackCard result={summary} />
+            ) : (
+              <SummaryCard result={summary} />
+            )}
           </div>
         )}
       </Container>

@@ -1,0 +1,124 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { 
+  existingSellerSchema, 
+  newSellerSchema,
+  type ExistingSellerData,
+  type NewSellerData 
+} from '@/lib/validation';
+import { 
+  checkRateLimit, 
+  createLead, 
+  createAuditReport, 
+  trackEvent 
+} from '@/lib/database';
+import { analyzeExistingSeller, analyzeNewSeller } from '@/lib/ai';
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { type, data } = body;
+
+    // Validate request structure
+    if (!type || !data) {
+      return NextResponse.json(
+        { error: 'Missing type or data' },
+        { status: 400 }
+      );
+    }
+
+    // Check rate limit first
+    const rateLimitAllowed = await checkRateLimit(data.email, type);
+    if (!rateLimitAllowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. One report per email per day.' },
+        { status: 429 }
+      );
+    }
+
+    // Validate form data based on type
+    let validatedData: ExistingSellerData | NewSellerData;
+    
+    if (type === 'existing_seller') {
+      validatedData = existingSellerSchema.parse(data);
+    } else if (type === 'new_seller') {
+      validatedData = newSellerSchema.parse(data);
+    } else {
+      return NextResponse.json(
+        { error: 'Invalid audit type' },
+        { status: 400 }
+      );
+    }
+
+    // Create lead in database
+    const lead = await createLead(validatedData, type, request.headers);
+    if (!lead) {
+      return NextResponse.json(
+        { error: 'Failed to create lead' },
+        { status: 500 }
+      );
+    }
+
+    // Track form submission event
+    await trackEvent('form_submit', { audit_type: type }, undefined, lead.id, request.headers);
+
+    // Generate AI-powered audit results
+    let aiResult;
+    if (type === 'existing_seller') {
+      aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData);
+    } else {
+      aiResult = await analyzeNewSeller(validatedData as NewSellerData);
+    }
+
+    // Fallback to mock data if AI fails
+    if (!aiResult) {
+      console.warn('AI analysis failed, using mock data');
+      const { mockExistingSummary, mockNewSummary } = await import('@/lib/mock');
+      aiResult = type === 'existing_seller' 
+        ? mockExistingSummary(validatedData as ExistingSellerData)
+        : mockNewSummary(validatedData as NewSellerData);
+    }
+
+    // Create report in database
+    const report = await createAuditReport(
+      lead.id,
+      aiResult.score,
+      aiResult.highlights,
+      aiResult.recommendations,
+      aiResult.detailedAnalysis
+    );
+
+    if (!report) {
+      return NextResponse.json(
+        { error: 'Failed to create report' },
+        { status: 500 }
+      );
+    }
+
+    // Track report generation event
+    await trackEvent('report_generated', { report_id: report.id }, undefined, lead.id, request.headers);
+
+    // Return success response
+    return NextResponse.json({
+      success: true,
+      reportId: report.id,
+      leadId: lead.id,
+      result: aiResult
+    });
+
+  } catch (error) {
+    console.error('Report API error:', error);
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

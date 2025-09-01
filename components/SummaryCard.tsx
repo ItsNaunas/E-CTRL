@@ -37,16 +37,63 @@ export default function SummaryCard({ result }: SummaryCardProps) {
           </div>
         </div>
 
-        {/* Insights list */}
-        <div className="space-y-3">
-          {result.bullets.map((bullet, index) => (
-            <div key={index} className="flex items-start space-x-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <p className="text-sm text-foreground leading-relaxed">
-                {bullet}
-              </p>
+        {/* AI-Powered Insights */}
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <div className="text-lg">🤖</div>
+            <h4 className="font-medium text-foreground">AI-Powered Analysis</h4>
+          </div>
+          
+          {/* Key Highlights */}
+          {result.highlights && result.highlights.length > 0 && (
+            <div className="space-y-2">
+              <h5 className="text-sm font-medium text-foreground">Key Findings:</h5>
+              <div className="space-y-2">
+                {result.highlights.map((highlight, index) => (
+                  <div key={index} className="flex items-start space-x-2">
+                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {highlight}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          )}
+
+          {/* Recommendations */}
+          {result.recommendations && result.recommendations.length > 0 && (
+            <div className="space-y-2">
+              <h5 className="text-sm font-medium text-foreground">Actionable Recommendations:</h5>
+              <div className="space-y-2">
+                {result.recommendations.map((recommendation, index) => (
+                  <div key={index} className="flex items-start space-x-2">
+                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {recommendation}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Fallback to bullets if no AI data */}
+          {(!result.highlights || result.highlights.length === 0) && result.bullets && (
+            <div className="space-y-2">
+              <h5 className="text-sm font-medium text-foreground">Insights:</h5>
+              <div className="space-y-2">
+                {result.bullets.map((bullet, index) => (
+                  <div key={index} className="flex items-start space-x-2">
+                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-accent flex-shrink-0" />
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {bullet}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Note */}
