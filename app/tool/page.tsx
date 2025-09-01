@@ -31,6 +31,7 @@ export default function ToolPage() {
   const [summary, setSummary] = useState<SummaryResult | null>(null);
   const [showEmailGate, setShowEmailGate] = useState(false);
   const [isEmailSubmitting, setIsEmailSubmitting] = useState(false);
+  const [currentLeadId, setCurrentLeadId] = useState<string | null>(null);
   
   // Form state for existing sellers
   const [existingForm, setExistingForm] = useState<Partial<ExistingSellerData>>({
@@ -85,6 +86,7 @@ export default function ToolPage() {
       
       const result = await response.json();
       setSummary(result.result);
+      setCurrentLeadId(result.leadId);
       setShowEmailGate(true); // Show email gate for guests
       
     } catch (error) {
@@ -130,6 +132,7 @@ export default function ToolPage() {
       
       const result = await response.json();
       setSummary(result.result);
+      setCurrentLeadId(result.leadId);
       setShowEmailGate(true); // Show email gate for guests
       
     } catch (error) {
@@ -188,12 +191,32 @@ export default function ToolPage() {
   const handleEmailSubmit = async (email: string, name: string) => {
     setIsEmailSubmitting(true);
     try {
-      // Here you would typically send the email to your database
-      // For now, we'll just unlock the full report
+      if (!currentLeadId) {
+        throw new Error('No lead ID available');
+      }
+
+      // Send email to database
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name,
+          leadId: currentLeadId
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit email');
+      }
+
+      // Unlock the full report
       setShowEmailGate(false);
-      // TODO: Send email to database and trigger email delivery
+      
     } catch (error) {
       console.error('Email submission failed:', error);
+      setErrors({ general: 'Failed to submit email. Please try again.' });
     } finally {
       setIsEmailSubmitting(false);
     }
@@ -494,6 +517,7 @@ export default function ToolPage() {
               setActiveTab(tabId);
               setSummary(null);
               setShowEmailGate(false);
+              setCurrentLeadId(null);
               setErrors({});
             }}
           />

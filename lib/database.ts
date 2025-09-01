@@ -277,3 +277,27 @@ export async function markReportEmailSent(reportId: string): Promise<boolean> {
     return false;
   }
 }
+
+// Update lead with email information
+export async function updateLeadEmail(leadId: string, email: string, name: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from(TABLES.LEADS)
+      .update({ 
+        email,
+        name,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', leadId);
+
+    if (error) {
+      console.error('Update lead email error:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Update lead email failed:', error);
+    return false;
+  }
+}

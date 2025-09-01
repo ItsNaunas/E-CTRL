@@ -63,12 +63,17 @@ export async function POST(request: NextRequest) {
     await trackEvent('form_submit', { audit_type: type }, undefined, lead.id, request.headers);
 
     // Generate AI-powered audit results
+    console.log('Starting AI analysis for type:', type);
+    console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
+    
     let aiResult;
     if (type === 'existing_seller') {
       aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData);
     } else {
       aiResult = await analyzeNewSeller(validatedData as NewSellerData);
     }
+
+    console.log('AI Result:', aiResult);
 
     // Fallback to mock data if AI fails
     if (!aiResult) {
