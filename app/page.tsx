@@ -117,11 +117,18 @@ export default function HomePage() {
 
   // Handle upgrade from guest to account
   const handleUpgrade = () => {
-    setShowAccessControl(true);
-    // Scroll to access control
+    setShowGuestResult(false); // Hide guest result first
+    setShowAccessControl(true); // Show access control
+    // Scroll to access control after state update
     setTimeout(() => {
-      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+      const accessControlElement = document.getElementById('access-control');
+      if (accessControlElement) {
+        accessControlElement.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // Fallback: scroll to top of page if element not found
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 200);
   };
 
   // Handle CTA clicks (sticky and repeat CTAs)
