@@ -7,9 +7,10 @@ import { isValidEmail } from '@/app/utils/validators';
 interface EmailGateProps {
   onEmailSubmit: (email: string) => void;
   isLoading?: boolean;
+  mode?: 'audit' | 'create';
 }
 
-export default function EmailGate({ onEmailSubmit, isLoading = false }: EmailGateProps) {
+export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'audit' }: EmailGateProps) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,11 +36,36 @@ export default function EmailGate({ onEmailSubmit, isLoading = false }: EmailGat
       });
     }
 
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    onEmailSubmit(validation.parsedValue!);
-    setIsSubmitting(false);
+    try {
+      // Call the API to submit the email
+      const response = await fetch('/api/submit-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: validation.parsedValue!,
+          name: '', // You can add a name field if needed
+          mode: mode
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit email');
+      }
+
+      // Simulate processing delay for UX
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      onEmailSubmit(validation.parsedValue!);
+    } catch (error) {
+      console.error('Email submission error:', error);
+      setError(error instanceof Error ? error.message : 'Failed to submit email. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

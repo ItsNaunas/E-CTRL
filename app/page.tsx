@@ -252,6 +252,7 @@ export default function HomePage() {
           <EmailGate
             onEmailSubmit={handleEmailSubmit}
             isLoading={false}
+            mode={mode}
           />
         </div>
       )}
