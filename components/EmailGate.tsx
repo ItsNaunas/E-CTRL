@@ -100,7 +100,13 @@ export default function EmailGate({ result, onEmailSubmit, isSubmitting = false 
             {/* More content indicator */}
             <div className="text-center py-4">
               <p className="text-sm text-muted-foreground">
-                + {result.highlights?.length > 2 ? (result.highlights?.length || 0) - 2 : result.bullets?.length > 2 ? (result.bullets?.length || 0) - 2 : 0} more insights
+                + {(() => {
+                  const highlightsLength = result.highlights?.length || 0;
+                  const bulletsLength = result.bullets?.length || 0;
+                  if (highlightsLength > 2) return highlightsLength - 2;
+                  if (bulletsLength > 2) return bulletsLength - 2;
+                  return 0;
+                })()} more insights
               </p>
             </div>
           </div>
