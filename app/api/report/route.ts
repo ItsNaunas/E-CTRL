@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
         detailedAnalysis: aiResult.detailedAnalysis,
         // Type-safe property access
         asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
-        productUrl: type === 'new_seller' ? (validatedData as NewSellerData).website_url : undefined,
+        productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
         keywords: validatedData.keywords,
         fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
         category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
