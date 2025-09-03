@@ -163,6 +163,7 @@ export default function HomePage() {
     setAccessType('guest');
     setUserEmail(email);
     setShowGuestResult(true);
+    setShowAccessControl(false); // Hide access control after guest access
     // Scroll to guest result
     scrollToElement('guest-result', 80);
   };
@@ -172,6 +173,7 @@ export default function HomePage() {
     setAccessType('account');
     setUserEmail(email);
     setShowEmailGate(true);
+    setShowAccessControl(false); // Hide access control after account creation
     // Scroll to email gate for full access
     scrollToElement('email-gate', 80);
   };

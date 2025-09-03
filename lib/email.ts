@@ -11,6 +11,14 @@ export interface EmailData {
 
 export async function sendWelcomeEmail(data: EmailData) {
   try {
+    // Check if Resend API key is available
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured');
+      return { success: false, error: 'Email service not configured' };
+    }
+
+    console.log('Attempting to send email to:', data.to);
+    
     const { data: result, error } = await resend.emails.send({
       from: 'E-CTRL <noreply@e-ctrl.com>',
       to: data.to,
@@ -40,7 +48,7 @@ export async function sendWelcomeEmail(data: EmailData) {
               <li>Optimized product title</li>
               <li>Compelling bullet points</li>
               <li>Keyword strategy</li>
-              <li>Image gallery recommendations</li>
+            <li>Image gallery recommendations</li>
             </ul>
           `}
           

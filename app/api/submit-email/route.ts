@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Email submission received:', { email, name, mode });
+    console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
 
     // Send welcome email using Resend
     const emailResult = await sendWelcomeEmail({
@@ -24,9 +25,16 @@ export async function POST(request: NextRequest) {
 
     if (!emailResult.success) {
       console.error('Failed to send email:', emailResult.error);
+      // For now, return success even if email fails to prevent blocking the user
       return NextResponse.json(
-        { error: 'Failed to send email. Please try again.' },
-        { status: 500 }
+        { 
+          success: true, 
+          message: 'Email submitted successfully! (Email delivery may be delayed)',
+          email,
+          mode,
+          warning: 'Email service temporarily unavailable'
+        },
+        { status: 200 }
       );
     }
 
