@@ -82,14 +82,15 @@ export default function HomePage() {
     
     try {
       // Call AI API for real analysis
-      const requestBody = {
-        type: 'existing_seller',
-        data: {
-          ...sampleData,
-          asin: asin,
-          email: 'demo@e-ctrl.com' // Demo email for testing
-        }
-      };
+             const requestBody = {
+         type: 'existing_seller',
+         data: {
+           ...sampleData,
+           asin: asin,
+           email: 'demo@e-ctrl.com', // Demo email for testing
+           name: 'Demo User' // Add required name field
+         }
+       };
       console.log('Sending request to API:', requestBody);
       
       const response = await fetch('/api/report', {
