@@ -109,12 +109,23 @@ export async function POST(request: NextRequest) {
     // Track report generation event
     await trackEvent('report_generated', { report_id: report.id }, undefined, lead.id, request.headers);
 
-    // Send welcome email to the user
+    // Send welcome email to the user with PDF data
     try {
       const emailResult = await sendWelcomeEmail({
         to: validatedData.email,
         name: validatedData.name || 'there',
-        mode: type === 'existing_seller' ? 'audit' : 'create'
+        mode: type === 'existing_seller' ? 'audit' : 'create',
+        // PDF generation data
+        score: aiResult.score,
+        highlights: aiResult.highlights,
+        recommendations: aiResult.recommendations,
+        detailedAnalysis: aiResult.detailedAnalysis,
+        asin: validatedData.asin,
+        productUrl: validatedData.website_url,
+        keywords: validatedData.keywords,
+        fulfilment: validatedData.fulfilment,
+        category: validatedData.category,
+        productDesc: validatedData.product_desc
       });
 
       if (emailResult.success) {

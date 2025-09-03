@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { generatePDF, getPDFBlob, type PDFData } from './pdf';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -7,6 +8,17 @@ export interface EmailData {
   name: string;
   mode: 'audit' | 'create';
   reportUrl?: string;
+  // PDF generation data
+  score?: number;
+  highlights?: string[];
+  recommendations?: string[];
+  detailedAnalysis?: any;
+  asin?: string;
+  productUrl?: string;
+  keywords?: string[];
+  fulfilment?: string;
+  category?: string;
+  productDesc?: string;
 }
 
 export async function sendWelcomeEmail(data: EmailData) {
@@ -25,12 +37,52 @@ export async function sendWelcomeEmail(data: EmailData) {
     console.log('Attempting to send email to:', data.to);
     console.log('Email data received:', data);
     
+    // Generate PDF if we have the data
+    let pdfAttachment = null;
+    if (data.score !== undefined || data.detailedAnalysis) {
+      try {
+        console.log('Generating PDF...');
+        const pdfDoc = generatePDF({
+          name: data.name,
+          email: data.to,
+          mode: data.mode,
+          score: data.score,
+          highlights: data.highlights,
+          recommendations: data.recommendations,
+          detailedAnalysis: data.detailedAnalysis,
+          asin: data.asin,
+          productUrl: data.productUrl,
+          keywords: data.keywords,
+          fulfilment: data.fulfilment,
+          category: data.category,
+          productDesc: data.productDesc
+        });
+        
+        const pdfBlob = getPDFBlob(pdfDoc);
+        const pdfBuffer = await pdfBlob.arrayBuffer();
+        const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
+        
+        pdfAttachment = {
+          filename: data.mode === 'audit' 
+            ? `amazon-audit-report-${data.asin || 'product'}.pdf`
+            : 'amazon-listing-pack.pdf',
+          content: pdfBase64,
+          contentType: 'application/pdf'
+        };
+        
+        console.log('PDF generated successfully, size:', pdfBlob.size, 'bytes');
+      } catch (pdfError) {
+        console.error('PDF generation failed:', pdfError);
+        // Continue without PDF if generation fails
+      }
+    }
+    
     // Use a verified sender domain or the default Resend domain
     const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
     console.log('Using sender email:', fromEmail);
     
     console.log('About to call resend.emails.send...');
-    const { data: result, error } = await resend.emails.send({
+    const emailData: any = {
       from: fromEmail,
       to: data.to,
       subject: data.mode === 'audit' 
@@ -63,12 +115,12 @@ export async function sendWelcomeEmail(data: EmailData) {
             </ul>
           `}
           
-          <p>Your detailed report will be delivered to this email address shortly.</p>
+          <p><strong>Your detailed report is attached to this email as a PDF!</strong></p>
           
           <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h4 style="margin-top: 0;">What's Next?</h4>
             <ol>
-              <li>Check your email for the complete report</li>
+              <li>Download and review the attached PDF report</li>
               <li>Review our recommendations</li>
               <li>Implement the suggested optimizations</li>
               <li>Watch your Amazon performance improve!</li>
@@ -85,7 +137,15 @@ export async function sendWelcomeEmail(data: EmailData) {
           </p>
         </div>
       `
-    });
+    };
+    
+    // Add PDF attachment if available
+    if (pdfAttachment) {
+      emailData.attachments = [pdfAttachment];
+      console.log('PDF attachment added to email');
+    }
+    
+    const { data: result, error } = await resend.emails.send(emailData);
 
     console.log('Resend API response received');
     console.log('Result:', result);
