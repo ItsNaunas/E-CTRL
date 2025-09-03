@@ -50,6 +50,7 @@ export default function HomePage() {
     highlights: string[];
   } | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [hasUserInput, setHasUserInput] = useState(false);
 
   // Real data for AI analysis
   const sampleData = useMemo(() => ({
@@ -58,49 +59,15 @@ export default function HomePage() {
     fulfilment: "FBA"
   }), []);
 
-  // Load initial AI analysis on page load
-  useEffect(() => {
-    const loadInitialAnalysis = async () => {
-      setIsAnalyzing(true);
-      try {
-        const response = await fetch('/api/report', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-                       body: JSON.stringify({
-               type: 'existing_seller',
-               data: {
-                 ...sampleData,
-                 email: 'demo@e-ctrl.com'
-               }
-             })
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Initial AI result received:', result.result);
-          setAiResult({
-            score: result.result.score || 0,
-            highlights: result.result.highlights || []
-          });
-        }
-      } catch (error) {
-        console.error('Initial AI analysis failed:', error);
-      } finally {
-        setIsAnalyzing(false);
-      }
-    };
-
-    // Only load if we don't have results yet
-    if (!aiResult) {
-      loadInitialAnalysis();
-    }
-  }, [aiResult, sampleData]);
+  // Don't load initial AI analysis - wait for user input
+  // This prevents 400 errors from empty ASIN validation
 
   // Handle ASIN submission from Hero
   const handleAsinSubmit = async (asin: string) => {
     setAsinOrUrl(asin);
     setShowPartial(true);
     setIsAnalyzing(true);
+    setHasUserInput(true);
     
     try {
       // Call AI API for real analysis
@@ -288,16 +255,20 @@ export default function HomePage() {
       {showPartial && (
         <div id="partial-result">
           {mode === 'audit' ? (
-            <PartialResult
-                             score={aiResult?.score || 0}
-               highlights={aiResult?.highlights || [
+                         <PartialResult
+               score={hasUserInput ? (aiResult?.score || 0) : undefined}
+               highlights={hasUserInput ? (aiResult?.highlights || [
                  "AI analysis in progress...",
                  "Enter an ASIN above to see real results",
                  "No results available yet"
+               ]) : [
+                 "Ready to analyze your Amazon listing",
+                 "Enter an ASIN above to get started",
+                 "Get instant AI-powered insights"
                ]}
-              onUnlock={handleUnlock}
-              isLoading={isAnalyzing}
-            />
+               onUnlock={handleUnlock}
+               isLoading={isAnalyzing}
+             />
           ) : (
             <NewSellerPartialResult
               productUrl={productUrl}

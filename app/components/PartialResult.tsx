@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import CTAButton from '@/components/CTAButton';
 
 interface PartialResultProps {
-  score: number;
+  score?: number; // Make score optional for initial state
   highlights: string[];
   onUnlock: () => void;
   isLoading?: boolean;
@@ -22,23 +22,26 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
       });
     }
 
-    // Animate score from 0 to target
-    const duration = 1500; // 1.5 seconds
-    const steps = 60;
-    const increment = score / steps;
-    let current = 0;
+    // Only animate score if we have a valid score
+    if (score !== undefined) {
+      // Animate score from 0 to target
+      const duration = 1500; // 1.5 seconds
+      const steps = 60;
+      const increment = score / steps;
+      let current = 0;
 
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= score) {
-        setAnimatedScore(score);
-        clearInterval(timer);
-      } else {
-        setAnimatedScore(Math.floor(current));
-      }
-    }, duration / steps);
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= score) {
+          setAnimatedScore(score);
+          clearInterval(timer);
+        } else {
+          setAnimatedScore(Math.floor(current));
+        }
+      }, duration / steps);
 
-    return () => clearInterval(timer);
+      return () => clearInterval(timer);
+    }
   }, [score]);
 
   const handleUnlock = () => {
@@ -81,12 +84,14 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                     <span className="ml-2">Analyzing...</span>
                   </div>
+                ) : score === undefined ? (
+                  <span>Ready</span>
                 ) : (
                   `${animatedScore}/100`
                 )}
               </div>
               <div className="text-blue-100 text-lg">
-                {isLoading ? 'AI Analysis in Progress' : 'Your Listing Score'}
+                {isLoading ? 'AI Analysis in Progress' : score === undefined ? 'Enter ASIN to Start' : 'Your Listing Score'}
               </div>
             </div>
           </div>
