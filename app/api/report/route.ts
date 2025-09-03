@@ -13,6 +13,7 @@ import {
   trackEvent 
 } from '@/lib/database';
 import { analyzeExistingSeller, analyzeNewSeller } from '@/lib/ai';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -107,6 +108,24 @@ export async function POST(request: NextRequest) {
 
     // Track report generation event
     await trackEvent('report_generated', { report_id: report.id }, undefined, lead.id, request.headers);
+
+    // Send welcome email to the user
+    try {
+      const emailResult = await sendWelcomeEmail({
+        to: validatedData.email,
+        name: validatedData.name || 'there',
+        mode: type === 'existing_seller' ? 'audit' : 'create'
+      });
+
+      if (emailResult.success) {
+        console.log('Welcome email sent successfully:', emailResult.messageId);
+      } else {
+        console.error('Failed to send welcome email:', emailResult.error);
+      }
+    } catch (emailError) {
+      console.error('Email sending error:', emailError);
+      // Don't fail the whole request if email fails
+    }
 
     // Return success response
     return NextResponse.json({

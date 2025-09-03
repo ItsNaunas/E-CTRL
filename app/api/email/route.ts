@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { updateLeadEmail } from '@/lib/database';
+import { sendWelcomeEmail } from '@/lib/email';
 
 const emailSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   name: z.string().min(1, 'Name is required'),
   leadId: z.string().uuid('Invalid lead ID'),
+  mode: z.enum(['audit', 'create']).optional().default('audit'),
 });
 
 export async function POST(request: NextRequest) {
@@ -32,11 +34,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Send email with report link
-    // For now, we'll just return success
+    // Send welcome email
+    const emailResult = await sendWelcomeEmail({
+      to: validatedData.email,
+      name: validatedData.name,
+      mode: validatedData.mode
+    });
+
+    if (!emailResult.success) {
+      console.error('Failed to send email:', emailResult.error);
+      // Don't fail the whole request if email fails
+      console.warn('Email sending failed, but lead was updated successfully');
+    } else {
+      console.log('Welcome email sent successfully:', emailResult.messageId);
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Email submitted successfully'
+      message: 'Email submitted successfully and welcome email sent!',
+      messageId: emailResult.success ? emailResult.messageId : null
     });
 
   } catch (error) {
