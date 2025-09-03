@@ -58,13 +58,18 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Email submission error:', error);
     console.error('Error type:', typeof error);
-    console.error('Error message:', error?.message);
-    console.error('Error stack:', error?.stack);
+    
+    // Type-safe error handling
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : 'No stack trace';
+    
+    console.error('Error message:', errorMessage);
+    console.error('Error stack:', errorStack);
     
     return NextResponse.json(
       { 
         error: 'Failed to submit email. Please try again.',
-        details: error?.message || 'Unknown error'
+        details: errorMessage
       },
       { status: 500 }
     );
