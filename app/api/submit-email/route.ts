@@ -25,16 +25,15 @@ export async function POST(request: NextRequest) {
 
     if (!emailResult.success) {
       console.error('Failed to send email:', emailResult.error);
-      // For now, return success even if email fails to prevent blocking the user
+      // Return the actual error so we can debug
       return NextResponse.json(
         { 
-          success: true, 
-          message: 'Email submitted successfully! (Email delivery may be delayed)',
+          success: false, 
+          error: emailResult.error,
           email,
-          mode,
-          warning: 'Email service temporarily unavailable'
+          mode
         },
-        { status: 200 }
+        { status: 500 }
       );
     }
 

@@ -19,10 +19,14 @@ export async function sendWelcomeEmail(data: EmailData) {
 
     console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
     console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
+    console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
     console.log('Attempting to send email to:', data.to);
     
+    // Use a verified sender domain or the default Resend domain
+    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
+    
     const { data: result, error } = await resend.emails.send({
-      from: 'E-CTRL <noreply@e-ctrl.com>',
+      from: fromEmail,
       to: data.to,
       subject: data.mode === 'audit' 
         ? 'Your Amazon Audit Report is Ready!' 
@@ -92,8 +96,11 @@ export async function sendWelcomeEmail(data: EmailData) {
 
 export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
   try {
+    // Use a verified sender domain or the default Resend domain
+    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
+    
     const { data: result, error } = await resend.emails.send({
-      from: 'E-CTRL <noreply@e-ctrl.com>',
+      from: fromEmail,
       to: data.to,
       subject: `Your Complete ${data.mode === 'audit' ? 'Audit Report' : 'Listing Pack'} - E-CTRL`,
       html: `
