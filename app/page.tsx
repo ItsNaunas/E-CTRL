@@ -62,6 +62,20 @@ export default function HomePage() {
   // Don't load initial AI analysis - wait for user input
   // This prevents 400 errors from empty ASIN validation
   
+  // Helper function for smooth scrolling to elements
+  const scrollToElement = (elementId: string, offset: number = 0) => {
+    setTimeout(() => {
+      const element = document.getElementById(elementId);
+      if (element) {
+        const elementPosition = element.offsetTop - offset;
+        window.scrollTo({
+          top: elementPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
+  
   // Debug logging for state
   useEffect(() => {
     console.log('Homepage state:', {
@@ -79,6 +93,9 @@ export default function HomePage() {
     setShowPartial(true);
     setIsAnalyzing(true);
     setHasUserInput(true);
+    
+    // Scroll to partial result immediately when analysis starts
+    scrollToElement('partial-result', 80); // 80px offset for better positioning
     
     try {
       // Call AI API for real analysis
@@ -124,11 +141,6 @@ export default function HomePage() {
     } finally {
       setIsAnalyzing(false);
     }
-    
-    // Scroll to partial result
-    setTimeout(() => {
-      document.getElementById('partial-result')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
   };
 
   // Handle product URL submission from NewSellerHero
@@ -136,18 +148,14 @@ export default function HomePage() {
     setProductUrl(url);
     setShowPartial(true);
     // Scroll to partial result
-    setTimeout(() => {
-      document.getElementById('partial-result')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    scrollToElement('partial-result', 80);
   };
 
   // Handle unlock from PartialResult - now shows access control
   const handleUnlock = () => {
     setShowAccessControl(true);
     // Scroll to access control
-    setTimeout(() => {
-      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    scrollToElement('access-control', 80);
   };
 
   // Handle guest access (email only)
@@ -156,9 +164,7 @@ export default function HomePage() {
     setUserEmail(email);
     setShowGuestResult(true);
     // Scroll to guest result
-    setTimeout(() => {
-      document.getElementById('guest-result')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    scrollToElement('guest-result', 80);
   };
 
   // Handle account access (full registration)
@@ -167,9 +173,7 @@ export default function HomePage() {
     setUserEmail(email);
     setShowEmailGate(true);
     // Scroll to email gate for full access
-    setTimeout(() => {
-      document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    scrollToElement('email-gate', 80);
   };
 
   // Handle email submission (for account access)
@@ -177,9 +181,7 @@ export default function HomePage() {
     setEmailSubmitted(true);
     setSubmittedEmail(email);
     // Scroll to delivery note
-    setTimeout(() => {
-      document.getElementById('delivery-note')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    scrollToElement('delivery-note', 80);
   };
 
   // Handle upgrade from guest to account
@@ -207,17 +209,17 @@ export default function HomePage() {
       } else {
         document.getElementById('new-seller-input')?.focus();
       }
-    } else if (!showAccessControl) {
-      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
-    } else if (!showGuestResult && !showEmailGate) {
-      document.getElementById('access-control')?.scrollIntoView({ behavior: 'smooth' });
-    } else if (showGuestResult) {
-      document.getElementById('guest-result')?.scrollIntoView({ behavior: 'smooth' });
-    } else if (showEmailGate) {
-      document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      document.getElementById('delivery-note')?.scrollIntoView({ behavior: 'smooth' });
-    }
+         } else if (!showAccessControl) {
+       scrollToElement('access-control', 80);
+     } else if (!showGuestResult && !showEmailGate) {
+       scrollToElement('access-control', 80);
+     } else if (showGuestResult) {
+       scrollToElement('guest-result', 80);
+     } else if (showEmailGate) {
+       scrollToElement('email-gate', 80);
+     } else {
+       scrollToElement('delivery-note', 80);
+     }
   };
 
   return (
