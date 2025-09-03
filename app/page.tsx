@@ -161,7 +161,15 @@ export default function HomePage() {
           name: 'Demo User',
           email: 'naunas@hotmail.com', // Use your verified email for testing
           keywords: ["eco friendly", "sustainable", "organic"],
-          websiteUrl: url
+          websiteUrl: url,
+          category: "Home & Garden", // Required field
+          desc: "Eco-friendly product for sustainable living", // Required field
+          fulfilmentIntent: "FBA" as const, // Required field
+          image: { // Required field - placeholder
+            name: "placeholder.jpg",
+            size: 1024,
+            type: "image/jpeg"
+          }
         }
       };
       
@@ -217,7 +225,15 @@ export default function HomePage() {
             name: email.split('@')[0],
             email: email,
             keywords: ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl
+            websiteUrl: productUrl,
+            category: "Home & Garden", // Required field
+            desc: "Eco-friendly product for sustainable living", // Required field
+            fulfilmentIntent: "FBA" as const, // Required field
+            image: { // Required field - placeholder
+              name: "placeholder.jpg",
+              size: 1024,
+              type: "image/jpeg"
+            }
           }
         };
         
@@ -284,7 +300,15 @@ export default function HomePage() {
             name: email.split('@')[0],
             email: email,
             keywords: ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl
+            websiteUrl: productUrl,
+            category: "Home & Garden", // Required field
+            desc: "Eco-friendly product for sustainable living", // Required field
+            fulfilmentIntent: "FBA" as const, // Required field
+            image: { // Required field - placeholder
+              name: "placeholder.jpg",
+              size: 1024,
+              type: "image/jpeg"
+            }
           }
         };
         
