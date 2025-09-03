@@ -3,7 +3,7 @@
 import { CheckCircle, TrendingUp, Copy, Download } from 'lucide-react';
 import Card from './Card';
 import Button from './Button';
-// Mock data import removed - using real data
+import type { SummaryResult } from '@/types/ai';
 
 interface ListingPackCardProps {
   result: SummaryResult & {

@@ -22,7 +22,7 @@ import {
   type NewSellerData,
   type ImageFile
 } from '@/lib/validation';
-// Mock data imports removed - using real AI analysis
+import type { SummaryResult } from '@/types/ai';
 
 export default function ToolPage() {
   const [activeTab, setActiveTab] = useState('existing');

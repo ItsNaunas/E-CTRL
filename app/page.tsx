@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useCROChecks } from './hooks/useCROChecks';
 import Hero from '@/components/Hero';
 import NewSellerHero from '@/components/NewSellerHero';
@@ -52,11 +52,11 @@ export default function HomePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Real data for AI analysis
-  const sampleData = {
+  const sampleData = useMemo(() => ({
     asin: "", // Will be filled by user input
     keywords: ["eco friendly", "sustainable", "organic"],
     fulfilment: "FBA"
-  };
+  }), []);
 
   // Load initial AI analysis on page load
   useEffect(() => {
