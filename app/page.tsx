@@ -77,8 +77,9 @@ export default function HomePage() {
         
         if (response.ok) {
           const result = await response.json();
+          console.log('Initial AI result received:', result.result);
           setAiResult({
-            score: result.result.score,
+            score: result.result.score || 0,
             highlights: result.result.highlights || []
           });
         }
@@ -118,8 +119,9 @@ export default function HomePage() {
       
       if (response.ok) {
         const result = await response.json();
+        console.log('ASIN submission AI result received:', result.result);
         setAiResult({
-          score: result.result.score,
+          score: result.result.score || 0,
           highlights: result.result.highlights || []
         });
       } else {
