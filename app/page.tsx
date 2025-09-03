@@ -61,9 +61,20 @@ export default function HomePage() {
 
   // Don't load initial AI analysis - wait for user input
   // This prevents 400 errors from empty ASIN validation
+  
+  // Debug logging for state
+  useEffect(() => {
+    console.log('Homepage state:', {
+      showPartial,
+      hasUserInput,
+      isAnalyzing,
+      aiResult: aiResult ? 'has result' : 'no result'
+    });
+  }, [showPartial, hasUserInput, isAnalyzing, aiResult]);
 
   // Handle ASIN submission from Hero
   const handleAsinSubmit = async (asin: string) => {
+    console.log('ASIN submitted:', asin);
     setAsinOrUrl(asin);
     setShowPartial(true);
     setIsAnalyzing(true);
@@ -71,17 +82,20 @@ export default function HomePage() {
     
     try {
       // Call AI API for real analysis
+      const requestBody = {
+        type: 'existing_seller',
+        data: {
+          ...sampleData,
+          asin: asin,
+          email: 'demo@e-ctrl.com' // Demo email for testing
+        }
+      };
+      console.log('Sending request to API:', requestBody);
+      
       const response = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'existing_seller',
-          data: {
-            ...sampleData,
-            asin: asin,
-                           email: 'demo@e-ctrl.com' // Demo email for testing
-          }
-        })
+        body: JSON.stringify(requestBody)
       });
       
       if (response.ok) {
@@ -92,8 +106,15 @@ export default function HomePage() {
           highlights: result.result.highlights || []
         });
       } else {
-                   // Fallback to error state if API fails
-           setAiResult(null);
+        // Get error details from response
+        const errorText = await response.text();
+        console.error('API request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        });
+        // Fallback to error state if API fails
+        setAiResult(null);
       }
     } catch (error) {
       console.error('AI analysis failed:', error);
