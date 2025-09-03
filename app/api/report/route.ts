@@ -81,13 +81,13 @@ export async function POST(request: NextRequest) {
     console.log('AI Result type:', typeof aiResult);
     console.log('AI Result keys:', aiResult ? Object.keys(aiResult) : 'null');
 
-    // Fallback to mock data if AI fails
+    // If AI fails, return error instead of mock data
     if (!aiResult) {
-      console.warn('AI analysis failed, using mock data');
-      const { mockExistingSummary, mockNewSummary } = await import('@/lib/mock');
-      aiResult = type === 'existing_seller' 
-        ? mockExistingSummary(validatedData as ExistingSellerData)
-        : mockNewSummary(validatedData as NewSellerData);
+      console.error('AI analysis failed completely');
+      return NextResponse.json(
+        { error: 'AI analysis failed. Please try again later.' },
+        { status: 500 }
+      );
     }
 
     // Create report in database

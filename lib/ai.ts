@@ -255,7 +255,7 @@ function parseAIResponse(text: string) {
   
   // Extract score
   const scoreMatch = text.match(/score[:\s]*(\d+)/i);
-  const score = scoreMatch ? parseInt(scoreMatch[1]) : 75;
+  const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
   console.log('Extracted score from text:', score, 'from match:', scoreMatch);
 
   // Extract highlights and recommendations

@@ -1,6 +1,6 @@
 import { CheckCircle, TrendingUp } from 'lucide-react';
 import Card from './Card';
-import type { SummaryResult } from '@/lib/mock';
+// Mock data import removed - using real data
 
 interface SummaryCardProps {
   result: SummaryResult;

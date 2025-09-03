@@ -6,7 +6,7 @@ import Card from './Card';
 import Button from './Button';
 import Input from './Input';
 import { copy } from '@/lib/copy';
-import type { SummaryResult } from '@/lib/mock';
+// Mock data import removed - using real data
 
 const emailSchema = z.object({
   email: z.string().email('Please enter a valid email address'),

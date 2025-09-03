@@ -19,12 +19,12 @@ export const copy = {
   toolIntro: "Pick your path, fill the form, get a summary now. We'll email the full report.",
   usageNote: "1 free report per email per day.",
   existingSummaryMock: [
-    "Listing score: 72/100 (mock)",
+    "AI analysis in progress...",
     "Add a missing keyword to the title for relevance",
     "Main image meets size; confirm pure white background"
   ],
   newSummaryMock: [
-    "Readiness score: 68/100 (mock)",
+    "AI analysis in progress...",
     "Category is moderately competitive—emphasise benefits in bullets",
     "We'll email your full report and image guidance"
   ],

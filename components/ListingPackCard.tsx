@@ -3,7 +3,7 @@
 import { CheckCircle, TrendingUp, Copy, Download } from 'lucide-react';
 import Card from './Card';
 import Button from './Button';
-import type { SummaryResult } from '@/lib/mock';
+// Mock data import removed - using real data
 
 interface ListingPackCardProps {
   result: SummaryResult & {

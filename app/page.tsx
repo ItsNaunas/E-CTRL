@@ -51,9 +51,9 @@ export default function HomePage() {
   } | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // Sample data for AI analysis (you can customize this)
+  // Real data for AI analysis
   const sampleData = {
-    asin: "B08N5WRWNW", // Sample ASIN
+    asin: "", // Will be filled by user input
     keywords: ["eco friendly", "sustainable", "organic"],
     fulfilment: "FBA"
   };
@@ -66,13 +66,13 @@ export default function HomePage() {
         const response = await fetch('/api/report', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'existing_seller',
-            data: {
-              ...sampleData,
-              email: 'preview@example.com'
-            }
-          })
+                       body: JSON.stringify({
+               type: 'existing_seller',
+               data: {
+                 ...sampleData,
+                 email: 'demo@e-ctrl.com'
+               }
+             })
         });
         
         if (response.ok) {
@@ -111,7 +111,7 @@ export default function HomePage() {
           data: {
             ...sampleData,
             asin: asin,
-            email: 'preview@example.com' // Temporary email for preview
+                           email: 'demo@e-ctrl.com' // Demo email for testing
           }
         })
       });
@@ -123,27 +123,13 @@ export default function HomePage() {
           highlights: result.result.highlights || []
         });
       } else {
-        // Fallback to sample data if API fails
-        setAiResult({
-          score: 78,
-          highlights: [
-            "AI analysis completed successfully",
-            "Listing shows good potential for optimization",
-            "Ready for detailed audit report"
-          ]
-        });
+                   // Fallback to error state if API fails
+           setAiResult(null);
       }
     } catch (error) {
       console.error('AI analysis failed:', error);
-      // Fallback data
-      setAiResult({
-        score: 75,
-        highlights: [
-          "AI analysis in progress",
-          "Sample results shown for preview",
-          "Submit your own ASIN for real analysis"
-        ]
-      });
+               // Fallback to error state
+         setAiResult(null);
     } finally {
       setIsAnalyzing(false);
     }
@@ -301,12 +287,12 @@ export default function HomePage() {
         <div id="partial-result">
           {mode === 'audit' ? (
             <PartialResult
-              score={aiResult?.score || 75}
-              highlights={aiResult?.highlights || [
-                "AI analysis in progress...",
-                "Enter an ASIN above to see real results",
-                "Sample data shown for preview"
-              ]}
+                             score={aiResult?.score || 0}
+               highlights={aiResult?.highlights || [
+                 "AI analysis in progress...",
+                 "Enter an ASIN above to see real results",
+                 "No results available yet"
+               ]}
               onUnlock={handleUnlock}
               isLoading={isAnalyzing}
             />

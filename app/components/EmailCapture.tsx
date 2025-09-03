@@ -64,7 +64,7 @@ export default function EmailCapture({ onEmailSubmit, isLoading = false }: Email
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">Your Partial Results</h3>
-              <p className="text-muted-foreground">Score: 72/100 • 3 quick wins identified</p>
+              <p className="text-muted-foreground">AI analysis in progress • Quick wins being identified</p>
             </div>
           </div>
           

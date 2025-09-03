@@ -22,8 +22,7 @@ import {
   type NewSellerData,
   type ImageFile
 } from '@/lib/validation';
-import { mockExistingSummary, mockNewSummary } from '@/lib/mock';
-import type { SummaryResult } from '@/lib/mock';
+// Mock data imports removed - using real AI analysis
 
 export default function ToolPage() {
   const [activeTab, setActiveTab] = useState('existing');
