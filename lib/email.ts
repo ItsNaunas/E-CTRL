@@ -17,6 +17,8 @@ export async function sendWelcomeEmail(data: EmailData) {
       return { success: false, error: 'Email service not configured' };
     }
 
+    console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+    console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
     console.log('Attempting to send email to:', data.to);
     
     const { data: result, error } = await resend.emails.send({
