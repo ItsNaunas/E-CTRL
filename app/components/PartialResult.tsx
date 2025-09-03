@@ -7,9 +7,10 @@ interface PartialResultProps {
   score: number;
   highlights: string[];
   onUnlock: () => void;
+  isLoading?: boolean;
 }
 
-export default function PartialResult({ score, highlights, onUnlock }: PartialResultProps) {
+export default function PartialResult({ score, highlights, onUnlock, isLoading = false }: PartialResultProps) {
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
@@ -75,10 +76,17 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
             <div className="text-center">
               <div className="text-4xl font-bold text-white mb-2">
-                {animatedScore}/100
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    <span className="ml-2">Analyzing...</span>
+                  </div>
+                ) : (
+                  `${animatedScore}/100`
+                )}
               </div>
               <div className="text-blue-100 text-lg">
-                Your Listing Score
+                {isLoading ? 'AI Analysis in Progress' : 'Your Listing Score'}
               </div>
             </div>
           </div>
@@ -90,18 +98,32 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
             </h3>
             
             <div className="space-y-4 mb-8">
-              {placeholderHighlights.map((highlight, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
-                    <span className="text-blue-600 text-sm font-semibold">
-                      {index + 1}
-                    </span>
+              {isLoading ? (
+                // Loading skeleton for highlights
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
+                      <span className="text-blue-600 text-sm font-semibold">
+                        {index + 1}
+                      </span>
+                    </div>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse flex-1"></div>
                   </div>
-                  <p className="text-gray-700 text-lg">
-                    {highlight}
-                  </p>
-                </div>
-              ))}
+                ))
+              ) : (
+                highlights.map((highlight, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
+                      <span className="text-blue-600 text-sm font-semibold">
+                        {index + 1}
+                      </span>
+                    </div>
+                    <p className="text-gray-700 text-lg">
+                      {highlight}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
 
             {/* Unlock CTA */}
@@ -116,9 +138,10 @@ export default function PartialResult({ score, highlights, onUnlock }: PartialRe
               <CTAButton
                 variant="primary"
                 size="lg"
-                text="unlock my full report now"
+                text={isLoading ? "AI Analysis in Progress..." : "unlock my full report now"}
                 onClick={handleUnlock}
                 className="mb-4"
+                disabled={isLoading}
               />
               
               <p className="text-sm text-gray-500" data-testid="microcopy-free">

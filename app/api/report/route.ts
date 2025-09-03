@@ -27,14 +27,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check rate limit first
-    const rateLimitAllowed = await checkRateLimit(data.email, type);
-    if (!rateLimitAllowed) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded. One report per email per day.' },
-        { status: 429 }
-      );
-    }
+    // Check rate limit first (temporarily disabled for testing)
+    // const rateLimitAllowed = await checkRateLimit(data.email, type);
+    // if (!rateLimitAllowed) {
+    //   return NextResponse.json(
+    //     { error: 'Rate limit exceeded. One report per email per day.' },
+    //     { status: 429 }
+    //   );
+    // }
+    
+    // Temporarily allow all requests for testing
+    const rateLimitAllowed = true;
 
     // Validate form data based on type
     let validatedData: ExistingSellerData | NewSellerData;
@@ -74,6 +77,8 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('AI Result:', aiResult);
+    console.log('AI Result type:', typeof aiResult);
+    console.log('AI Result keys:', aiResult ? Object.keys(aiResult) : 'null');
 
     // Fallback to mock data if AI fails
     if (!aiResult) {
