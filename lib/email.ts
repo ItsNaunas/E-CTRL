@@ -11,6 +11,8 @@ export interface EmailData {
 
 export async function sendWelcomeEmail(data: EmailData) {
   try {
+    console.log('=== sendWelcomeEmail START ===');
+    
     // Check if Resend API key is available
     if (!process.env.RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not configured');
@@ -21,10 +23,13 @@ export async function sendWelcomeEmail(data: EmailData) {
     console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
     console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
     console.log('Attempting to send email to:', data.to);
+    console.log('Email data received:', data);
     
     // Use a verified sender domain or the default Resend domain
     const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
+    console.log('Using sender email:', fromEmail);
     
+    console.log('About to call resend.emails.send...');
     const { data: result, error } = await resend.emails.send({
       from: fromEmail,
       to: data.to,
@@ -82,14 +87,22 @@ export async function sendWelcomeEmail(data: EmailData) {
       `
     });
 
+    console.log('Resend API response received');
+    console.log('Result:', result);
+    console.log('Error:', error);
+    
     if (error) {
       console.error('Resend email error:', error);
       return { success: false, error: error.message };
     }
 
+    console.log('Email sent successfully, messageId:', result?.id);
     return { success: true, messageId: result?.id };
   } catch (error) {
+    console.error('=== sendWelcomeEmail ERROR ===');
     console.error('Email sending failed:', error);
+    console.error('Error type:', typeof error);
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
     return { success: false, error: 'Failed to send email' };
   }
 }
