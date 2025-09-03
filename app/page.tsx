@@ -104,7 +104,7 @@ export default function HomePage() {
           data: {
             ...sampleData,
             asin: asin,
-            email: 'test@example.com', // Use a real email for testing
+            email: 'naunas@hotmail.com', // Use your verified email for testing
             name: 'Demo User' // Add required name field
           }
         };
