@@ -151,10 +151,15 @@ Focus on UK/EU Amazon marketplace requirements and conversion optimization.`;
     const response = completion.choices[0]?.message?.content;
     if (!response) throw new Error('No response from AI');
 
+    console.log('Raw AI Response (New Seller):', response);
+
     // Try to parse JSON response
     try {
-      return JSON.parse(response);
-    } catch {
+      const parsed = JSON.parse(response);
+      console.log('Successfully parsed JSON (New Seller):', parsed);
+      return parsed;
+    } catch (parseError) {
+      console.log('JSON parse failed (New Seller), using fallback parser:', parseError);
       // Fallback: extract structured data from text
       return parseAIResponse(response);
     }
@@ -244,11 +249,14 @@ Return as JSON array: ["Title 1", "Title 2", "Title 3"]`;
 
 // Fallback parser for non-JSON AI responses
 function parseAIResponse(text: string) {
+  console.log('parseAIResponse called with text:', text.substring(0, 200) + '...');
+  
   const lines = text.split('\n').filter(line => line.trim());
   
   // Extract score
   const scoreMatch = text.match(/score[:\s]*(\d+)/i);
   const score = scoreMatch ? parseInt(scoreMatch[1]) : 75;
+  console.log('Extracted score from text:', score, 'from match:', scoreMatch);
 
   // Extract highlights and recommendations
   const highlights: string[] = [];
