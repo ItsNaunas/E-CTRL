@@ -11,6 +11,7 @@ interface AccessControlProps {
 
 export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: AccessControlProps) {
   const [accessType, setAccessType] = useState<'guest' | 'account'>('guest');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,6 +25,12 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
     // Basic validation
     if (!email) {
       setError('Please enter your email address');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (accessType === 'account' && !name) {
+      setError('Please enter your name');
       setIsSubmitting(false);
       return;
     }
@@ -43,16 +50,32 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
       });
     }
 
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      if (accessType === 'guest') {
+        onGuestAccess(email);
+      } else {
+        // For account creation, call the registration API
+        const response = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, name })
+        });
 
-    if (accessType === 'guest') {
-      onGuestAccess(email);
-    } else {
-      onAccountAccess(email, password);
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Account created successfully:', result);
+          onAccountAccess(email, password);
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || 'Failed to create account');
+        }
+      }
+    } catch (error) {
+      console.error('Error during access:', error);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   };
 
   const isAuditMode = mode === 'audit';
@@ -130,6 +153,23 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              {accessType === 'account' && (
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your full name"
+                    className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                    required
+                  />
+                </div>
+              )}
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email Address

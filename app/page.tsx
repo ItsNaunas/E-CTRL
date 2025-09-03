@@ -172,10 +172,11 @@ export default function HomePage() {
   const handleAccountAccess = (email: string, password: string) => {
     setAccessType('account');
     setUserEmail(email);
-    setShowEmailGate(true);
+    setSubmittedEmail(email); // Set the submitted email directly
+    setEmailSubmitted(true); // Mark email as submitted
     setShowAccessControl(false); // Hide access control after account creation
-    // Scroll to email gate for full access
-    scrollToElement('email-gate', 80);
+    // Scroll to delivery note directly
+    scrollToElement('delivery-note', 80);
   };
 
   // Handle email submission (for account access)
