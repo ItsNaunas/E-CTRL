@@ -159,22 +159,68 @@ export default function HomePage() {
   };
 
   // Handle guest access (email only)
-  const handleGuestAccess = (email: string) => {
+  const handleGuestAccess = async (email: string) => {
     setAccessType('guest');
     setUserEmail(email);
     setShowGuestResult(true);
     setShowAccessControl(false); // Hide access control after guest access
+    
+    // Send welcome email for guest access too
+    try {
+      const response = await fetch('/api/submit-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email, 
+          name: email.split('@')[0], // Use email prefix as name
+          mode: 'audit' 
+        })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Guest welcome email sent:', result);
+      } else {
+        console.error('Failed to send guest welcome email');
+      }
+    } catch (error) {
+      console.error('Error sending guest welcome email:', error);
+    }
+    
     // Scroll to guest result
     scrollToElement('guest-result', 80);
   };
 
   // Handle account access (full registration)
-  const handleAccountAccess = (email: string, password: string) => {
+  const handleAccountAccess = async (email: string, password: string) => {
     setAccessType('account');
     setUserEmail(email);
     setSubmittedEmail(email); // Set the submitted email directly
     setEmailSubmitted(true); // Mark email as submitted
     setShowAccessControl(false); // Hide access control after account creation
+    
+    // Send welcome email
+    try {
+      const response = await fetch('/api/submit-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email, 
+          name: email.split('@')[0], // Use email prefix as name
+          mode: 'audit' 
+        })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Welcome email sent:', result);
+      } else {
+        console.error('Failed to send welcome email');
+      }
+    } catch (error) {
+      console.error('Error sending welcome email:', error);
+    }
+    
     // Scroll to delivery note directly
     scrollToElement('delivery-note', 80);
   };
