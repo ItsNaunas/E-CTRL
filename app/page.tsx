@@ -144,11 +144,53 @@ export default function HomePage() {
   };
 
   // Handle product URL submission from NewSellerHero
-  const handleProductUrlSubmit = (url: string) => {
+  const handleProductUrlSubmit = async (url: string) => {
     setProductUrl(url);
     setShowPartial(true);
+    setHasUserInput(true);
+    setIsAnalyzing(true);
+    
     // Scroll to partial result
     scrollToElement('partial-result', 80);
+    
+    try {
+      // Call AI API for new seller analysis
+      const requestBody = {
+        type: 'new_seller',
+        data: {
+          name: 'Demo User',
+          email: 'naunas@hotmail.com', // Use your verified email for testing
+          keywords: ["eco friendly", "sustainable", "organic"],
+          websiteUrl: url
+        }
+      };
+      
+      console.log('Generating AI analysis for new seller:', requestBody);
+      
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('New seller AI analysis completed:', result);
+        // Store the result for later use in PDF generation
+        setAiResult({
+          score: result.result.score || 0,
+          highlights: result.result.highlights || []
+        });
+      } else {
+        console.error('Failed to generate AI analysis for new seller');
+        setAiResult(null);
+      }
+    } catch (error) {
+      console.error('Error generating AI analysis for new seller:', error);
+      setAiResult(null);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Handle unlock from PartialResult - now shows access control
@@ -165,6 +207,39 @@ export default function HomePage() {
     setShowGuestResult(true);
     setShowAccessControl(false); // Hide access control after guest access
     
+    // For new sellers, we need to generate AI analysis first to create PDF data
+    if (mode === 'create' && productUrl) {
+      try {
+        // Call AI API for new seller analysis to generate PDF data
+        const requestBody = {
+          type: 'new_seller',
+          data: {
+            name: email.split('@')[0],
+            email: email,
+            keywords: ["eco friendly", "sustainable", "organic"],
+            websiteUrl: productUrl
+          }
+        };
+        
+        console.log('Generating AI analysis for guest access:', requestBody);
+        
+        const response = await fetch('/api/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Guest AI analysis completed:', result);
+        } else {
+          console.error('Failed to generate AI analysis for guest');
+        }
+      } catch (error) {
+        console.error('Error generating AI analysis for guest:', error);
+      }
+    }
+    
     // Send welcome email for guest access too
     try {
       const response = await fetch('/api/submit-email', {
@@ -173,7 +248,7 @@ export default function HomePage() {
         body: JSON.stringify({ 
           email, 
           name: email.split('@')[0], // Use email prefix as name
-          mode: 'audit' 
+          mode: mode // Use current mode (audit or create)
         })
       });
       
@@ -199,6 +274,39 @@ export default function HomePage() {
     setEmailSubmitted(true); // Mark email as submitted
     setShowAccessControl(false); // Hide access control after account creation
     
+    // For new sellers, we need to generate AI analysis first to create PDF data
+    if (mode === 'create' && productUrl) {
+      try {
+        // Call AI API for new seller analysis to generate PDF data
+        const requestBody = {
+          type: 'new_seller',
+          data: {
+            name: email.split('@')[0],
+            email: email,
+            keywords: ["eco friendly", "sustainable", "organic"],
+            websiteUrl: productUrl
+          }
+        };
+        
+        console.log('Generating AI analysis for account creation:', requestBody);
+        
+        const response = await fetch('/api/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Account creation AI analysis completed:', result);
+        } else {
+          console.error('Failed to generate AI analysis for account creation');
+        }
+      } catch (error) {
+        console.error('Error generating AI analysis for account creation:', error);
+      }
+    }
+    
     // Send welcome email
     try {
       const response = await fetch('/api/submit-email', {
@@ -207,7 +315,7 @@ export default function HomePage() {
         body: JSON.stringify({ 
           email, 
           name: email.split('@')[0], // Use email prefix as name
-          mode: 'audit' 
+          mode: mode // Use current mode (audit or create)
         })
       });
       
@@ -343,10 +451,21 @@ export default function HomePage() {
                isLoading={isAnalyzing}
              />
           ) : (
-            <NewSellerPartialResult
-              productUrl={productUrl}
-              onUnlock={handleUnlock}
-            />
+                         <NewSellerPartialResult
+               productUrl={productUrl}
+               onUnlock={handleUnlock}
+               score={hasUserInput ? (aiResult?.score || 0) : undefined}
+               highlights={hasUserInput ? (aiResult?.highlights || [
+                 "AI analysis in progress...",
+                 "Enter a product URL above to see real results",
+                 "No results available yet"
+               ]) : [
+                 "Ready to analyze your product",
+                 "Enter a product URL above to get started",
+                 "Get instant AI-powered insights"
+               ]}
+               isLoading={isAnalyzing}
+             />
           )}
         </div>
       )}

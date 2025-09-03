@@ -5,9 +5,12 @@ import CTAButton from '@/components/CTAButton';
 interface NewSellerPartialResultProps {
   productUrl: string;
   onUnlock: () => void;
+  score?: number;
+  highlights?: string[];
+  isLoading?: boolean;
 }
 
-export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSellerPartialResultProps) {
+export default function NewSellerPartialResult({ productUrl, onUnlock, score, highlights, isLoading }: NewSellerPartialResultProps) {
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,8 +28,22 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                 </p>
               </div>
               <div className="text-center sm:text-right flex-shrink-0">
-                <div className="text-2xl sm:text-3xl font-bold text-white">6 Images</div>
-                <div className="text-orange-100 text-sm">Ready to Create</div>
+                {isLoading ? (
+                  <>
+                    <div className="text-2xl sm:text-3xl font-bold text-white">Analyzing...</div>
+                    <div className="text-orange-100 text-sm">AI processing</div>
+                  </>
+                ) : score !== undefined ? (
+                  <>
+                    <div className="text-2xl sm:text-3xl font-bold text-white">{score}/100</div>
+                    <div className="text-orange-100 text-sm">Listing Score</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-2xl sm:text-3xl font-bold text-white">6 Images</div>
+                    <div className="text-orange-100 text-sm">Ready to Create</div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -111,16 +128,37 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                 </h3>
                 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">What You&apos;ll Get:</h4>
-                    <ul className="text-sm text-gray-700 space-y-1">
-                      <li>• 5-10 benefit-focused bullet points</li>
-                      <li>• SEO-optimized product description</li>
-                      <li>• Keyword-rich content for better indexing</li>
-                      <li>• Conversion-optimized copy</li>
-                      <li>• Ready-to-use Amazon listing</li>
-                    </ul>
-                  </div>
+                  {/* AI Analysis Highlights */}
+                  {isLoading ? (
+                    <div className="bg-gray-100 rounded-lg p-4">
+                      <div className="animate-pulse">
+                        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-300 rounded w-1/2 mb-1"></div>
+                        <div className="h-3 bg-gray-300 rounded w-2/3 mb-1"></div>
+                        <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  ) : highlights && highlights.length > 0 ? (
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">AI Analysis Highlights:</h4>
+                      <ul className="text-sm text-gray-700 space-y-1">
+                        {highlights.map((highlight, index) => (
+                          <li key={index}>• {highlight}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">What You&apos;ll Get:</h4>
+                      <ul className="text-sm text-gray-700 space-y-1">
+                        <li>• 5-10 benefit-focused bullet points</li>
+                        <li>• SEO-optimized product description</li>
+                        <li>• Keyword-rich content for better indexing</li>
+                        <li>• Conversion-optimized copy</li>
+                        <li>• Ready-to-use Amazon listing</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -138,9 +176,10 @@ export default function NewSellerPartialResult({ productUrl, onUnlock }: NewSell
                                  <CTAButton
                    variant="primary"
                    size="lg"
-                   text="get my complete listing now"
+                   text={isLoading ? "analyzing..." : "get my complete listing now"}
                    onClick={onUnlock}
                    className="px-8"
+                   disabled={isLoading}
                  />
                 
                 <p className="text-sm text-gray-500 mt-3">
