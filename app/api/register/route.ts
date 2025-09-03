@@ -2,13 +2,44 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client only when needed (not during build)
+let supabase: any = null;
+
+function initializeSupabase() {
+  if (supabase) return supabase;
+  
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    console.error('Missing Supabase environment variables:', {
+      supabaseUrl: !!supabaseUrl,
+      supabaseServiceKey: !!supabaseServiceKey
+    });
+    return null;
+  }
+  
+  try {
+    supabase = createClient(supabaseUrl, supabaseServiceKey);
+    return supabase;
+  } catch (error) {
+    console.error('Failed to initialize Supabase client:', error);
+    return null;
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize Supabase client
+    const supabaseClient = initializeSupabase();
+    if (!supabaseClient) {
+      console.error('Supabase not configured - missing environment variables');
+      return NextResponse.json(
+        { error: 'User registration service is temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
     const { email, password, name } = await request.json();
 
     // Validate input
@@ -27,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const { data: existingUser, error: checkError } = await supabase
+    const { data: existingUser, error: checkError } = await supabaseClient
       .from('users')
       .select('id')
       .eq('email', email)
@@ -53,7 +84,7 @@ export async function POST(request: NextRequest) {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Create user
-    const { data: newUser, error: createError } = await supabase
+    const { data: newUser, error: createError } = await supabaseClient
       .from('users')
       .insert({
         email,
