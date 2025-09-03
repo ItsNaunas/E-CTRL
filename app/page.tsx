@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCROChecks } from './hooks/useCROChecks';
 import Hero from '@/components/Hero';
 import NewSellerHero from '@/components/NewSellerHero';
@@ -93,7 +93,7 @@ export default function HomePage() {
     if (!aiResult) {
       loadInitialAnalysis();
     }
-  }, [aiResult]);
+  }, [aiResult, sampleData]);
 
   // Handle ASIN submission from Hero
   const handleAsinSubmit = async (asin: string) => {
