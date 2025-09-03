@@ -120,12 +120,13 @@ export async function POST(request: NextRequest) {
         highlights: aiResult.highlights,
         recommendations: aiResult.recommendations,
         detailedAnalysis: aiResult.detailedAnalysis,
-        asin: validatedData.asin,
-        productUrl: validatedData.website_url,
+        // Type-safe property access
+        asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
+        productUrl: type === 'new_seller' ? (validatedData as NewSellerData).website_url : undefined,
         keywords: validatedData.keywords,
-        fulfilment: validatedData.fulfilment,
-        category: validatedData.category,
-        productDesc: validatedData.product_desc
+        fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
+        category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
+        productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
       });
 
       if (emailResult.success) {
