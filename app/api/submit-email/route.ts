@@ -15,13 +15,17 @@ export async function POST(request: NextRequest) {
 
     console.log('Email submission received:', { email, name, mode });
     console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+    console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
+    console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
 
     // Send welcome email using Resend
+    console.log('About to call sendWelcomeEmail...');
     const emailResult = await sendWelcomeEmail({
       to: email,
       name: name || 'there',
       mode: mode || 'audit'
     });
+    console.log('sendWelcomeEmail result:', emailResult);
 
     if (!emailResult.success) {
       console.error('Failed to send email:', emailResult.error);
@@ -53,10 +57,14 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Email submission error:', error);
+    console.error('Error type:', typeof error);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
     
     return NextResponse.json(
       { 
-        error: 'Failed to submit email. Please try again.' 
+        error: 'Failed to submit email. Please try again.',
+        details: error?.message || 'Unknown error'
       },
       { status: 500 }
     );
