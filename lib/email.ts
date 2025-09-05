@@ -1,7 +1,18 @@
 import { Resend } from 'resend';
 import { generatePDF, getPDFBlob, type PDFData } from './pdf';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend client lazily to ensure environment variables are loaded
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  console.log('RESEND_API_KEY exists:', !!apiKey);
+  console.log('RESEND_API_KEY length:', apiKey?.length);
+  console.log('RESEND_API_KEY starts with:', apiKey?.substring(0, 10) + '...');
+  
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured');
+  }
+  return new Resend(apiKey);
+}
 
 export interface EmailData {
   to: string;
@@ -145,6 +156,7 @@ export async function sendWelcomeEmail(data: EmailData) {
       console.log('PDF attachment added to email');
     }
     
+    const resend = getResendClient();
     const { data: result, error } = await resend.emails.send(emailData);
 
     console.log('Resend API response received');
@@ -172,6 +184,7 @@ export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
     // Use a verified sender domain or the default Resend domain
     const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
     
+    const resend = getResendClient();
     const { data: result, error } = await resend.emails.send({
       from: fromEmail,
       to: data.to,

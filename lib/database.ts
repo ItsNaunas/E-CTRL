@@ -1,4 +1,4 @@
-import { supabase, TABLES, type Lead, type Report, type AuditType, type AccessType } from './supabase';
+import { supabase, supabaseAdmin, TABLES, type Lead, type Report, type AuditType, type AccessType } from './supabase';
 import type { ExistingSellerData, NewSellerData } from './validation';
 
 // Get client IP address from request headers
@@ -23,7 +23,7 @@ export function getClientIP(headers: Headers): string | undefined {
 // Check rate limit using database function
 export async function checkRateLimit(email: string, auditType: AuditType): Promise<boolean> {
   try {
-    const { data, error } = await supabase.rpc('check_rate_limit', {
+    const { data, error } = await supabaseAdmin.rpc('check_rate_limit', {
       p_email: email,
       p_audit_type: auditType
     });
@@ -73,7 +73,7 @@ export async function createLead(
       // Note: image_url will be set after file upload
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(TABLES.LEADS)
       .insert(leadData)
       .select()
@@ -102,7 +102,7 @@ export async function createAuditReport(
   accessType: AccessType = 'guest'
 ): Promise<Report | null> {
   try {
-    const { data, error } = await supabase.rpc('create_audit_report', {
+    const { data, error } = await supabaseAdmin.rpc('create_audit_report', {
       p_lead_id: leadId,
       p_score: score,
       p_highlights: highlights,
@@ -118,7 +118,7 @@ export async function createAuditReport(
     }
 
     // Fetch the created report
-    const { data: report, error: fetchError } = await supabase
+    const { data: report, error: fetchError } = await supabaseAdmin
       .from(TABLES.REPORTS)
       .select('*')
       .eq('id', data)
@@ -139,7 +139,7 @@ export async function createAuditReport(
 // Get report by ID
 export async function getReport(reportId: string): Promise<Report | null> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(TABLES.REPORTS)
       .select(`
         *,
@@ -175,7 +175,7 @@ export async function getReport(reportId: string): Promise<Report | null> {
 // Get reports by email
 export async function getReportsByEmail(email: string): Promise<Report[]> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(TABLES.REPORTS)
       .select(`
         *,
@@ -223,7 +223,7 @@ export async function trackEvent(
       event.referrer = headers.get('referer') || undefined;
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from(TABLES.ANALYTICS_EVENTS)
       .insert(event);
 
@@ -238,7 +238,7 @@ export async function trackEvent(
 // Update lead with image URL (for new sellers)
 export async function updateLeadImage(leadId: string, imageUrl: string): Promise<boolean> {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from(TABLES.LEADS)
       .update({ image_url: imageUrl })
       .eq('id', leadId);
@@ -258,7 +258,7 @@ export async function updateLeadImage(leadId: string, imageUrl: string): Promise
 // Mark report as email sent
 export async function markReportEmailSent(reportId: string): Promise<boolean> {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from(TABLES.REPORTS)
       .update({ 
         email_sent: true, 
@@ -281,7 +281,7 @@ export async function markReportEmailSent(reportId: string): Promise<boolean> {
 // Update lead with email information
 export async function updateLeadEmail(leadId: string, email: string, name: string): Promise<boolean> {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from(TABLES.LEADS)
       .update({ 
         email,
