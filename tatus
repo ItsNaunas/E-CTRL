@@ -1,5 +1,5 @@
-  main[m
-* [32mvercel-live[m
-  [31mremotes/origin/HEAD[m -> origin/main
-  [31mremotes/origin/main[m
-  [31mremotes/origin/vercel-live[m
+[33m252e10b1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Complete Supabase integration with full backend functionality
+[33m5ff4822d[m Fix new seller validation errors - Add required fields (category, desc, fulfilmentIntent, image) to new seller API calls - Fix 400 Bad Request errors in product URL submission, guest access, and account creation - Ensure all new seller flows can generate AI analysis for PDF generation
+[33mf1149eb3[m Implement Option 2: Integrate PDF generation into all user flows - Add AI analysis for new sellers in product URL submission - Update guest access and account creation to generate AI analysis for PDFs - Fix hardcoded 'audit' mode in guest access - Enhance NewSellerPartialResult with AI analysis display and loading states - Ensure PDFs are generated for all user journeys (audit, create, guest, account)
+[33m9c1df71f[m Fix property name mismatch in report API - Change website_url to websiteUrl to match validation schema
+[33mdc8adad8[m Fix TypeScript error in report API - Add type-safe property access for existing vs new seller data
