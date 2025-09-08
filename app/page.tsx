@@ -163,41 +163,51 @@ export default function HomePage() {
     setIsAnalyzing(true);
     
     try {
-      // Generate preview WITHOUT creating database entry
-      // Just show what the analysis would look like
-      const mockAiResult = {
-        score: 85,
-        highlights: [
-          "Product positioning looks strong for the target market",
-          "Website provides good product information for analysis",
-          "Ready for Amazon listing optimization",
-          "Images and descriptions can be enhanced for better conversion"
-        ],
-        recommendations: [
-          "Optimize product title for better search visibility",
-          "Create compelling bullet points highlighting key benefits",
-          "Develop lifestyle images showing product in use",
-          "Write conversion-focused product description"
-        ],
-        detailedAnalysis: {
-          marketPotential: "High",
-          competitionLevel: "Medium",
-          optimizationOpportunities: "Multiple areas for improvement identified"
+      // Generate REAL preview WITHOUT creating database entry
+      const requestBody = {
+        type: 'new_seller',
+        data: {
+          name: 'Preview User',
+          email: 'preview@example.com', // Temporary email for preview only
+          keywords: ["eco friendly", "sustainable", "organic"],
+          websiteUrl: url,
+          category: "Home & Garden", // Required field
+          desc: "Eco-friendly product for sustainable living", // Required field
+          fulfilmentIntent: "FBA" as const, // Required field
+          image: { // Required field - placeholder
+            name: "placeholder.jpg",
+            size: 1024,
+            type: "image/jpeg"
+          }
         }
       };
 
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch('/api/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Real preview result:', result);
       
-      setAiResult(mockAiResult);
-      setShowPartial(true); // Show preview first
-      
-      // Scroll to preview
-      setTimeout(() => {
-        scrollToElement('partial-result', 80);
-      }, 100);
+      if (result.success && result.aiResult) {
+        setAiResult(result.aiResult);
+        setShowPartial(true); // Show preview first
+        
+        // Scroll to preview
+        setTimeout(() => {
+          scrollToElement('partial-result', 80);
+        }, 100);
+      } else {
+        console.error('Failed to generate real preview:', result.error);
+      }
     } catch (error) {
-      console.error('Error generating preview:', error);
+      console.error('Error generating real preview:', error);
     } finally {
       setIsAnalyzing(false);
     }
@@ -216,42 +226,51 @@ export default function HomePage() {
     setIsAnalyzing(true);
     
     try {
-      // Generate preview WITHOUT creating database entry
-      // Just show what the analysis would look like
-      const mockAiResult = {
-        score: 78,
-        highlights: [
-          `Strong product concept in ${data.category} category`,
-          "Clear product description provides good foundation",
-          "Keywords show good market understanding",
-          "Ready for Amazon listing development"
-        ],
-        recommendations: [
-          "Develop compelling product title with key benefits",
-          "Create detailed bullet points highlighting unique features",
-          "Design lifestyle images showing product benefits",
-          "Write conversion-focused product description",
-          "Research competitor pricing and positioning"
-        ],
-        detailedAnalysis: {
-          categoryFit: "Good",
-          marketOpportunity: "Identified",
-          listingReadiness: "Foundation ready for optimization"
+      // Generate REAL preview WITHOUT creating database entry
+      const requestBody = {
+        type: 'new_seller',
+        data: {
+          name: 'Preview User',
+          email: 'preview@example.com', // Temporary email for preview only
+          keywords: data.keywords,
+          websiteUrl: undefined, // No website URL for manual input
+          category: data.category,
+          desc: data.description,
+          fulfilmentIntent: data.fulfilmentIntent as "FBA" | "FBM" | "Unsure",
+          image: { // Required field - placeholder
+            name: "placeholder.jpg",
+            size: 1024,
+            type: "image/jpeg"
+          }
         }
       };
 
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch('/api/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Real manual preview result:', result);
       
-      setAiResult(mockAiResult);
-      setShowPartial(true); // Show preview first
-      
-      // Scroll to preview
-      setTimeout(() => {
-        scrollToElement('partial-result', 80);
-      }, 100);
+      if (result.success && result.aiResult) {
+        setAiResult(result.aiResult);
+        setShowPartial(true); // Show preview first
+        
+        // Scroll to preview
+        setTimeout(() => {
+          scrollToElement('partial-result', 80);
+        }, 100);
+      } else {
+        console.error('Failed to generate real manual preview:', result.error);
+      }
     } catch (error) {
-      console.error('Error generating preview:', error);
+      console.error('Error generating real manual preview:', error);
     } finally {
       setIsAnalyzing(false);
     }
