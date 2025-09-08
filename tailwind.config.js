@@ -8,29 +8,40 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // E-CTRL Brand Colors (orange, blue, black)
+        brand: {
+          orange: '#F97316', // orange-500
+          'orange-dark': '#EA580C', // orange-600
+          'orange-light': '#FED7AA', // orange-200
+          blue: '#2563EB', // blue-600
+          'blue-dark': '#1D4ED8', // blue-700
+          'blue-light': '#DBEAFE', // blue-100
+          black: '#0F172A', // slate-900
+          'black-light': '#1E293B', // slate-800
+        },
         // Light mode (default)
         background: '#ffffff',
-        foreground: '#0F172A', // slate-900
+        foreground: '#0F172A', // slate-900 (brand black)
         muted: {
           DEFAULT: '#F8FAFC', // slate-50
           foreground: '#64748B', // slate-500
         },
         accent: {
-          DEFAULT: '#2563EB', // blue-600
+          DEFAULT: '#F97316', // brand orange
           foreground: '#ffffff',
         },
         border: '#E2E8F0', // slate-200
         input: '#F1F5F9', // slate-100
         // Dark mode tokens (scaffolded for future)
         dark: {
-          background: '#020617', // slate-950
+          background: '#0F172A', // brand black
           foreground: '#F8FAFC', // slate-50
           muted: {
             DEFAULT: '#1E293B', // slate-800
             foreground: '#94A3B8', // slate-400
           },
           accent: {
-            DEFAULT: '#3B82F6', // blue-500
+            DEFAULT: '#F97316', // brand orange
             foreground: '#F8FAFC',
           },
           border: '#334155', // slate-700

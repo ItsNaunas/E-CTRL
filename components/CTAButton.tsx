@@ -43,9 +43,9 @@ export default function CTAButton({
   };
 
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl hover:scale-105 focus:ring-orange-500',
-    secondary: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl hover:scale-105 focus:ring-green-500',
-    sticky: 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl focus:ring-orange-500'
+    primary: 'bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 text-white shadow-lg hover:shadow-xl hover:scale-105 focus:ring-brand-orange',
+    secondary: 'bg-gradient-to-r from-brand-blue to-brand-blue-dark hover:from-brand-blue-dark hover:to-blue-800 text-white shadow-lg hover:shadow-xl hover:scale-105 focus:ring-brand-blue',
+    sticky: 'bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 text-white shadow-lg hover:shadow-xl focus:ring-brand-orange'
   };
 
   const widthClasses = fullWidth ? 'w-full' : '';

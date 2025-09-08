@@ -18,13 +18,13 @@ export async function POST(request: NextRequest) {
     console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
     console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
 
-    // Send welcome email using Resend (basic welcome email, no PDF for guest access)
+    // Send welcome email using Resend
     console.log('About to call sendWelcomeEmail...');
     const emailResult = await sendWelcomeEmail({
       to: email,
       name: name || 'there',
       mode: mode || 'audit'
-      // Note: No PDF data for guest access - they get basic welcome email only
+      // Note: PDF data will be included if available from previous analysis
     });
     console.log('sendWelcomeEmail result:', emailResult);
 

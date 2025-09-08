@@ -89,8 +89,10 @@ export async function sendWelcomeEmail(data: EmailData) {
     }
     
     // Use a verified sender domain or the default Resend domain
+    // TODO: Replace with your own domain once you upgrade to paid Resend plan
     const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
     console.log('Using sender email:', fromEmail);
+    console.log('NOTE: Free tier has restrictions - upgrade to paid plan for full functionality');
     
     console.log('About to call resend.emails.send...');
     const emailData: any = {
