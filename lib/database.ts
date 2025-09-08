@@ -91,6 +91,32 @@ export async function createLead(
   }
 }
 
+// Update lead email (when user submits their real email)
+export async function updateLeadEmail(leadId: string, email: string, name: string): Promise<Lead | null> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from(TABLES.LEADS)
+      .update({ 
+        email: email,
+        name: name,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', leadId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Update lead email error:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Update lead email failed:', error);
+    return null;
+  }
+}
+
 // Create an audit report
 export async function createAuditReport(
   leadId: string,
@@ -313,26 +339,3 @@ export async function markReportEmailSent(reportId: string): Promise<boolean> {
   }
 }
 
-// Update lead with email information
-export async function updateLeadEmail(leadId: string, email: string, name: string): Promise<boolean> {
-  try {
-    const { error } = await supabaseAdmin
-      .from(TABLES.LEADS)
-      .update({ 
-        email,
-        name,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', leadId);
-
-    if (error) {
-      console.error('Update lead email error:', error);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Update lead email failed:', error);
-    return false;
-  }
-}

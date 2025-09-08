@@ -53,6 +53,7 @@ export default function HomePage() {
   } | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasUserInput, setHasUserInput] = useState(false);
+  const [leadId, setLeadId] = useState<string | null>(null);
 
   // Real data for AI analysis
   const sampleData = useMemo(() => ({
@@ -127,6 +128,8 @@ export default function HomePage() {
           recommendations: result.result.recommendations || [],
           detailedAnalysis: result.result.detailedAnalysis || {}
         });
+        // Store the lead ID for later email update
+        setLeadId(result.leadId);
       } else {
         // Get error details from response
         const errorText = await response.text();
@@ -150,59 +153,15 @@ export default function HomePage() {
   // Handle product URL submission from NewSellerHero
   const handleProductUrlSubmit = async (url: string) => {
     setProductUrl(url);
-    setShowPartial(true);
     setHasUserInput(true);
-    setIsAnalyzing(true);
     
-    // Scroll to partial result
-    scrollToElement('partial-result', 80);
+    // Show email gate first instead of generating report immediately
+    setShowEmailGate(true);
     
-    try {
-      // Call AI API for new seller analysis
-      const requestBody = {
-        type: 'new_seller',
-        data: {
-          name: 'Demo User',
-          email: userEmail || 'demo@example.com', // Use actual user email
-          keywords: ["eco friendly", "sustainable", "organic"],
-          websiteUrl: url,
-          category: "Home & Garden", // Required field
-          desc: "Eco-friendly product for sustainable living", // Required field
-          fulfilmentIntent: "FBA" as const, // Required field
-          image: { // Required field - placeholder
-            name: "placeholder.jpg",
-            size: 1024,
-            type: "image/jpeg"
-          }
-        }
-      };
-      
-      console.log('Generating AI analysis for new seller:', requestBody);
-      
-      const response = await fetch('/api/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log('New seller AI analysis completed:', result);
-        // Store the result for later use in PDF generation
-        setAiResult({
-          score: result.result.score || 0,
-          highlights: result.result.highlights || []
-        });
-      } else {
-        console.error('Failed to generate AI analysis for new seller');
-        setAiResult(null);
-      }
-    } catch (error) {
-      console.error('Error generating AI analysis for new seller:', error);
-      setAiResult(null);
-    } finally {
-      setIsAnalyzing(false);
-    }
+    // Scroll to email gate
+    setTimeout(() => {
+      scrollToElement('email-gate', 80);
+    }, 100);
   };
 
   // Handle unlock from PartialResult - now shows access control
@@ -366,13 +325,16 @@ export default function HomePage() {
     setEmailSubmitted(true);
     setSubmittedEmail(email);
     
-    // Generate a new report with the user's actual email
-    if (asinOrUrl) {
-      console.log('Generating report with user email:', email);
-      setIsAnalyzing(true);
+    // Generate report with the user's actual email
+    console.log('Generating report with user email:', email);
+    setIsAnalyzing(true);
+    
+    try {
+      let requestBody;
       
-      try {
-        const requestBody = {
+      if (mode === 'audit' && asinOrUrl) {
+        // Existing seller flow
+        requestBody = {
           type: 'existing_seller',
           data: {
             ...sampleData,
@@ -381,34 +343,62 @@ export default function HomePage() {
             name: 'Demo User'
           }
         };
+      } else if (mode === 'create' && productUrl) {
+        // New seller flow
+        requestBody = {
+          type: 'new_seller',
+          data: {
+            name: 'Demo User',
+            email: email, // Use the actual user email
+            keywords: ["eco friendly", "sustainable", "organic"],
+            websiteUrl: productUrl,
+            category: "Home & Garden", // Required field
+            desc: "Eco-friendly product for sustainable living", // Required field
+            fulfilmentIntent: "FBA" as const, // Required field
+            image: { // Required field - placeholder
+              name: "placeholder.jpg",
+              size: 1024,
+              type: "image/jpeg"
+            }
+          }
+        };
+      } else {
+        console.error('Invalid mode or missing data for report generation');
+        return;
+      }
+      
+      console.log('Sending request to API with user email:', requestBody);
+      
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Report generated with user email:', result.result);
         
-        console.log('Sending request to API with user email:', requestBody);
+        // Store the lead ID for future reference
+        setLeadId(result.leadId);
         
-        const response = await fetch('/api/report', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
+        // Update the AI result with the real data
+        setAiResult({
+          score: result.result.score || 0,
+          highlights: result.result.highlights || [],
+          recommendations: result.result.recommendations || [],
+          detailedAnalysis: result.result.detailedAnalysis || {}
         });
         
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Report generated with user email:', result.result);
-          
-          // Update the AI result with the real data
-          setAiResult({
-            score: result.result.score || 0,
-            highlights: result.result.highlights || [],
-            recommendations: result.result.recommendations || [],
-            detailedAnalysis: result.result.detailedAnalysis || {}
-          });
-        } else {
-          console.error('Failed to generate report with user email');
-        }
-      } catch (error) {
-        console.error('Error generating report with user email:', error);
-      } finally {
-        setIsAnalyzing(false);
+        // Show partial result
+        setShowPartial(true);
+      } else {
+        console.error('Failed to generate report with user email');
       }
+    } catch (error) {
+      console.error('Error generating report with user email:', error);
+    } finally {
+      setIsAnalyzing(false);
     }
     
     // Scroll to delivery note
