@@ -92,15 +92,59 @@ export default function HomePage() {
   const handleAsinSubmit = async (asin: string) => {
     console.log('ASIN submitted:', asin);
     setAsinOrUrl(asin);
+    setShowPartial(true);
+    setIsAnalyzing(true);
     setHasUserInput(true);
     
-    // Show email gate first instead of generating report immediately
-    setShowEmailGate(true);
+    // Scroll to partial result immediately when analysis starts
+    scrollToElement('partial-result', 80); // 80px offset for better positioning
     
-    // Scroll to email gate
-    setTimeout(() => {
-      scrollToElement('email-gate', 80);
-    }, 100);
+    try {
+      // Call AI API for real analysis
+      const requestBody = {
+        type: 'existing_seller',
+        data: {
+          ...sampleData,
+          asin: asin,
+          email: 'demo@example.com', // Use demo email for preview
+          name: 'Demo User'
+        }
+      };
+      console.log('Sending request to API:', requestBody);
+      
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('ASIN submission AI result received:', result.result);
+        setAiResult({
+          score: result.result.score || 0,
+          highlights: result.result.highlights || [],
+          recommendations: result.result.recommendations || [],
+          detailedAnalysis: result.result.detailedAnalysis || {}
+        });
+      } else {
+        // Get error details from response
+        const errorText = await response.text();
+        console.error('API request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        });
+        // Fallback to error state if API fails
+        setAiResult(null);
+      }
+    } catch (error) {
+      console.error('AI analysis failed:', error);
+      // Fallback to error state
+      setAiResult(null);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Handle product URL submission from NewSellerHero
@@ -322,7 +366,7 @@ export default function HomePage() {
     setEmailSubmitted(true);
     setSubmittedEmail(email);
     
-    // Now generate the report with the user's actual email
+    // Generate a new report with the user's actual email
     if (asinOrUrl) {
       console.log('Generating report with user email:', email);
       setIsAnalyzing(true);
@@ -367,11 +411,8 @@ export default function HomePage() {
       }
     }
     
-    // Show partial result and scroll to it
-    setShowPartial(true);
-    setTimeout(() => {
-      scrollToElement('partial-result', 80);
-    }, 100);
+    // Scroll to delivery note
+    scrollToElement('delivery-note', 80);
   };
 
   // Handle upgrade from guest to account
