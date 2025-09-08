@@ -101,6 +101,11 @@ export interface Report {
   updated_at: string;
 }
 
+// Extended Report interface for joined queries with lead data
+export interface ReportWithLead extends Report {
+  leads: Lead;
+}
+
 export interface RateLimit {
   id: string;
   email: string;

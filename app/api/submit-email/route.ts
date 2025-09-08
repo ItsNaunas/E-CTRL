@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWelcomeEmail } from '@/lib/email';
 import { getReportsByEmail } from '@/lib/database';
+import type { ReportWithLead } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     
     let pdfData = null;
     if (reports && reports.length > 0) {
-      const latestReport = reports[0];
+      const latestReport: ReportWithLead = reports[0];
       console.log('Found latest report:', latestReport.id);
       
       // Extract analysis data for PDF generation
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
         keywords: latestReport.leads?.keywords || [],
         fulfilment: latestReport.leads?.fulfilment || undefined,
         category: latestReport.leads?.category || undefined,
-        productDesc: latestReport.leads?.desc || undefined
+        productDesc: latestReport.leads?.product_desc || undefined
       };
       
       console.log('PDF data extracted:', {

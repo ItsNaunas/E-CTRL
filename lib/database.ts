@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin, TABLES, type Lead, type Report, type AuditType, type AccessType } from './supabase';
+import { supabase, supabaseAdmin, TABLES, type Lead, type Report, type ReportWithLead, type AuditType, type AccessType } from './supabase';
 import type { ExistingSellerData, NewSellerData } from './validation';
 
 // Get client IP address from request headers
@@ -173,7 +173,7 @@ export async function getReport(reportId: string): Promise<Report | null> {
 }
 
 // Get reports by email
-export async function getReportsByEmail(email: string): Promise<Report[]> {
+export async function getReportsByEmail(email: string): Promise<ReportWithLead[]> {
   try {
     const { data, error } = await supabaseAdmin
       .from(TABLES.REPORTS)
