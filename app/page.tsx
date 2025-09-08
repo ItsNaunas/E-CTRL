@@ -48,6 +48,8 @@ export default function HomePage() {
   const [aiResult, setAiResult] = useState<{
     score: number;
     highlights: string[];
+    recommendations?: string[];
+    detailedAnalysis?: any;
   } | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasUserInput, setHasUserInput] = useState(false);
@@ -90,57 +92,15 @@ export default function HomePage() {
   const handleAsinSubmit = async (asin: string) => {
     console.log('ASIN submitted:', asin);
     setAsinOrUrl(asin);
-    setShowPartial(true);
-    setIsAnalyzing(true);
     setHasUserInput(true);
     
-    // Scroll to partial result immediately when analysis starts
-    scrollToElement('partial-result', 80); // 80px offset for better positioning
+    // Show email gate first instead of generating report immediately
+    setShowEmailGate(true);
     
-    try {
-      // Call AI API for real analysis
-                     const requestBody = {
-          type: 'existing_seller',
-          data: {
-            ...sampleData,
-            asin: asin,
-            email: userEmail || 'demo@example.com', // Use actual user email
-            name: 'Demo User' // Add required name field
-          }
-        };
-      console.log('Sending request to API:', requestBody);
-      
-      const response = await fetch('/api/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log('ASIN submission AI result received:', result.result);
-        setAiResult({
-          score: result.result.score || 0,
-          highlights: result.result.highlights || []
-        });
-      } else {
-        // Get error details from response
-        const errorText = await response.text();
-        console.error('API request failed:', {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText
-        });
-        // Fallback to error state if API fails
-        setAiResult(null);
-      }
-    } catch (error) {
-      console.error('AI analysis failed:', error);
-               // Fallback to error state
-         setAiResult(null);
-    } finally {
-      setIsAnalyzing(false);
-    }
+    // Scroll to email gate
+    setTimeout(() => {
+      scrollToElement('email-gate', 80);
+    }, 100);
   };
 
   // Handle product URL submission from NewSellerHero
@@ -358,11 +318,60 @@ export default function HomePage() {
   };
 
   // Handle email submission (for account access)
-  const handleEmailSubmit = (email: string) => {
+  const handleEmailSubmit = async (email: string) => {
     setEmailSubmitted(true);
     setSubmittedEmail(email);
-    // Scroll to delivery note
-    scrollToElement('delivery-note', 80);
+    
+    // Now generate the report with the user's actual email
+    if (asinOrUrl) {
+      console.log('Generating report with user email:', email);
+      setIsAnalyzing(true);
+      
+      try {
+        const requestBody = {
+          type: 'existing_seller',
+          data: {
+            ...sampleData,
+            asin: asinOrUrl,
+            email: email, // Use the actual user email
+            name: 'Demo User'
+          }
+        };
+        
+        console.log('Sending request to API with user email:', requestBody);
+        
+        const response = await fetch('/api/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Report generated with user email:', result.result);
+          
+          // Update the AI result with the real data
+          setAiResult({
+            score: result.result.score || 0,
+            highlights: result.result.highlights || [],
+            recommendations: result.result.recommendations || [],
+            detailedAnalysis: result.result.detailedAnalysis || {}
+          });
+        } else {
+          console.error('Failed to generate report with user email');
+        }
+      } catch (error) {
+        console.error('Error generating report with user email:', error);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    }
+    
+    // Show partial result and scroll to it
+    setShowPartial(true);
+    setTimeout(() => {
+      scrollToElement('partial-result', 80);
+    }, 100);
   };
 
   // Handle upgrade from guest to account
