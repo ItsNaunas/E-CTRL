@@ -160,14 +160,58 @@ export default function HomePage() {
   const handleProductUrlSubmit = async (url: string) => {
     setProductUrl(url);
     setHasUserInput(true);
+    setIsAnalyzing(true);
     
-    // Show email gate first instead of generating report immediately
-    setShowEmailGate(true);
-    
-    // Scroll to email gate
-    setTimeout(() => {
-      scrollToElement('email-gate', 80);
-    }, 100);
+    try {
+      // Generate preview report with demo email first
+      const requestBody = {
+        type: 'new_seller',
+        data: {
+          name: 'Demo User',
+          email: 'demo@example.com', // Use demo email for preview
+          keywords: ["eco friendly", "sustainable", "organic"],
+          websiteUrl: url,
+          category: "Home & Garden", // Required field
+          desc: "Eco-friendly product for sustainable living", // Required field
+          fulfilmentIntent: "FBA" as const, // Required field
+          image: { // Required field - placeholder
+            name: "placeholder.jpg",
+            size: 1024,
+            type: "image/jpeg"
+          }
+        }
+      };
+
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('New seller preview result:', result);
+      
+      if (result.success && result.aiResult) {
+        setAiResult(result.aiResult);
+        setLeadId(result.leadId); // Store lead ID for later email update
+        setShowPartial(true); // Show preview first
+        
+        // Scroll to preview
+        setTimeout(() => {
+          scrollToElement('partial-result', 80);
+        }, 100);
+      } else {
+        console.error('Failed to generate preview:', result.error);
+      }
+    } catch (error) {
+      console.error('Error generating preview:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Handle manual product data submission from NewSellerHero
@@ -180,14 +224,58 @@ export default function HomePage() {
     // Store the manual data for later use
     setManualProductData(data);
     setHasUserInput(true);
+    setIsAnalyzing(true);
     
-    // Show email gate first instead of generating report immediately
-    setShowEmailGate(true);
-    
-    // Scroll to email gate
-    setTimeout(() => {
-      scrollToElement('email-gate', 80);
-    }, 100);
+    try {
+      // Generate preview report with demo email first
+      const requestBody = {
+        type: 'new_seller',
+        data: {
+          name: 'Demo User',
+          email: 'demo@example.com', // Use demo email for preview
+          keywords: data.keywords,
+          websiteUrl: undefined, // No website URL for manual input
+          category: data.category,
+          desc: data.description,
+          fulfilmentIntent: data.fulfilmentIntent as "FBA" | "FBM" | "Unsure",
+          image: { // Required field - placeholder
+            name: "placeholder.jpg",
+            size: 1024,
+            type: "image/jpeg"
+          }
+        }
+      };
+
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('New seller manual preview result:', result);
+      
+      if (result.success && result.aiResult) {
+        setAiResult(result.aiResult);
+        setLeadId(result.leadId); // Store lead ID for later email update
+        setShowPartial(true); // Show preview first
+        
+        // Scroll to preview
+        setTimeout(() => {
+          scrollToElement('partial-result', 80);
+        }, 100);
+      } else {
+        console.error('Failed to generate preview:', result.error);
+      }
+    } catch (error) {
+      console.error('Error generating preview:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Handle unlock from PartialResult - now shows access control
@@ -356,70 +444,27 @@ export default function HomePage() {
     setIsAnalyzing(true);
     
     try {
-      let requestBody;
+      console.log('Updating lead and sending email for:', email);
       
-      if (mode === 'audit' && asinOrUrl) {
-        // Existing seller flow
-        requestBody = {
-          type: 'existing_seller',
-          data: {
-            ...sampleData,
-            asin: asinOrUrl,
-            email: email, // Use the actual user email
-            name: 'Demo User'
-          }
-        };
-      } else if (mode === 'create' && (productUrl || manualProductData)) {
-        // New seller flow
-        requestBody = {
-          type: 'new_seller',
-          data: {
-            name: 'Demo User',
-            email: email, // Use the actual user email
-            keywords: manualProductData?.keywords || ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl || undefined,
-            category: manualProductData?.category || "Home & Garden",
-            desc: manualProductData?.description || "Eco-friendly product for sustainable living",
-            fulfilmentIntent: (manualProductData?.fulfilmentIntent || "FBA") as "FBA" | "FBM" | "Unsure",
-            image: { // Required field - placeholder
-              name: "placeholder.jpg",
-              size: 1024,
-              type: "image/jpeg"
-            }
-          }
-        };
-      } else {
-        console.error('Invalid mode or missing data for report generation');
-        return;
-      }
-      
-      console.log('Sending request to API with user email:', requestBody);
-      
-      const response = await fetch('/api/report', {
+      // Call submit-email API to update lead and send email
+      const response = await fetch('/api/submit-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          email,
+          name: email.split('@')[0], // Use email prefix as name
+          leadId: leadId // Include leadId for lead update
+        })
       });
       
       if (response.ok) {
         const result = await response.json();
-        console.log('Report generated with user email:', result.result);
+        console.log('Email sent and lead updated:', result);
         
-        // Store the lead ID for future reference
-        setLeadId(result.leadId);
-        
-        // Update the AI result with the real data
-        setAiResult({
-          score: result.result.score || 0,
-          highlights: result.result.highlights || [],
-          recommendations: result.result.recommendations || [],
-          detailedAnalysis: result.result.detailedAnalysis || {}
-        });
-        
-        // Show partial result
-        setShowPartial(true);
+        // Show delivery note (using existing emailSubmitted state)
+        // The delivery note is already shown when emailSubmitted is true
       } else {
-        console.error('Failed to generate report with user email');
+        console.error('Failed to send email and update lead');
       }
     } catch (error) {
       console.error('Error generating report with user email:', error);
@@ -546,6 +591,7 @@ export default function HomePage() {
           ) : (
                          <NewSellerPartialResult
                productUrl={productUrl}
+               manualData={manualProductData || undefined}
                onUnlock={handleUnlock}
                score={hasUserInput ? (aiResult?.score || 0) : undefined}
                highlights={hasUserInput ? (aiResult?.highlights || [

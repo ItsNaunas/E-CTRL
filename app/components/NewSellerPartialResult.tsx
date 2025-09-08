@@ -3,14 +3,20 @@
 import CTAButton from '@/components/CTAButton';
 
 interface NewSellerPartialResultProps {
-  productUrl: string;
+  productUrl?: string;
+  manualData?: {
+    category: string;
+    description: string;
+    keywords: string[];
+    fulfilmentIntent: string;
+  };
   onUnlock: () => void;
   score?: number;
   highlights?: string[];
   isLoading?: boolean;
 }
 
-export default function NewSellerPartialResult({ productUrl, onUnlock, score, highlights, isLoading }: NewSellerPartialResultProps) {
+export default function NewSellerPartialResult({ productUrl, manualData, onUnlock, score, highlights, isLoading }: NewSellerPartialResultProps) {
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,9 +29,19 @@ export default function NewSellerPartialResult({ productUrl, onUnlock, score, hi
                 <h2 className="text-xl sm:text-2xl font-bold text-white break-words">
                   Amazon Listing Creation Preview
                 </h2>
-                <p className="text-orange-100 mt-1 text-sm break-all">
-                  Generated from: {productUrl}
-                </p>
+                {productUrl ? (
+                  <p className="text-orange-100 mt-1 text-sm break-all">
+                    Generated from: {productUrl}
+                  </p>
+                ) : manualData ? (
+                  <p className="text-orange-100 mt-1 text-sm">
+                    Generated from: {manualData.category} - {manualData.description.substring(0, 50)}...
+                  </p>
+                ) : (
+                  <p className="text-orange-100 mt-1 text-sm">
+                    Ready to create your Amazon listing
+                  </p>
+                )}
               </div>
               <div className="text-center sm:text-right flex-shrink-0">
                 {isLoading ? (
