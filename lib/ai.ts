@@ -116,16 +116,28 @@ ${productData ? `
 REAL PRODUCT DATA (scraped from website):
 - Website: ${productData.url}
 - Domain: ${productData.domain}
-- Title: ${productData.title || 'Not found'}
-- Description: ${productData.description || 'Not found'}
-- Price: ${productData.price || 'Not found'}
-- Brand: ${productData.brand || 'Not found'}
-- Category: ${productData.category || 'Not found'}
-- Features: ${productData.features?.join(', ') || 'Not found'}
-- Images: ${productData.images?.length || 0} images available
-- Rating: ${productData.rating || 'Not found'}
-- Reviews: ${productData.reviewCount || 'Not found'}
-- Availability: ${productData.availability || 'Not found'}
+
+${productData.title ? `- Title: ${productData.title}` : ''}
+${productData.description ? `- Description: ${productData.description}` : ''}
+${productData.price ? `- Price: ${productData.price}` : ''}
+${productData.brand ? `- Brand: ${productData.brand}` : ''}
+${productData.category ? `- Category: ${productData.category}` : ''}
+${productData.features?.length ? `- Features: ${productData.features.join(', ')}` : ''}
+${productData.images?.length ? `- Images: ${productData.images.length} images available` : ''}
+${productData.rating ? `- Rating: ${productData.rating}` : ''}
+${productData.reviewCount ? `- Reviews: ${productData.reviewCount}` : ''}
+${productData.availability ? `- Availability: ${productData.availability}` : ''}
+
+${productData.rawContent ? `
+RAW PAGE CONTENT (for AI analysis):
+${productData.rawContent}
+
+${productData.headings?.length ? `PAGE HEADINGS:
+${productData.headings.join('\n')}` : ''}
+
+${productData.paragraphs?.length ? `KEY PARAGRAPHS:
+${productData.paragraphs.join('\n\n')}` : ''}
+` : ''}
 ` : `
 PRODUCT DETAILS (user provided):
 - Category: ${data.category}
@@ -136,55 +148,97 @@ PRODUCT DETAILS (user provided):
 - No Website Description: ${data.noWebsiteDesc || 'N/A'}
 `}
 
-Please create a comprehensive Amazon listing pack with:
+IMPORTANT: If structured data is missing (like title, description, price), analyze the RAW PAGE CONTENT to extract:
+- Product name/title from headings or content
+- Product description from paragraphs
+- Price information from text
+- Key features and benefits
+- Brand information
+- Category clues
 
-1. **Score (0-100)**: Rate the overall readiness for Amazon launch based on:
-   - Product positioning clarity (25 points)
-   - Category competitiveness (20 points)
-   - Keyword opportunity (20 points)
-   - Compliance readiness (15 points)
-   - Marketing potential (20 points)
+Please create an IDQ-focused Amazon listing optimization guide. Instead of scoring, provide field-by-field analysis and recommendations to achieve the highest possible IDQ (Item Data Quality) score.
 
-2. **Key Highlights (3-5 points)**: Most important findings about product potential
+**IDQ Field Analysis & Recommendations:**
 
-3. **Actionable Recommendations (3-5 points)**: Specific steps to prepare for launch
+1. **TITLE FIELD ANALYSIS**:
+   - Current Title: [What we found from scraping]
+   - IDQ Issues: [Specific problems with current title]
+   - Optimized Title: [IDQ-compliant title following Amazon's best practices]
 
-4. **Complete Listing Pack**:
-   - **Title**: Follow the formula: [Brand] [Product] for [Target Use], [High-Intent Keywords] [Material/Size/Features]
-   - **5-7 Bullet Points**: Each structured as [PRODUCT BENEFIT] – [feature description with keywords]
-   - **Product Description**: Optimized for indexing with keyword integration and benefit reinforcement
-   - **Keyword Sets**: Primary (3-5), Secondary (5-8), Long-tail (8-12)
-   - **Image Gallery Plan**: 6-image structure with specific requirements for each
+2. **BULLET POINTS ANALYSIS**:
+   - Current Bullets: [What we found from scraping]
+   - IDQ Issues: [Missing elements, compliance issues]
+   - Optimized Bullets: [5 bullet points optimized for IDQ and conversion]
+
+3. **PRODUCT DESCRIPTION ANALYSIS**:
+   - Current Description: [What we found from scraping]
+   - IDQ Issues: [SEO, compliance, or structure problems]
+   - Optimized Description: [IDQ-compliant description with proper formatting]
+
+4. **KEYWORDS ANALYSIS**:
+   - Current Keywords: [What we found from scraping]
+   - IDQ Issues: [Missing keywords, poor keyword strategy]
+   - Optimized Keywords: [Primary (3-5), Secondary (5-8), Long-tail (8-12)]
+
+5. **IMAGES ANALYSIS**:
+   - Current Images: [What we found from scraping]
+   - IDQ Issues: [Missing image types, quality issues]
+   - Required Images: [6 specific image requirements for highest IDQ]
+
+6. **COMPLIANCE ANALYSIS**:
+   - Current Compliance: [What we found]
+   - IDQ Issues: [Missing compliance elements]
+   - Compliance Requirements: [UK/EU specific requirements for IDQ]
 
 Format your response as JSON:
 {
-  "score": number,
-  "highlights": string[],
-  "recommendations": string[],
-  "detailedAnalysis": {
-    "positioning": string,
-    "competition": string,
-    "launchStrategy": string,
-    "compliance": string,
-    "marketing": string
-  },
-  "listingPack": {
-    "title": string,
-    "bullets": string[],
-    "description": string,
-    "keywords": {
-      "primary": string[],
-      "secondary": string[],
-      "longTail": string[]
+  "idqAnalysis": {
+    "title": {
+      "current": string,
+      "issues": string[],
+      "optimized": string
     },
-    "imageGallery": {
-      "mainImage": string,
-      "lifestyleImage": string,
-      "benefitsInfographic": string,
-      "howToUse": string,
-      "measurements": string,
-      "comparison": string
+    "bullets": {
+      "current": string[],
+      "issues": string[],
+      "optimized": string[]
+    },
+    "description": {
+      "current": string,
+      "issues": string[],
+      "optimized": string
+    },
+    "keywords": {
+      "current": string[],
+      "issues": string[],
+      "optimized": {
+        "primary": string[],
+        "secondary": string[],
+        "longTail": string[]
+      }
+    },
+    "images": {
+      "current": string[],
+      "issues": string[],
+      "required": {
+        "mainImage": string,
+        "lifestyleImage": string,
+        "benefitsInfographic": string,
+        "howToUse": string,
+        "measurements": string,
+        "comparison": string
+      }
+    },
+    "compliance": {
+      "current": string,
+      "issues": string[],
+      "requirements": string[]
     }
+  },
+  "summary": {
+    "overallReadiness": string,
+    "keyImprovements": string[],
+    "nextSteps": string[]
   }
 }
 

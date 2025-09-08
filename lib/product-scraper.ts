@@ -13,6 +13,10 @@ export interface GenericProductData {
   reviewCount?: string;
   url: string;
   domain: string;
+  // Raw content for AI analysis
+  rawContent?: string;
+  headings?: string[];
+  paragraphs?: string[];
 }
 
 export interface ScrapingError {
@@ -50,10 +54,13 @@ export async function scrapeProductPage(url: string): Promise<GenericProductData
 
     const html = await response.text();
     
-    // Extract data using regex patterns (works for most websites)
-    const productData: GenericProductData = {
-      url,
-      domain,
+    // Extract raw content for AI analysis
+    const rawContent = extractRawContent(html);
+    const headings = extractHeadings(html);
+    const paragraphs = extractParagraphs(html);
+    
+    // Try to extract structured data (fallback)
+    const structuredData = {
       title: extractTitle(html),
       description: extractDescription(html),
       price: extractPrice(html),
@@ -64,6 +71,15 @@ export async function scrapeProductPage(url: string): Promise<GenericProductData
       availability: extractAvailability(html),
       rating: extractRating(html),
       reviewCount: extractReviewCount(html)
+    };
+    
+    const productData: GenericProductData = {
+      url,
+      domain,
+      rawContent,
+      headings,
+      paragraphs,
+      ...structuredData
     };
 
     console.log('Successfully scraped product data:', {
@@ -85,7 +101,53 @@ export async function scrapeProductPage(url: string): Promise<GenericProductData
   }
 }
 
-// Helper functions to extract data using regex patterns
+// Helper functions to extract raw content for AI analysis
+function extractRawContent(html: string): string {
+  // Remove script and style tags
+  let content = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+  content = content.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+  
+  // Remove HTML tags but keep text content
+  content = content.replace(/<[^>]*>/g, ' ');
+  
+  // Clean up whitespace
+  content = content.replace(/\s+/g, ' ').trim();
+  
+  // Limit to first 2000 characters to avoid token limits
+  return content.substring(0, 2000);
+}
+
+function extractHeadings(html: string): string[] {
+  const headings: string[] = [];
+  const headingPattern = /<h[1-6][^>]*>([^<]+)<\/h[1-6]>/gi;
+  let match;
+  
+  while ((match = headingPattern.exec(html)) !== null) {
+    const heading = match[1].trim().replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    if (heading && heading.length > 3 && heading.length < 100) {
+      headings.push(heading);
+    }
+  }
+  
+  return headings.slice(0, 10); // Limit to first 10 headings
+}
+
+function extractParagraphs(html: string): string[] {
+  const paragraphs: string[] = [];
+  const paragraphPattern = /<p[^>]*>([^<]+)<\/p>/gi;
+  let match;
+  
+  while ((match = paragraphPattern.exec(html)) !== null) {
+    const paragraph = match[1].trim().replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    if (paragraph && paragraph.length > 20 && paragraph.length < 300) {
+      paragraphs.push(paragraph);
+    }
+  }
+  
+  return paragraphs.slice(0, 5); // Limit to first 5 paragraphs
+}
+
+// Helper functions to extract structured data (fallback)
 function extractTitle(html: string): string | undefined {
   // Try various title patterns
   const patterns = [

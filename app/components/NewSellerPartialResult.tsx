@@ -49,10 +49,10 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                     <div className="text-2xl sm:text-3xl font-bold text-white">Analyzing...</div>
                     <div className="text-orange-100 text-sm">AI processing</div>
                   </>
-                ) : score !== undefined ? (
+                ) : highlights && highlights.length > 0 ? (
                   <>
-                    <div className="text-2xl sm:text-3xl font-bold text-white">{score}/100</div>
-                    <div className="text-orange-100 text-sm">Listing Score</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white">IDQ Ready</div>
+                    <div className="text-orange-100 text-sm">Optimized for Amazon</div>
                   </>
                 ) : (
                   <>
@@ -156,7 +156,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                     </div>
                   ) : highlights && highlights.length > 0 ? (
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">AI Analysis Highlights:</h4>
+                      <h4 className="font-medium text-gray-900 mb-2">IDQ Analysis Highlights:</h4>
                       <ul className="text-sm text-gray-700 space-y-1">
                         {highlights.map((highlight, index) => (
                           <li key={index}>• {highlight}</li>
@@ -165,13 +165,14 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                     </div>
                   ) : (
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">What You&apos;ll Get:</h4>
+                      <h4 className="font-medium text-gray-900 mb-2">IDQ Optimization Guide:</h4>
                       <ul className="text-sm text-gray-700 space-y-1">
-                        <li>• 5-10 benefit-focused bullet points</li>
+                        <li>• Field-by-field IDQ analysis</li>
+                        <li>• Optimized title for highest IDQ score</li>
+                        <li>• IDQ-compliant bullet points</li>
                         <li>• SEO-optimized product description</li>
-                        <li>• Keyword-rich content for better indexing</li>
-                        <li>• Conversion-optimized copy</li>
-                        <li>• Ready-to-use Amazon listing</li>
+                        <li>• Complete keyword strategy</li>
+                        <li>• 6-image requirements for IDQ</li>
                       </ul>
                     </div>
                   )}
