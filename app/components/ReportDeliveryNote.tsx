@@ -14,8 +14,12 @@ export default function ReportDeliveryNote({ email }: { email: string }) {
             Check your email!
           </h2>
           <p className="text-lg text-muted-foreground mb-4">
-            Your complete Amazon audit report is on its way to <strong>{email}</strong>
+            Your complete Amazon audit report with PDF attachment is on its way to <strong>{email}</strong>
           </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg mb-4">
+            <span className="text-green-600">✓</span>
+            <span className="text-sm font-medium">PDF Report Sent</span>
+          </div>
           <p className="text-sm text-muted-foreground mb-8">
             Didn&apos;t receive it? Check your spam folder or contact us at hello@e-ctrl.example
           </p>
@@ -38,6 +42,10 @@ export default function ReportDeliveryNote({ email }: { email: string }) {
               <div className="flex items-center gap-3">
                 <span className="text-accent">📈</span>
                 <span>Conversion rate improvement tips</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-accent">📄</span>
+                <span>Complete PDF report with all details</span>
               </div>
             </div>
           </div>

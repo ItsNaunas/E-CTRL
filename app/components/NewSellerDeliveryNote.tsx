@@ -14,8 +14,11 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
                 Your Amazon Listing is Being Created!
               </h2>
               <p className="text-orange-100 mt-2">
-                Check your email for your complete listing package
+                Check your email for your complete listing package with PDF
               </p>
+              <div className="mt-3 bg-orange-400/30 rounded-lg px-4 py-2 inline-block">
+                <span className="text-orange-100 text-sm font-medium">✓ PDF Report Sent</span>
+              </div>
             </div>
           </div>
 
@@ -57,6 +60,10 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
                   <div className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">✓</span>
                     <span className="text-gray-700">Step-by-step upload guide</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-green-500 mt-1">✓</span>
+                    <span className="text-gray-700">Complete PDF listing pack</span>
                   </div>
                 </div>
               </div>

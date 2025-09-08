@@ -52,7 +52,19 @@ export async function sendWelcomeEmail(data: EmailData) {
     let pdfAttachment = null;
     if (data.score !== undefined || data.detailedAnalysis) {
       try {
-        console.log('Generating PDF...');
+        console.log('=== PDF GENERATION START ===');
+        console.log('PDF Data received:', {
+          hasScore: data.score !== undefined,
+          hasHighlights: !!data.highlights,
+          hasRecommendations: !!data.recommendations,
+          hasDetailedAnalysis: !!data.detailedAnalysis,
+          mode: data.mode,
+          asin: data.asin,
+          name: data.name,
+          email: data.to
+        });
+        
+        console.log('Calling generatePDF function...');
         const pdfDoc = generatePDF({
           name: data.name,
           email: data.to,
@@ -69,9 +81,19 @@ export async function sendWelcomeEmail(data: EmailData) {
           productDesc: data.productDesc
         });
         
+        console.log('PDF document created successfully');
+        
+        console.log('Converting PDF to blob...');
         const pdfBlob = getPDFBlob(pdfDoc);
+        console.log('PDF blob created, size:', pdfBlob.size, 'bytes');
+        
+        console.log('Converting blob to buffer...');
         const pdfBuffer = await pdfBlob.arrayBuffer();
+        console.log('PDF buffer created, size:', pdfBuffer.byteLength, 'bytes');
+        
+        console.log('Converting buffer to base64...');
         const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
+        console.log('PDF base64 created, length:', pdfBase64.length);
         
         pdfAttachment = {
           filename: data.mode === 'audit' 
@@ -81,11 +103,36 @@ export async function sendWelcomeEmail(data: EmailData) {
           contentType: 'application/pdf'
         };
         
-        console.log('PDF generated successfully, size:', pdfBlob.size, 'bytes');
+        console.log('PDF attachment created successfully');
+        console.log('Attachment details:', {
+          filename: pdfAttachment.filename,
+          contentType: pdfAttachment.contentType,
+          contentLength: pdfAttachment.content.length
+        });
+        console.log('=== PDF GENERATION SUCCESS ===');
       } catch (pdfError) {
-        console.error('PDF generation failed:', pdfError);
+        console.error('=== PDF GENERATION FAILED ===');
+        console.error('PDF generation error:', pdfError);
+        console.error('Error type:', typeof pdfError);
+        console.error('Error message:', pdfError instanceof Error ? pdfError.message : String(pdfError));
+        console.error('Error stack:', pdfError instanceof Error ? pdfError.stack : 'No stack trace');
+        console.error('Data that caused the error:', {
+          hasScore: data.score !== undefined,
+          hasHighlights: !!data.highlights,
+          hasRecommendations: !!data.recommendations,
+          hasDetailedAnalysis: !!data.detailedAnalysis,
+          mode: data.mode
+        });
         // Continue without PDF if generation fails
       }
+    } else {
+      console.log('=== PDF GENERATION SKIPPED ===');
+      console.log('No score or detailed analysis data available');
+      console.log('Data received:', {
+        score: data.score,
+        hasDetailedAnalysis: !!data.detailedAnalysis,
+        mode: data.mode
+      });
     }
     
     // Use a verified sender domain or the default Resend domain
@@ -155,7 +202,15 @@ export async function sendWelcomeEmail(data: EmailData) {
     // Add PDF attachment if available
     if (pdfAttachment) {
       emailData.attachments = [pdfAttachment];
-      console.log('PDF attachment added to email');
+      console.log('=== PDF ATTACHMENT ADDED TO EMAIL ===');
+      console.log('Attachment details:', {
+        filename: pdfAttachment.filename,
+        contentType: pdfAttachment.contentType,
+        contentLength: pdfAttachment.content.length
+      });
+    } else {
+      console.log('=== NO PDF ATTACHMENT ===');
+      console.log('Email will be sent without PDF attachment');
     }
     
     const resend = getResendClient();

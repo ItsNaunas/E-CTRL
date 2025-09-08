@@ -125,21 +125,6 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
               )}
             </div>
 
-            {/* PDF Download Section - Only show when we have results */}
-            {score !== undefined && !isLoading && (
-              <div className="text-center pt-6 border-t border-gray-100 mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                  📄 Download Your Report
-                </h4>
-                <p className="text-gray-600 mb-4">
-                  Your detailed audit report has been sent to your email with a PDF attachment!
-                </p>
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm font-medium">PDF Report Sent</span>
-                </div>
-              </div>
-            )}
 
             {/* Unlock CTA */}
             <div className="text-center pt-6 border-t border-gray-100">
