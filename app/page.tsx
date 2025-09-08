@@ -196,7 +196,20 @@ export default function HomePage() {
       console.log('Real preview result:', result);
       
       if (result.success && result.aiResult) {
-        setAiResult(result.aiResult);
+        // Convert new IDQ structure to old structure for compatibility
+        const idqAnalysis = result.aiResult.idqAnalysis;
+        const summary = result.aiResult.summary;
+        
+        setAiResult({
+          score: 0, // No score in new format
+          highlights: summary?.keyImprovements || [],
+          recommendations: summary?.nextSteps || [],
+          detailedAnalysis: {
+            idqAnalysis: idqAnalysis,
+            summary: summary
+          }
+        });
+        
         setShowPartial(true); // Show preview first
         
         // Scroll to preview
@@ -259,7 +272,20 @@ export default function HomePage() {
       console.log('Real manual preview result:', result);
       
       if (result.success && result.aiResult) {
-        setAiResult(result.aiResult);
+        // Convert new IDQ structure to old structure for compatibility
+        const idqAnalysis = result.aiResult.idqAnalysis;
+        const summary = result.aiResult.summary;
+        
+        setAiResult({
+          score: 0, // No score in new format
+          highlights: summary?.keyImprovements || [],
+          recommendations: summary?.nextSteps || [],
+          detailedAnalysis: {
+            idqAnalysis: idqAnalysis,
+            summary: summary
+          }
+        });
+        
         setShowPartial(true); // Show preview first
         
         // Scroll to preview
@@ -485,11 +511,18 @@ export default function HomePage() {
         
         // Update the AI result with the real data
         if (result.aiResult) {
+          // Convert new IDQ structure to old structure for compatibility
+          const idqAnalysis = result.aiResult.idqAnalysis;
+          const summary = result.aiResult.summary;
+          
           setAiResult({
-            score: result.aiResult.score || 0,
-            highlights: result.aiResult.highlights || [],
-            recommendations: result.aiResult.recommendations || [],
-            detailedAnalysis: result.aiResult.detailedAnalysis || {}
+            score: 0, // No score in new format
+            highlights: summary?.keyImprovements || [],
+            recommendations: summary?.nextSteps || [],
+            detailedAnalysis: {
+              idqAnalysis: idqAnalysis,
+              summary: summary
+            }
           });
         }
         

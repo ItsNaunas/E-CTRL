@@ -138,23 +138,52 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email to the user with PDF data
     try {
-      const emailResult = await sendWelcomeEmail({
-        to: validatedData.email,
-        name: validatedData.name || 'there',
-        mode: type === 'existing_seller' ? 'audit' : 'create',
-        // PDF generation data
-        score: aiResult.score,
-        highlights: aiResult.highlights,
-        recommendations: aiResult.recommendations,
-        detailedAnalysis: aiResult.detailedAnalysis,
-        // Type-safe property access
-        asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
-        productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
-        keywords: validatedData.keywords,
-        fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
-        category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
-        productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
-      });
+      // Handle both old and new AI result structures
+      let emailData;
+      if (aiResult.idqAnalysis) {
+        // New IDQ structure
+        emailData = {
+          to: validatedData.email,
+          name: validatedData.name || 'there',
+          mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
+          // PDF generation data - convert IDQ structure
+          score: 0, // No score in new format
+          highlights: aiResult.summary?.keyImprovements || [],
+          recommendations: aiResult.summary?.nextSteps || [],
+          detailedAnalysis: {
+            idqAnalysis: aiResult.idqAnalysis,
+            summary: aiResult.summary
+          },
+          // Type-safe property access
+          asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
+          productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
+          keywords: validatedData.keywords,
+          fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
+          category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
+          productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
+        };
+      } else {
+        // Old structure (for existing sellers)
+        emailData = {
+          to: validatedData.email,
+          name: validatedData.name || 'there',
+          mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
+          // PDF generation data
+          score: aiResult.score,
+          highlights: aiResult.highlights,
+          recommendations: aiResult.recommendations,
+          detailedAnalysis: aiResult.detailedAnalysis,
+          // Type-safe property access
+          asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
+          productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
+          keywords: validatedData.keywords,
+          fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
+          category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
+          productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
+        };
+      }
+
+      const emailResult = await sendWelcomeEmail(emailData);
 
       if (emailResult.success) {
         console.log('Welcome email sent successfully:', emailResult.messageId);
