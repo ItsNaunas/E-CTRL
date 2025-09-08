@@ -163,50 +163,39 @@ export default function HomePage() {
     setIsAnalyzing(true);
     
     try {
-      // Generate preview report with demo email first
-      const requestBody = {
-        type: 'new_seller',
-        data: {
-          name: 'Demo User',
-          email: 'demo@example.com', // Use demo email for preview
-          keywords: ["eco friendly", "sustainable", "organic"],
-          websiteUrl: url,
-          category: "Home & Garden", // Required field
-          desc: "Eco-friendly product for sustainable living", // Required field
-          fulfilmentIntent: "FBA" as const, // Required field
-          image: { // Required field - placeholder
-            name: "placeholder.jpg",
-            size: 1024,
-            type: "image/jpeg"
-          }
+      // Generate preview WITHOUT creating database entry
+      // Just show what the analysis would look like
+      const mockAiResult = {
+        score: 85,
+        highlights: [
+          "Product positioning looks strong for the target market",
+          "Website provides good product information for analysis",
+          "Ready for Amazon listing optimization",
+          "Images and descriptions can be enhanced for better conversion"
+        ],
+        recommendations: [
+          "Optimize product title for better search visibility",
+          "Create compelling bullet points highlighting key benefits",
+          "Develop lifestyle images showing product in use",
+          "Write conversion-focused product description"
+        ],
+        detailedAnalysis: {
+          marketPotential: "High",
+          competitionLevel: "Medium",
+          optimizationOpportunities: "Multiple areas for improvement identified"
         }
       };
 
-      const response = await fetch('/api/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('New seller preview result:', result);
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      if (result.success && result.aiResult) {
-        setAiResult(result.aiResult);
-        setLeadId(result.leadId); // Store lead ID for later email update
-        setShowPartial(true); // Show preview first
-        
-        // Scroll to preview
-        setTimeout(() => {
-          scrollToElement('partial-result', 80);
-        }, 100);
-      } else {
-        console.error('Failed to generate preview:', result.error);
-      }
+      setAiResult(mockAiResult);
+      setShowPartial(true); // Show preview first
+      
+      // Scroll to preview
+      setTimeout(() => {
+        scrollToElement('partial-result', 80);
+      }, 100);
     } catch (error) {
       console.error('Error generating preview:', error);
     } finally {
@@ -227,50 +216,40 @@ export default function HomePage() {
     setIsAnalyzing(true);
     
     try {
-      // Generate preview report with demo email first
-      const requestBody = {
-        type: 'new_seller',
-        data: {
-          name: 'Demo User',
-          email: 'demo@example.com', // Use demo email for preview
-          keywords: data.keywords,
-          websiteUrl: undefined, // No website URL for manual input
-          category: data.category,
-          desc: data.description,
-          fulfilmentIntent: data.fulfilmentIntent as "FBA" | "FBM" | "Unsure",
-          image: { // Required field - placeholder
-            name: "placeholder.jpg",
-            size: 1024,
-            type: "image/jpeg"
-          }
+      // Generate preview WITHOUT creating database entry
+      // Just show what the analysis would look like
+      const mockAiResult = {
+        score: 78,
+        highlights: [
+          `Strong product concept in ${data.category} category`,
+          "Clear product description provides good foundation",
+          "Keywords show good market understanding",
+          "Ready for Amazon listing development"
+        ],
+        recommendations: [
+          "Develop compelling product title with key benefits",
+          "Create detailed bullet points highlighting unique features",
+          "Design lifestyle images showing product benefits",
+          "Write conversion-focused product description",
+          "Research competitor pricing and positioning"
+        ],
+        detailedAnalysis: {
+          categoryFit: "Good",
+          marketOpportunity: "Identified",
+          listingReadiness: "Foundation ready for optimization"
         }
       };
 
-      const response = await fetch('/api/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('New seller manual preview result:', result);
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      if (result.success && result.aiResult) {
-        setAiResult(result.aiResult);
-        setLeadId(result.leadId); // Store lead ID for later email update
-        setShowPartial(true); // Show preview first
-        
-        // Scroll to preview
-        setTimeout(() => {
-          scrollToElement('partial-result', 80);
-        }, 100);
-      } else {
-        console.error('Failed to generate preview:', result.error);
-      }
+      setAiResult(mockAiResult);
+      setShowPartial(true); // Show preview first
+      
+      // Scroll to preview
+      setTimeout(() => {
+        scrollToElement('partial-result', 80);
+      }, 100);
     } catch (error) {
       console.error('Error generating preview:', error);
     } finally {
@@ -444,30 +423,64 @@ export default function HomePage() {
     setIsAnalyzing(true);
     
     try {
-      console.log('Updating lead and sending email for:', email);
+      console.log('Creating report and sending email for:', email);
       
-      // Call submit-email API to update lead and send email
-      const response = await fetch('/api/submit-email', {
+      // For new sellers, create the actual report with user's email
+      let requestBody;
+      
+      if (mode === 'create' && (productUrl || manualProductData)) {
+        // New seller flow - create actual report with user's email
+        requestBody = {
+          type: 'new_seller',
+          data: {
+            name: email.split('@')[0], // Use email prefix as name
+            email: email, // Use the actual user email
+            keywords: manualProductData?.keywords || ["eco friendly", "sustainable", "organic"],
+            websiteUrl: productUrl || undefined,
+            category: manualProductData?.category || "Home & Garden",
+            desc: manualProductData?.description || "Eco-friendly product for sustainable living",
+            fulfilmentIntent: (manualProductData?.fulfilmentIntent || "FBA") as "FBA" | "FBM" | "Unsure",
+            image: { // Required field - placeholder
+              name: "placeholder.jpg",
+              size: 1024,
+              type: "image/jpeg"
+            }
+          }
+        };
+      } else {
+        console.error('Invalid mode or missing data for new seller report generation');
+        return;
+      }
+      
+      console.log('Creating report with user email:', requestBody);
+      
+      const response = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          name: email.split('@')[0], // Use email prefix as name
-          leadId: leadId // Include leadId for lead update
-        })
+        body: JSON.stringify(requestBody)
       });
       
       if (response.ok) {
         const result = await response.json();
-        console.log('Email sent and lead updated:', result);
+        console.log('Report created and email sent:', result);
+        
+        // Update the AI result with the real data
+        if (result.aiResult) {
+          setAiResult({
+            score: result.aiResult.score || 0,
+            highlights: result.aiResult.highlights || [],
+            recommendations: result.aiResult.recommendations || [],
+            detailedAnalysis: result.aiResult.detailedAnalysis || {}
+          });
+        }
         
         // Show delivery note (using existing emailSubmitted state)
         // The delivery note is already shown when emailSubmitted is true
       } else {
-        console.error('Failed to send email and update lead');
+        console.error('Failed to create report and send email');
       }
     } catch (error) {
-      console.error('Error generating report with user email:', error);
+      console.error('Error creating report with user email:', error);
     } finally {
       setIsAnalyzing(false);
     }
