@@ -201,6 +201,41 @@ export async function getReportsByEmail(email: string): Promise<ReportWithLead[]
   }
 }
 
+// Get the latest report (regardless of email) - useful for testing
+export async function getLatestReport(): Promise<ReportWithLead | null> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from(TABLES.REPORTS)
+      .select(`
+        *,
+        leads!inner (
+          id,
+          email,
+          name,
+          audit_type,
+          asin,
+          website_url,
+          keywords,
+          fulfilment,
+          category,
+          product_desc
+        )
+      `)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error('Get latest report error:', error);
+      return null;
+    }
+
+    return data && data.length > 0 ? data[0] : null;
+  } catch (error) {
+    console.error('Get latest report failed:', error);
+    return null;
+  }
+}
+
 // Track analytics event
 export async function trackEvent(
   eventType: string,

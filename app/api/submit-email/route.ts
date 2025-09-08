@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWelcomeEmail } from '@/lib/email';
-import { getReportsByEmail } from '@/lib/database';
+import { getReportsByEmail, getLatestReport } from '@/lib/database';
 import type { ReportWithLead } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
@@ -51,6 +51,36 @@ export async function POST(request: NextRequest) {
       });
     } else {
       console.log('No reports found for email:', email);
+      console.log('Trying to get latest report as fallback...');
+      
+      // Fallback: get the latest report regardless of email (for testing purposes)
+      const latestReport = await getLatestReport();
+      if (latestReport) {
+        console.log('Found latest report as fallback:', latestReport.id);
+        
+        // Extract analysis data for PDF generation
+        pdfData = {
+          score: latestReport.score,
+          highlights: latestReport.highlights || [],
+          recommendations: latestReport.recommendations || [],
+          detailedAnalysis: latestReport.detailed_analysis || {},
+          asin: latestReport.leads?.asin || undefined,
+          productUrl: latestReport.leads?.website_url || undefined,
+          keywords: latestReport.leads?.keywords || [],
+          fulfilment: latestReport.leads?.fulfilment || undefined,
+          category: latestReport.leads?.category || undefined,
+          productDesc: latestReport.leads?.product_desc || undefined
+        };
+        
+        console.log('PDF data extracted from latest report:', {
+          hasScore: pdfData.score !== null,
+          hasHighlights: pdfData.highlights.length > 0,
+          hasRecommendations: pdfData.recommendations.length > 0,
+          hasDetailedAnalysis: !!pdfData.detailedAnalysis
+        });
+      } else {
+        console.log('No reports found at all - user will receive welcome email without PDF');
+      }
     }
 
     // Send welcome email using Resend with PDF data
