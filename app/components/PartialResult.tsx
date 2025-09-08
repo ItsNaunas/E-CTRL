@@ -55,12 +55,6 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
     onUnlock();
   };
 
-  // TODO: Replace with real audit data from API
-  const placeholderHighlights = [
-    "Bullet clarity issues", // TODO: bind to actual audit finding
-    "Keyword gap: eco friendly", // TODO: bind to actual keyword analysis
-    "Image compliance not met" // TODO: bind to actual image audit
-  ];
 
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">

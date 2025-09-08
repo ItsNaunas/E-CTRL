@@ -18,18 +18,8 @@ export const copy = {
   ],
   toolIntro: "Pick your path, fill the form, get a summary now. We'll email the full report.",
   usageNote: "1 free report per email per day.",
-  existingSummaryMock: [
-    "AI analysis in progress...",
-    "Add a missing keyword to the title for relevance",
-    "Main image meets size; confirm pure white background"
-  ],
-  newSummaryMock: [
-    "AI analysis in progress...",
-    "Category is moderately competitive—emphasise benefits in bullets",
-    "We'll email your full report and image guidance"
-  ],
   footer: "© e-ctrl. All rights reserved.",
-  contactMailto: "hello@e-ctrl.example",
+  contactMailto: "hello@e-ctrl.com",
   consentLine: "By continuing you agree to our Terms and acknowledge our Privacy Policy. We'll email your report. Uploaded images are processed to generate variants.",
   
   // Navigation

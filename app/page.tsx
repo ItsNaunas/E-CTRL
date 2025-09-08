@@ -104,7 +104,7 @@ export default function HomePage() {
           data: {
             ...sampleData,
             asin: asin,
-            email: 'naunas@hotmail.com', // Use your verified email for testing
+            email: userEmail || 'demo@example.com', // Use actual user email
             name: 'Demo User' // Add required name field
           }
         };
@@ -159,7 +159,7 @@ export default function HomePage() {
         type: 'new_seller',
         data: {
           name: 'Demo User',
-          email: 'naunas@hotmail.com', // Use your verified email for testing
+          email: userEmail || 'demo@example.com', // Use actual user email
           keywords: ["eco friendly", "sustainable", "organic"],
           websiteUrl: url,
           category: "Home & Garden", // Required field

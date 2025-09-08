@@ -14,6 +14,7 @@ import {
 } from '@/lib/database';
 import { analyzeExistingSeller, analyzeNewSeller } from '@/lib/ai';
 import { sendWelcomeEmail } from '@/lib/email';
+import { scrapeProduct } from '@/lib/amazon-scraper';
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,7 +70,17 @@ export async function POST(request: NextRequest) {
     
     let aiResult;
     if (type === 'existing_seller') {
-      aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData);
+      // Scrape Amazon product data first
+      console.log('Scraping Amazon product data for ASIN:', (validatedData as ExistingSellerData).asin);
+      const productData = await scrapeProduct((validatedData as ExistingSellerData).asin);
+      
+      if ('error' in productData) {
+        console.warn('Scraping failed, proceeding with limited data:', productData.error);
+        aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData);
+      } else {
+        console.log('Successfully scraped product data, analyzing with real data');
+        aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData, productData);
+      }
     } else {
       aiResult = await analyzeNewSeller(validatedData as NewSellerData);
     }

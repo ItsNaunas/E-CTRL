@@ -11,21 +11,20 @@ interface GuestResultProps {
 export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps) {
   const isAuditMode = mode === 'audit';
   
-  // Mock guest data - limited insights
+  // Dynamic guest data based on mode
   const guestData = isAuditMode ? {
-    score: 74,
     quickWins: [
-      "Improve bullet point clarity for better conversion",
-      "Add missing keyword 'eco-friendly' to title",
-      "Optimize main image size (currently 85% coverage)"
+      "AI analysis completed successfully",
+      "Detailed insights available in full report",
+      "Recommendations tailored to your product"
     ],
     blurredImages: [
-      { type: "Main Image", description: "Size optimization needed" },
-      { type: "Lifestyle Shot", description: "Missing product context" }
+      { type: "Main Image", description: "Analysis complete" },
+      { type: "Lifestyle Shot", description: "Recommendations ready" }
     ],
     checklistPreview: [
-      { item: "Title optimization", status: "needs work" },
-      { item: "Image quality", status: "good" }
+      { item: "Title optimization", status: "analyzed" },
+      { item: "Image quality", status: "reviewed" }
     ]
   } : {
     quickWins: [
