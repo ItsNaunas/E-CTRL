@@ -54,6 +54,12 @@ export default function HomePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasUserInput, setHasUserInput] = useState(false);
   const [leadId, setLeadId] = useState<string | null>(null);
+  const [manualProductData, setManualProductData] = useState<{
+    category: string;
+    description: string;
+    keywords: string[];
+    fulfilmentIntent: string;
+  } | null>(null);
 
   // Real data for AI analysis
   const sampleData = useMemo(() => ({
@@ -153,6 +159,26 @@ export default function HomePage() {
   // Handle product URL submission from NewSellerHero
   const handleProductUrlSubmit = async (url: string) => {
     setProductUrl(url);
+    setHasUserInput(true);
+    
+    // Show email gate first instead of generating report immediately
+    setShowEmailGate(true);
+    
+    // Scroll to email gate
+    setTimeout(() => {
+      scrollToElement('email-gate', 80);
+    }, 100);
+  };
+
+  // Handle manual product data submission from NewSellerHero
+  const handleManualProductSubmit = async (data: {
+    category: string;
+    description: string;
+    keywords: string[];
+    fulfilmentIntent: string;
+  }) => {
+    // Store the manual data for later use
+    setManualProductData(data);
     setHasUserInput(true);
     
     // Show email gate first instead of generating report immediately
@@ -343,18 +369,18 @@ export default function HomePage() {
             name: 'Demo User'
           }
         };
-      } else if (mode === 'create' && productUrl) {
+      } else if (mode === 'create' && (productUrl || manualProductData)) {
         // New seller flow
         requestBody = {
           type: 'new_seller',
           data: {
             name: 'Demo User',
             email: email, // Use the actual user email
-            keywords: ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl,
-            category: "Home & Garden", // Required field
-            desc: "Eco-friendly product for sustainable living", // Required field
-            fulfilmentIntent: "FBA" as const, // Required field
+            keywords: manualProductData?.keywords || ["eco friendly", "sustainable", "organic"],
+            websiteUrl: productUrl || undefined,
+            category: manualProductData?.category || "Home & Garden",
+            desc: manualProductData?.description || "Eco-friendly product for sustainable living",
+            fulfilmentIntent: (manualProductData?.fulfilmentIntent || "FBA") as "FBA" | "FBM" | "Unsure",
             image: { // Required field - placeholder
               name: "placeholder.jpg",
               size: 1024,
@@ -457,7 +483,10 @@ export default function HomePage() {
       {mode === 'audit' ? (
         <Hero onAsinSubmit={handleAsinSubmit} />
       ) : (
-        <NewSellerHero onUrlSubmit={handleProductUrlSubmit} />
+        <NewSellerHero 
+          onUrlSubmit={handleProductUrlSubmit} 
+          onManualSubmit={handleManualProductSubmit}
+        />
       )}
 
       {/* Trust Bar - Build Credibility */}

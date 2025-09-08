@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import type { ExistingSellerData, NewSellerData } from './validation';
 import type { AmazonProductData } from './amazon-scraper';
+import type { GenericProductData } from './product-scraper';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -108,16 +109,32 @@ Focus on Amazon's IDQ requirements and UK/EU marketplace best practices.`;
 }
 
 // AI-powered listing pack generation for new sellers
-export async function analyzeNewSeller(data: NewSellerData) {
+export async function analyzeNewSeller(data: NewSellerData, productData?: GenericProductData) {
   const prompt = `You are an expert Amazon FBA consultant creating a complete listing pack for a new seller.
 
-Product Details:
+${productData ? `
+REAL PRODUCT DATA (scraped from website):
+- Website: ${productData.url}
+- Domain: ${productData.domain}
+- Title: ${productData.title || 'Not found'}
+- Description: ${productData.description || 'Not found'}
+- Price: ${productData.price || 'Not found'}
+- Brand: ${productData.brand || 'Not found'}
+- Category: ${productData.category || 'Not found'}
+- Features: ${productData.features?.join(', ') || 'Not found'}
+- Images: ${productData.images?.length || 0} images available
+- Rating: ${productData.rating || 'Not found'}
+- Reviews: ${productData.reviewCount || 'Not found'}
+- Availability: ${productData.availability || 'Not found'}
+` : `
+PRODUCT DETAILS (user provided):
 - Category: ${data.category}
 - Description: ${data.desc}
 - Keywords: ${data.keywords?.join(', ') || 'None provided'}
 - Fulfilment Intent: ${data.fulfilmentIntent || 'Not specified'}
 - Website: ${data.websiteUrl || 'No website'}
 - No Website Description: ${data.noWebsiteDesc || 'N/A'}
+`}
 
 Please create a comprehensive Amazon listing pack with:
 

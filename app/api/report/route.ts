@@ -15,6 +15,7 @@ import {
 import { analyzeExistingSeller, analyzeNewSeller } from '@/lib/ai';
 import { sendWelcomeEmail } from '@/lib/email';
 import { scrapeProduct } from '@/lib/amazon-scraper';
+import { scrapeProductPage, type GenericProductData } from '@/lib/product-scraper';
 
 export async function POST(request: NextRequest) {
   try {
@@ -82,7 +83,25 @@ export async function POST(request: NextRequest) {
         aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData, productData);
       }
     } else {
-      aiResult = await analyzeNewSeller(validatedData as NewSellerData);
+      // For new sellers, try to scrape product data if website URL is provided
+      let productData: GenericProductData | undefined = undefined;
+      const newSellerData = validatedData as NewSellerData;
+      
+      if (newSellerData.websiteUrl) {
+        console.log('Scraping product data for new seller website:', newSellerData.websiteUrl);
+        const scrapedData = await scrapeProductPage(newSellerData.websiteUrl);
+        
+        if ('error' in scrapedData) {
+          console.warn('Product scraping failed, proceeding with user data:', scrapedData.error);
+        } else {
+          console.log('Successfully scraped product data for new seller');
+          productData = scrapedData;
+        }
+      } else {
+        console.log('No website URL provided, using user-provided data only');
+      }
+      
+      aiResult = await analyzeNewSeller(newSellerData, productData);
     }
 
     console.log('AI Result:', aiResult);
