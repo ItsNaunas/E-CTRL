@@ -138,22 +138,23 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email to the user with PDF data
     try {
-      // Handle both old and new AI result structures
-      let emailData;
-      if (aiResult.idqAnalysis) {
-        // New IDQ structure
-        emailData = {
-          to: validatedData.email,
-          name: validatedData.name || 'there',
-          mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
-          // PDF generation data - convert IDQ structure
-          score: 0, // No score in new format
-          highlights: aiResult.summary?.keyImprovements || [],
-          recommendations: aiResult.summary?.nextSteps || [],
-          detailedAnalysis: {
-            idqAnalysis: aiResult.idqAnalysis,
-            summary: aiResult.summary
-          },
+        // Handle both old and new AI result structures
+        let emailData;
+        if (aiResult.idqAnalysis) {
+          // New IDQ structure
+          emailData = {
+            to: validatedData.email,
+            name: validatedData.name || 'there',
+            mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
+            // PDF generation data - convert IDQ structure
+            score: aiResult.binaryIdqResult?.qualityPercent || 0, // Use binary IDQ score
+            highlights: aiResult.summary?.keyImprovements || [],
+            recommendations: aiResult.summary?.nextSteps || [],
+            detailedAnalysis: {
+              idqAnalysis: aiResult.idqAnalysis,
+              summary: aiResult.summary,
+              binaryIdqResult: aiResult.binaryIdqResult // Include binary results in PDF
+            },
           // Type-safe property access
           asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
           productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
@@ -162,17 +163,20 @@ export async function POST(request: NextRequest) {
           category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
           productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
         };
-      } else {
-        // Old structure (for existing sellers)
-        emailData = {
-          to: validatedData.email,
-          name: validatedData.name || 'there',
-          mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
-          // PDF generation data
-          score: aiResult.score,
-          highlights: aiResult.highlights,
-          recommendations: aiResult.recommendations,
-          detailedAnalysis: aiResult.detailedAnalysis,
+        } else {
+          // Old structure (for existing sellers)
+          emailData = {
+            to: validatedData.email,
+            name: validatedData.name || 'there',
+            mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
+            // PDF generation data
+            score: aiResult.binaryIdqResult?.qualityPercent || aiResult.score, // Use binary IDQ score if available
+            highlights: aiResult.highlights,
+            recommendations: aiResult.recommendations,
+            detailedAnalysis: {
+              ...aiResult.detailedAnalysis,
+              binaryIdqResult: aiResult.binaryIdqResult // Include binary results in PDF
+            },
           // Type-safe property access
           asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
           productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,

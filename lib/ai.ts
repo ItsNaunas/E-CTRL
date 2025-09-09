@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import type { ExistingSellerData, NewSellerData } from './validation';
 import type { AmazonProductData } from './amazon-scraper';
 import type { GenericProductData } from './product-scraper';
+import { evaluateIdq, type IdqConfig, type IdqResult } from './idq-evaluator';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -9,6 +10,18 @@ const openai = new OpenAI({
 
 // AI-powered audit analysis for existing sellers with real Amazon data
 export async function analyzeExistingSeller(data: ExistingSellerData, productData?: AmazonProductData) {
+  // First, run binary IDQ evaluation if we have HTML content
+  let binaryIdqResult: IdqResult | null = null;
+  if (productData?.htmlContent) {
+    const idqConfig: IdqConfig = {
+      keywords: data.keywords || [],
+      maxTitleLength: 200,
+      minBulletCount: 5,
+      minDescriptionChars: 200,
+      minImageCount: 6
+    };
+    binaryIdqResult = evaluateIdq(productData.htmlContent, idqConfig);
+  }
   const prompt = `You are an expert Amazon FBA consultant analyzing a product listing for UK/EU markets using Amazon's IDQ (Item Data Quality) criteria.
 
 ${productData ? `
@@ -30,27 +43,44 @@ PRODUCT DETAILS (No real data available):
 - Fulfilment: ${data.fulfilment || 'Not specified'}
 `}
 
-Please provide a comprehensive Amazon IDQ audit with:
+${binaryIdqResult ? `
+BINARY IDQ EVALUATION RESULTS:
+- Binary Score: ${binaryIdqResult.score}/${binaryIdqResult.maxPossible} (${binaryIdqResult.qualityPercent}%)
+- Grade: ${binaryIdqResult.grade}
+- Failed Checks: ${binaryIdqResult.notes.join(', ')}
+- Brand Found: ${binaryIdqResult.checks.has_brand ? 'Yes' : 'No'}
+- Title Starts with Brand: ${binaryIdqResult.checks.title_starts_with_brand ? 'Yes' : 'No'}
+- Title Length OK: ${binaryIdqResult.checks.title_correct_length ? 'Yes' : 'No'}
+- Bullets Count: ${binaryIdqResult.checks.has_bullets_5plus ? '≥5' : '<5'}
+- Description Length: ${binaryIdqResult.checks.has_description_200plus ? '≥200 chars' : '<200 chars'}
+- A+ Content: ${binaryIdqResult.checks.has_aplus ? 'Yes' : 'No'}
+- Premium A+: ${binaryIdqResult.checks.has_premium_aplus ? 'Yes' : 'No'}
+- Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
+- Image Count: ${binaryIdqResult.checks.images_6plus ? '≥6' : '<6'}
+- Keywords Found: ${binaryIdqResult.checks.has_keywords ? 'Yes' : 'No'}
+- Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
+- Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
+- Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
+` : ''}
 
-1. **IDQ Score (0-100)**: Rate based on Amazon's Item Data Quality criteria:
-   - Title Quality (25 points): Length, keywords, brand, compliance
-   - Bullet Points (25 points): All 5 filled, benefits, keywords
-   - Product Images (20 points): Main image compliance, all 7 slots
-   - Product Description (15 points): Content, keywords, formatting
-   - Product Information (10 points): Attributes, categorization
-   - Keywords & Search Terms (5 points): Relevance, placement
+Please provide a comprehensive Amazon IDQ audit that builds upon the binary evaluation results:
 
-2. **Key Highlights (3-5 points)**: Most critical IDQ findings that impact discoverability
+1. **IDQ Score (0-100)**: Use the binary score as foundation, then adjust based on content quality analysis:
+   - Base Score: ${binaryIdqResult ? binaryIdqResult.qualityPercent : 'Calculate from data'}
+   - Content Quality Adjustments: ±10 points based on keyword optimization, benefit focus, and conversion potential
+   - Final Score: Weighted combination of binary compliance and content quality
 
-3. **Actionable Recommendations (3-5 points)**: Specific steps to improve IDQ score
+2. **Key Highlights (3-5 points)**: Focus on the most critical issues from binary evaluation and content analysis
 
-4. **Detailed IDQ Analysis**: In-depth breakdown of:
-   - Title Quality: Character count, keyword density, brand placement, compliance
-   - Bullet Points: Count, benefit focus, keyword integration, formatting
-   - Product Images: Main image compliance, gallery completeness, quality
-   - Product Description: Content depth, keyword usage, formatting
-   - Product Information: Attribute completeness, categorization accuracy
-   - Keywords: Primary/secondary/long-tail coverage, search term optimization
+3. **Actionable Recommendations (3-5 points)**: Prioritize fixes for failed binary checks, then content optimization
+
+4. **Detailed IDQ Analysis**: In-depth breakdown incorporating binary results:
+   - Title Quality: Binary compliance + keyword density, brand placement, conversion optimization
+   - Bullet Points: Binary compliance + benefit focus, keyword integration, formatting
+   - Product Images: Binary compliance + quality assessment, conversion optimization
+   - Product Description: Binary compliance + content depth, keyword usage, formatting
+   - Product Information: Binary compliance + attribute completeness, categorization
+   - Keywords: Binary compliance + primary/secondary/long-tail coverage, search optimization
 
 Format your response as JSON:
 {
@@ -79,10 +109,11 @@ Format your response as JSON:
     "descriptionScore": number,
     "informationScore": number,
     "keywordsScore": number
-  }
+  },
+  "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on Amazon's IDQ requirements and UK/EU marketplace best practices.`;
+Focus on Amazon's IDQ requirements and UK/EU marketplace best practices. Use the binary evaluation as the foundation and enhance with content quality insights.`;
 
   try {
     const completion = await openai.chat.completions.create({
@@ -97,10 +128,19 @@ Focus on Amazon's IDQ requirements and UK/EU marketplace best practices.`;
 
     // Try to parse JSON response
     try {
-      return JSON.parse(response);
+      const result = JSON.parse(response);
+      // Ensure binary IDQ result is included
+      if (binaryIdqResult && !result.binaryIdqResult) {
+        result.binaryIdqResult = binaryIdqResult;
+      }
+      return result;
     } catch {
       // Fallback: extract structured data from text
-      return parseAIResponse(response);
+      const fallbackResult = parseAIResponse(response);
+      if (binaryIdqResult && !fallbackResult.binaryIdqResult) {
+        fallbackResult.binaryIdqResult = binaryIdqResult;
+      }
+      return fallbackResult;
     }
   } catch (error) {
     console.error('AI analysis failed:', error);
@@ -110,6 +150,18 @@ Focus on Amazon's IDQ requirements and UK/EU marketplace best practices.`;
 
 // AI-powered listing pack generation for new sellers
 export async function analyzeNewSeller(data: NewSellerData, productData?: GenericProductData) {
+  // First, run binary IDQ evaluation if we have HTML content
+  let binaryIdqResult: IdqResult | null = null;
+  if (productData?.rawContent) {
+    const idqConfig: IdqConfig = {
+      keywords: data.keywords || [],
+      maxTitleLength: 200,
+      minBulletCount: 5,
+      minDescriptionChars: 200,
+      minImageCount: 6
+    };
+    binaryIdqResult = evaluateIdq(productData.rawContent, idqConfig);
+  }
   const prompt = `You are an expert Amazon FBA consultant creating a complete listing pack for a new seller.
 
 ${productData ? `
@@ -148,6 +200,25 @@ PRODUCT DETAILS (user provided):
 - No Website Description: ${data.noWebsiteDesc || 'N/A'}
 `}
 
+${binaryIdqResult ? `
+BINARY IDQ EVALUATION RESULTS (from website analysis):
+- Binary Score: ${binaryIdqResult.score}/${binaryIdqResult.maxPossible} (${binaryIdqResult.qualityPercent}%)
+- Grade: ${binaryIdqResult.grade}
+- Failed Checks: ${binaryIdqResult.notes.join(', ')}
+- Brand Found: ${binaryIdqResult.checks.has_brand ? 'Yes' : 'No'}
+- Title Length OK: ${binaryIdqResult.checks.title_correct_length ? 'Yes' : 'No'}
+- Bullets Count: ${binaryIdqResult.checks.has_bullets_5plus ? '≥5' : '<5'}
+- Description Length: ${binaryIdqResult.checks.has_description_200plus ? '≥200 chars' : '<200 chars'}
+- A+ Content: ${binaryIdqResult.checks.has_aplus ? 'Yes' : 'No'}
+- Premium A+: ${binaryIdqResult.checks.has_premium_aplus ? 'Yes' : 'No'}
+- Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
+- Image Count: ${binaryIdqResult.checks.images_6plus ? '≥6' : '<6'}
+- Keywords Found: ${binaryIdqResult.checks.has_keywords ? 'Yes' : 'No'}
+- Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
+- Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
+- Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
+` : ''}
+
 IMPORTANT: If structured data is missing (like title, description, price), analyze the RAW PAGE CONTENT to extract:
 - Product name/title from headings or content
 - Product description from paragraphs
@@ -156,38 +227,38 @@ IMPORTANT: If structured data is missing (like title, description, price), analy
 - Brand information
 - Category clues
 
-Please create an IDQ-focused Amazon listing optimization guide. Instead of scoring, provide field-by-field analysis and recommendations to achieve the highest possible IDQ (Item Data Quality) score.
+Please create an IDQ-focused Amazon listing optimization guide that addresses the binary evaluation findings. Instead of scoring, provide field-by-field analysis and recommendations to achieve the highest possible IDQ (Item Data Quality) score.
 
 **IDQ Field Analysis & Recommendations:**
 
 1. **TITLE FIELD ANALYSIS**:
    - Current Title: [What we found from scraping]
-   - IDQ Issues: [Specific problems with current title]
+   - IDQ Issues: [Specific problems with current title based on binary evaluation]
    - Optimized Title: [IDQ-compliant title following Amazon's best practices]
 
 2. **BULLET POINTS ANALYSIS**:
    - Current Bullets: [What we found from scraping]
-   - IDQ Issues: [Missing elements, compliance issues]
+   - IDQ Issues: [Missing elements, compliance issues from binary evaluation]
    - Optimized Bullets: [5 bullet points optimized for IDQ and conversion]
 
 3. **PRODUCT DESCRIPTION ANALYSIS**:
    - Current Description: [What we found from scraping]
-   - IDQ Issues: [SEO, compliance, or structure problems]
+   - IDQ Issues: [SEO, compliance, or structure problems from binary evaluation]
    - Optimized Description: [IDQ-compliant description with proper formatting]
 
 4. **KEYWORDS ANALYSIS**:
    - Current Keywords: [What we found from scraping]
-   - IDQ Issues: [Missing keywords, poor keyword strategy]
+   - IDQ Issues: [Missing keywords, poor keyword strategy from binary evaluation]
    - Optimized Keywords: [Primary (3-5), Secondary (5-8), Long-tail (8-12)]
 
 5. **IMAGES ANALYSIS**:
    - Current Images: [What we found from scraping]
-   - IDQ Issues: [Missing image types, quality issues]
+   - IDQ Issues: [Missing image types, quality issues from binary evaluation]
    - Required Images: [6 specific image requirements for highest IDQ]
 
 6. **COMPLIANCE ANALYSIS**:
    - Current Compliance: [What we found]
-   - IDQ Issues: [Missing compliance elements]
+   - IDQ Issues: [Missing compliance elements from binary evaluation]
    - Compliance Requirements: [UK/EU specific requirements for IDQ]
 
 Format your response as JSON:
@@ -239,10 +310,11 @@ Format your response as JSON:
     "overallReadiness": string,
     "keyImprovements": string[],
     "nextSteps": string[]
-  }
+  },
+  "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on UK/EU Amazon marketplace requirements and conversion optimization.`;
+Focus on UK/EU Amazon marketplace requirements and conversion optimization. Use the binary evaluation results to prioritize the most critical IDQ issues.`;
 
   try {
     const completion = await openai.chat.completions.create({
@@ -261,11 +333,19 @@ Focus on UK/EU Amazon marketplace requirements and conversion optimization.`;
     try {
       const parsed = JSON.parse(response);
       console.log('Successfully parsed JSON (New Seller):', parsed);
+      // Ensure binary IDQ result is included
+      if (binaryIdqResult && !parsed.binaryIdqResult) {
+        parsed.binaryIdqResult = binaryIdqResult;
+      }
       return parsed;
     } catch (parseError) {
       console.log('JSON parse failed (New Seller), using fallback parser:', parseError);
       // Fallback: extract structured data from text
-      return parseAIResponse(response);
+      const fallbackResult = parseAIResponse(response);
+      if (binaryIdqResult && !fallbackResult.binaryIdqResult) {
+        fallbackResult.binaryIdqResult = binaryIdqResult;
+      }
+      return fallbackResult;
     }
   } catch (error) {
     console.error('AI analysis failed:', error);
@@ -473,6 +553,7 @@ function parseAIResponse(text: string) {
       descriptionScore: Math.floor(score * 0.15) || 10,
       informationScore: Math.floor(score * 0.10) || 7,
       keywordsScore: Math.floor(score * 0.05) || 3
-    }
+    },
+    binaryIdqResult: null as any // Will be set by the calling function if available
   };
 }

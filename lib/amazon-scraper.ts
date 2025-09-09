@@ -14,6 +14,7 @@ export interface AmazonProductData {
   category: string;
   features: string[];
   specifications: Record<string, string>;
+  htmlContent?: string; // Add HTML content for IDQ evaluation
 }
 
 export interface ScrapingError {
@@ -102,7 +103,8 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
       brand: '',
       category: '',
       features: [],
-      specifications: {}
+      specifications: {},
+      htmlContent: html // Include HTML content for IDQ evaluation
     };
 
     // Extract title using regex

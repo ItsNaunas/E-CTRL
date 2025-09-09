@@ -85,6 +85,49 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     doc.text(interpretation, 20, yPosition);
     yPosition += 20;
   }
+
+  // Binary IDQ Results section
+  if (data.detailedAnalysis?.binaryIdqResult) {
+    const binaryResult = data.detailedAnalysis.binaryIdqResult;
+    
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(16);
+    doc.setTextColor(37, 99, 235); // Blue color for section headers
+    doc.text('Binary IDQ Analysis', 20, yPosition);
+    yPosition += 8;
+    
+    // IDQ Score and Grade
+    doc.setFontSize(14);
+    doc.setTextColor(31, 41, 55);
+    doc.text(`Binary Score: ${binaryResult.score}/${binaryResult.maxPossible} (${binaryResult.qualityPercent}%)`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Grade: ${binaryResult.grade}`, 20, yPosition);
+    yPosition += 10;
+    
+    // Failed checks
+    if (binaryResult.notes && binaryResult.notes.length > 0) {
+      doc.setFontSize(12);
+      doc.setTextColor(239, 68, 68); // Red for issues
+      doc.text('Issues Found:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      binaryResult.notes.forEach((note: string) => {
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        doc.text(`• ${note}`, 25, yPosition);
+        yPosition += 5;
+      });
+      yPosition += 10;
+    }
+  }
   
   // Highlights section with improved styling
   if (data.highlights && data.highlights.length > 0) {
