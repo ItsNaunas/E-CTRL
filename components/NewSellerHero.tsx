@@ -272,76 +272,100 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
             </form>
           </div>
           
-          {/* Right Column - Preview */}
-          <div className="relative">
-            <div className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition overflow-hidden">
-              {/* Amazon Listing Preview */}
-              <div className="relative">
-                <div className="bg-gradient-to-r from-[#007AFF] to-[#FF6B00] px-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-white font-semibold text-lg">Amazon Listing Preview</h3>
-                    <div className="text-white text-sm">Ready to Launch</div>
-                  </div>
-                </div>
-                
-                <div className="p-6 space-y-4">
-                  <div className="text-center py-4">
-                    <div className="text-3xl font-bold bg-gradient-to-r from-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent mb-2">6 Images</div>
-                    <div className="text-sm text-white/70">Optimized for Conversion</div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-white mb-3">What You&apos;ll Get:</h4>
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-400 mt-1">📸</span>
-                        <span className="text-sm text-white/80">Main product image (85% frame)</span>
+          {/* Right Column - Tablet Mockup */}
+          <div className="relative flex justify-center items-center">
+            {/* Tablet Device Frame */}
+            <div className="relative animate-fade-in-up">
+              {/* Tablet Body */}
+              <div className="relative w-80 h-96 bg-gray-800 rounded-3xl p-2 shadow-2xl">
+                {/* Screen Bezel */}
+                <div className="w-full h-full bg-black rounded-2xl overflow-hidden relative">
+                  {/* Screen Content */}
+                  <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 relative">
+                    {/* Status Bar */}
+                    <div className="flex justify-between items-center px-4 py-2 text-white text-xs">
+                      <span>9:41</span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-4 h-2 bg-white rounded-sm"></div>
+                        <div className="w-4 h-2 bg-white rounded-sm"></div>
+                        <div className="w-4 h-2 bg-white rounded-sm"></div>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-400 mt-1">🎯</span>
-                        <span className="text-sm text-white/80">Lifestyle image in use</span>
+                    </div>
+                    
+                    {/* App Header */}
+                    <div className="bg-gradient-to-r from-[#007AFF] to-[#FF6B00] px-4 py-3">
+                      <h3 className="text-white font-semibold text-sm">Amazon Listing Creator</h3>
+                    </div>
+                    
+                    {/* Listing Content */}
+                    <div className="p-4 space-y-3">
+                      {/* Images Display */}
+                      <div className="text-center py-2">
+                        <div className="text-2xl font-bold bg-gradient-to-r from-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">6 Images</div>
+                        <div className="text-xs text-white/70">Optimized for Conversion</div>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-400 mt-1">📊</span>
-                        <span className="text-sm text-white/80">Benefits infographic</span>
+                      
+                      {/* What You'll Get */}
+                      <div>
+                        <h4 className="font-semibold text-white text-xs mb-2">What You&apos;ll Get:</h4>
+                        <div className="space-y-1">
+                          <div className="flex items-start gap-1">
+                            <span className="text-green-400 text-xs mt-0.5">📸</span>
+                            <span className="text-xs text-white/80">Main product image (85% frame)</span>
+                          </div>
+                          <div className="flex items-start gap-1">
+                            <span className="text-green-400 text-xs mt-0.5">🎯</span>
+                            <span className="text-xs text-white/80">Lifestyle image in use</span>
+                          </div>
+                          <div className="flex items-start gap-1">
+                            <span className="text-green-400 text-xs mt-0.5">📊</span>
+                            <span className="text-xs text-white/80">Benefits infographic</span>
+                          </div>
+                          <div className="flex items-start gap-1">
+                            <span className="text-green-400 text-xs mt-0.5">📏</span>
+                            <span className="text-xs text-white/80">Product measurements</span>
+                          </div>
+                          <div className="flex items-start gap-1">
+                            <span className="text-green-400 text-xs mt-0.5">🔍</span>
+                            <span className="text-xs text-white/80">Cross-section anatomy</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-400 mt-1">📏</span>
-                        <span className="text-sm text-white/80">Product measurements</span>
+                      
+                      {/* Optimized Listing */}
+                      <div className="bg-white/5 rounded p-2">
+                        <h4 className="font-semibold text-white text-xs mb-1">Optimized Listing:</h4>
+                        <ul className="text-xs text-white/80 space-y-0.5">
+                          <li>• SEO-optimized title structure</li>
+                          <li>• 5-10 benefit-focused bullet points</li>
+                          <li>• Keyword-rich product description</li>
+                          <li>• Conversion-optimized copy</li>
+                        </ul>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-400 mt-1">🔍</span>
-                        <span className="text-sm text-white/80">Cross-section anatomy</span>
+                    </div>
+                    
+                    {/* Blur Overlay */}
+                    <div className="absolute inset-0 bg-[#0D0D0D]/80 backdrop-blur-sm flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-xl mb-1">🚀</div>
+                        <p className="text-white font-medium text-xs">Enter your product URL to create listing</p>
+                        <p className="text-xs text-white/70 mt-0.5">Sample preview</p>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="bg-white/5 rounded-lg p-4">
-                    <h4 className="font-semibold text-white mb-2">Optimized Listing:</h4>
-                    <ul className="text-sm text-white/80 space-y-1">
-                      <li>• SEO-optimized title structure</li>
-                      <li>• 5-10 benefit-focused bullet points</li>
-                      <li>• Keyword-rich product description</li>
-                      <li>• Conversion-optimized copy</li>
-                    </ul>
-                  </div>
                 </div>
                 
-                {/* Blur Overlay */}
-                <div className="absolute inset-0 bg-[#0D0D0D]/80 backdrop-blur-sm flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">🚀</div>
-                    <p className="text-white font-medium">Enter your product URL to create listing</p>
-                    <p className="text-sm text-white/70 mt-1">Sample preview</p>
-                  </div>
-                </div>
+                {/* Home Button */}
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gray-700 rounded-full border-2 border-gray-600"></div>
               </div>
               
-              {/* Watermark */}
-              <div className="absolute top-2 right-2 text-xs text-white/60 bg-[#0D0D0D]/80 px-2 py-1 rounded">
-                Sample Preview
-              </div>
+              {/* Tablet Shadow */}
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-72 h-8 bg-black/20 rounded-full blur-xl"></div>
             </div>
+            
+            {/* Floating Elements */}
+            <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-[#007AFF] to-[#FF6B00] rounded-full animate-pulse"></div>
+            <div className="absolute -bottom-8 -left-8 w-6 h-6 bg-gradient-to-r from-[#FF6B00] to-[#007AFF] rounded-full animate-pulse delay-1000"></div>
           </div>
           
         </div>
