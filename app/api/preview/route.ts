@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
     // Generate AI analysis WITHOUT creating database entries
     let aiResult;
     if (type === 'new_seller') {
-      aiResult = await analyzeNewSeller(validatedData as any, productData);
+      aiResult = await analyzeNewSeller(validatedData as any, productData as any);
     } else {
-      aiResult = await analyzeExistingSeller(validatedData as any, productData);
+      aiResult = await analyzeExistingSeller(validatedData as any, productData as any);
     }
     
     if (!aiResult) {
