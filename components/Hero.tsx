@@ -49,7 +49,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
           
           {/* Left Column - Content */}
           <div className="max-w-xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">
               Free AI Audit of Your Amazon Listing — Boost Sales in Minutes
             </h1>
             
@@ -152,7 +152,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                           </div>
                           <div className="flex items-start gap-1">
                             <span className="text-orange-400 text-xs mt-0.5">💡</span>
-                            <span className="text-xs text-white/80">Keyword gap: 'eco friendly' missing</span>
+                            <span className="text-xs text-white/80">Keyword gap: &apos;eco friendly&apos; missing</span>
                           </div>
                         </div>
                       </div>
