@@ -108,11 +108,11 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     doc.text(`Grade: ${binaryResult.grade}`, 20, yPosition);
     yPosition += 10;
     
-    // Failed checks
+    // Sales opportunities
     if (binaryResult.notes && binaryResult.notes.length > 0) {
       doc.setFontSize(12);
-      doc.setTextColor(239, 68, 68); // Red for issues
-      doc.text('Issues Found:', 20, yPosition);
+      doc.setTextColor(249, 115, 22); // Orange for opportunities
+      doc.text('Sales Opportunities:', 20, yPosition);
       yPosition += 6;
       
       doc.setFontSize(10);
@@ -133,7 +133,7 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
   if (data.highlights && data.highlights.length > 0) {
     doc.setFontSize(16);
     doc.setTextColor(37, 99, 235); // Blue color for section headers
-    doc.text('Key Highlights', 20, yPosition);
+    doc.text('Biggest Sales Opportunities', 20, yPosition);
     yPosition += 8;
     
     doc.setFontSize(12);
@@ -162,7 +162,7 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     
     doc.setFontSize(16);
     doc.setTextColor(37, 99, 235); // Blue color for section headers
-    doc.text('Actionable Recommendations', 20, yPosition);
+    doc.text('How to Increase Your Sales', 20, yPosition);
     yPosition += 8;
     
     doc.setFontSize(12);

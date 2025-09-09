@@ -139,22 +139,22 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   if (score >= cfg.gradeBands.A[0] && score <= cfg.gradeBands.A[1]) grade = 'A';
   else if (score >= cfg.gradeBands.B[0] && score <= cfg.gradeBands.B[1]) grade = 'B';
 
-  // Generate notes for failed checks
-  if (!checks.has_brand) notes.push('No brand found');
-  if (!checks.title_starts_with_brand && brand && title) notes.push('Title does not start with brand');
-  if (!checks.title_correct_length && title) notes.push(`Title length ${title.length} > ${cfg.maxTitleLength}`);
-  if (!checks.has_bullets_5plus) notes.push(`Only ${bullets.length} bullets; need ≥${cfg.minBulletCount}`);
-  if (!checks.has_description_200plus && description) notes.push(`Description ${description.length} chars; need ≥${cfg.minDescriptionChars}`);
-  if (!checks.has_aplus) notes.push('No A+ section found');
-  if (!checks.has_premium_aplus) notes.push('No premium A+ section found');
-  if (!checks.has_main_image) notes.push('No main image found');
-  if (!checks.images_6plus) notes.push(`Images ${imageCount}; need ≥${cfg.minImageCount}`);
-  if (!checks.has_keywords && cfg.keywords.length > 0) notes.push('Keywords missing in title/bullets');
-  if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not found in bullets or description');
-  if (!checks.has_reviews) notes.push('No reviews found');
-  if (!checks.has_star_rating) notes.push('No rating element found');
+  // Generate human-friendly notes for failed checks
+  if (!checks.has_brand) notes.push('Missing brand information - customers can\'t identify your product');
+  if (!checks.title_starts_with_brand && brand && title) notes.push('Title doesn\'t start with your brand - missed branding opportunity');
+  if (!checks.title_correct_length && title) notes.push(`Title is too long (${title.length} characters) - Amazon may cut it off`);
+  if (!checks.has_bullets_5plus) notes.push(`Only ${bullets.length} bullet points - you\'re missing key selling opportunities`);
+  if (!checks.has_description_200plus && description) notes.push('Product description is too short - customers need more details to buy');
+  if (!checks.has_aplus) notes.push('No A+ content - you\'re missing a huge conversion opportunity');
+  if (!checks.has_premium_aplus) notes.push('No premium A+ content - competitors with this get more sales');
+  if (!checks.has_main_image) notes.push('Main product image missing - first impression is everything');
+  if (!checks.images_6plus) notes.push(`Only ${imageCount} images - customers need to see more to feel confident buying`);
+  if (!checks.has_keywords && cfg.keywords.length > 0) notes.push('Target keywords not found in title or bullets - you\'re invisible in search');
+  if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
+  if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');
+  if (!checks.has_star_rating) notes.push('No star rating visible - customers can\'t see your product quality');
   if ((checks as any).relevant_attributes_covered === 0 && cfg.requiredAttributes.length > 0) {
-    notes.push('Insufficient attribute coverage');
+    notes.push('Missing important product details - customers need complete information');
   }
 
   return {

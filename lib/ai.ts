@@ -70,17 +70,17 @@ Please provide a comprehensive Amazon IDQ audit that builds upon the binary eval
    - Content Quality Adjustments: ±10 points based on keyword optimization, benefit focus, and conversion potential
    - Final Score: Weighted combination of binary compliance and content quality
 
-2. **Key Highlights (3-5 points)**: Focus on the most critical issues from binary evaluation and content analysis
+2. **Key Highlights (3-5 points)**: Focus on the biggest opportunities to increase sales and conversions
 
-3. **Actionable Recommendations (3-5 points)**: Prioritize fixes for failed binary checks, then content optimization
+3. **Actionable Recommendations (3-5 points)**: Prioritize the most impactful changes that will drive more sales
 
-4. **Detailed IDQ Analysis**: In-depth breakdown incorporating binary results:
-   - Title Quality: Binary compliance + keyword density, brand placement, conversion optimization
-   - Bullet Points: Binary compliance + benefit focus, keyword integration, formatting
-   - Product Images: Binary compliance + quality assessment, conversion optimization
-   - Product Description: Binary compliance + content depth, keyword usage, formatting
-   - Product Information: Binary compliance + attribute completeness, categorization
-   - Keywords: Binary compliance + primary/secondary/long-tail coverage, search optimization
+4. **Detailed Analysis**: In-depth breakdown of sales opportunities:
+   - Title Quality: How to make your title more compelling and searchable
+   - Bullet Points: How to write bullets that convert browsers into buyers
+   - Product Images: How to use images to build trust and drive sales
+   - Product Description: How to write descriptions that answer customer questions
+   - Product Information: How to provide complete details that build confidence
+   - Keywords: How to get found by customers searching for your product
 
 Format your response as JSON:
 {
@@ -113,7 +113,7 @@ Format your response as JSON:
   "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on Amazon's IDQ requirements and UK/EU marketplace best practices. Use the binary evaluation as the foundation and enhance with content quality insights.`;
+Focus on helping this seller increase their sales and conversions. Use the binary evaluation as the foundation and provide actionable insights that will help them sell more products.`;
 
   try {
     const completion = await openai.chat.completions.create({
@@ -227,39 +227,39 @@ IMPORTANT: If structured data is missing (like title, description, price), analy
 - Brand information
 - Category clues
 
-Please create an IDQ-focused Amazon listing optimization guide that addresses the binary evaluation findings. Instead of scoring, provide field-by-field analysis and recommendations to achieve the highest possible IDQ (Item Data Quality) score.
+Please create a sales-focused Amazon listing optimization guide that addresses the issues found. Instead of scoring, provide field-by-field analysis and recommendations to maximize sales and conversions.
 
-**IDQ Field Analysis & Recommendations:**
+**Sales Optimization Analysis:**
 
-1. **TITLE FIELD ANALYSIS**:
+1. **TITLE OPTIMIZATION**:
    - Current Title: [What we found from scraping]
-   - IDQ Issues: [Specific problems with current title based on binary evaluation]
-   - Optimized Title: [IDQ-compliant title following Amazon's best practices]
+   - Sales Issues: [What's preventing customers from clicking and buying]
+   - Optimized Title: [Title that converts browsers into buyers]
 
-2. **BULLET POINTS ANALYSIS**:
+2. **BULLET POINTS OPTIMIZATION**:
    - Current Bullets: [What we found from scraping]
-   - IDQ Issues: [Missing elements, compliance issues from binary evaluation]
-   - Optimized Bullets: [5 bullet points optimized for IDQ and conversion]
+   - Sales Issues: [What's missing that customers need to see]
+   - Optimized Bullets: [5 bullet points that drive conversions]
 
-3. **PRODUCT DESCRIPTION ANALYSIS**:
+3. **PRODUCT DESCRIPTION OPTIMIZATION**:
    - Current Description: [What we found from scraping]
-   - IDQ Issues: [SEO, compliance, or structure problems from binary evaluation]
-   - Optimized Description: [IDQ-compliant description with proper formatting]
+   - Sales Issues: [What's preventing customers from feeling confident]
+   - Optimized Description: [Description that answers questions and builds trust]
 
-4. **KEYWORDS ANALYSIS**:
+4. **KEYWORD STRATEGY**:
    - Current Keywords: [What we found from scraping]
-   - IDQ Issues: [Missing keywords, poor keyword strategy from binary evaluation]
-   - Optimized Keywords: [Primary (3-5), Secondary (5-8), Long-tail (8-12)]
+   - Sales Issues: [Why customers can't find your product]
+   - Optimized Keywords: [Keywords that bring in qualified buyers]
 
-5. **IMAGES ANALYSIS**:
+5. **IMAGE STRATEGY**:
    - Current Images: [What we found from scraping]
-   - IDQ Issues: [Missing image types, quality issues from binary evaluation]
-   - Required Images: [6 specific image requirements for highest IDQ]
+   - Sales Issues: [What's missing that builds trust and confidence]
+   - Required Images: [6 images that convert browsers into buyers]
 
-6. **COMPLIANCE ANALYSIS**:
-   - Current Compliance: [What we found]
-   - IDQ Issues: [Missing compliance elements from binary evaluation]
-   - Compliance Requirements: [UK/EU specific requirements for IDQ]
+6. **TRUST & CREDIBILITY**:
+   - Current Trust Elements: [What we found]
+   - Sales Issues: [What's missing that builds customer confidence]
+   - Trust Requirements: [Elements that make customers feel safe buying]
 
 Format your response as JSON:
 {
@@ -314,7 +314,7 @@ Format your response as JSON:
   "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on UK/EU Amazon marketplace requirements and conversion optimization. Use the binary evaluation results to prioritize the most critical IDQ issues.`;
+Focus on helping this seller maximize their sales potential. Use the binary evaluation results to prioritize the most impactful changes that will drive more conversions and revenue.`;
 
   try {
     const completion = await openai.chat.completions.create({
