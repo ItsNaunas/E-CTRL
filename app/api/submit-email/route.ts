@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
       } else {
         console.error('Failed to update lead');
       }
+    } else {
+      console.log('No leadId provided - this is a preview-to-full conversion');
     }
 
     // Get the latest report data for this email to include PDF

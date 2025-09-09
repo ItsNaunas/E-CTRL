@@ -107,19 +107,19 @@ export default function HomePage() {
     scrollToElement('partial-result', 80); // 80px offset for better positioning
     
     try {
-      // Call AI API for real analysis
+      // Call preview API for analysis without creating database entry
       const requestBody = {
         type: 'existing_seller',
         data: {
           ...sampleData,
           asin: asin,
-          email: 'demo@example.com', // Use demo email for preview
-          name: 'Demo User'
+          email: 'preview@example.com', // Temporary email for preview only
+          name: 'Preview User'
         }
       };
-      console.log('Sending request to API:', requestBody);
+      console.log('Sending request to preview API:', requestBody);
       
-      const response = await fetch('/api/report', {
+      const response = await fetch('/api/preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
@@ -127,19 +127,19 @@ export default function HomePage() {
       
       if (response.ok) {
         const result = await response.json();
-        console.log('ASIN submission AI result received:', result.result);
+        console.log('ASIN submission preview result received:', result.aiResult);
         setAiResult({
-          score: result.result.score || 0,
-          highlights: result.result.highlights || [],
-          recommendations: result.result.recommendations || [],
-          detailedAnalysis: result.result.detailedAnalysis || {}
+          score: result.aiResult.score || 0,
+          highlights: result.aiResult.highlights || [],
+          recommendations: result.aiResult.recommendations || [],
+          detailedAnalysis: result.aiResult.detailedAnalysis || {}
         });
-        // Store the lead ID for later email update
-        setLeadId(result.leadId);
+        // No lead ID needed for preview
+        setLeadId(null);
       } else {
         // Get error details from response
         const errorText = await response.text();
-        console.error('API request failed:', {
+        console.error('Preview API request failed:', {
           status: response.status,
           statusText: response.statusText,
           error: errorText
@@ -148,7 +148,7 @@ export default function HomePage() {
         setAiResult(null);
       }
     } catch (error) {
-      console.error('AI analysis failed:', error);
+      console.error('Preview analysis failed:', error);
       // Fallback to error state
       setAiResult(null);
     } finally {
@@ -470,10 +470,21 @@ export default function HomePage() {
     try {
       console.log('Creating report and sending email for:', email);
       
-      // For new sellers, create the actual report with user's email
+      // Create the actual report with user's email based on mode
       let requestBody;
       
-      if (mode === 'create' && (productUrl || manualProductData)) {
+      if (mode === 'audit' && asinOrUrl) {
+        // Existing seller flow - create actual report with user's email
+        requestBody = {
+          type: 'existing_seller',
+          data: {
+            ...sampleData,
+            asin: asinOrUrl,
+            email: email, // Use the actual user email
+            name: email.split('@')[0] // Use email prefix as name
+          }
+        };
+      } else if (mode === 'create' && (productUrl || manualProductData)) {
         // New seller flow - create actual report with user's email
         requestBody = {
           type: 'new_seller',
@@ -493,7 +504,7 @@ export default function HomePage() {
           }
         };
       } else {
-        console.error('Invalid mode or missing data for new seller report generation');
+        console.error('Invalid mode or missing data for report generation');
         return;
       }
       

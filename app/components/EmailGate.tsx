@@ -73,10 +73,10 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Get Your Complete Amazon Audit Report
+            Unlock Your Complete Amazon Audit Report
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
-            Enter your email to receive your detailed audit with specific recommendations and action steps.
+            You've seen the preview! Enter your email to get the full detailed report with specific recommendations, action steps, and a downloadable PDF.
           </p>
 
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
@@ -124,7 +124,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
 
               <div className="space-y-3">
                 <p id="email-help" className="text-sm text-gray-600" data-testid="microcopy-free">
-                  No credit card needed. Secure & private.
+                  No credit card needed. Secure & private. Get instant access to your full report.
                 </p>
                 {/* TODO: Update with client-provided privacy/legal copy */}
                 
@@ -148,7 +148,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">
-              💡 <strong>What&apos;s included:</strong> Keyword analysis, image optimization tips, conversion rate improvements, and competitor insights.
+              💡 <strong>What&apos;s included in your full report:</strong> Complete keyword analysis, image optimization tips, conversion rate improvements, competitor insights, and a downloadable PDF with actionable steps.
             </p>
             {/* TODO: Add client-provided legal disclaimer or terms */}
           </div>
