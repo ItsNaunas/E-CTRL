@@ -30,7 +30,7 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
   } else {
     console.log('No HTML content available for IDQ evaluation');
   }
-  const prompt = `You are an expert Amazon FBA consultant analyzing a product listing for UK/EU markets using Amazon's IDQ (Item Data Quality) criteria.
+  const prompt = `You are an expert Amazon FBA consultant analyzing an EXISTING SELLER'S product listing for UK/EU markets using Amazon's IDQ (Item Data Quality) criteria.
 
 ${productData ? `
 REAL AMAZON PRODUCT DATA:
@@ -71,24 +71,24 @@ BINARY IDQ EVALUATION RESULTS:
 - Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
 ` : ''}
 
-Please provide a comprehensive Amazon IDQ audit that builds upon the binary evaluation results:
+Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that focuses on IMPROVEMENTS and OPTIMIZATION:
 
 1. **IDQ Score (0-100)**: Use the binary score as foundation, then adjust based on content quality analysis:
    - Base Score: ${binaryIdqResult ? binaryIdqResult.qualityPercent : 'Calculate from data'}
    - Content Quality Adjustments: ±10 points based on keyword optimization, benefit focus, and conversion potential
    - Final Score: Weighted combination of binary compliance and content quality
 
-2. **Key Highlights (3-5 points)**: Focus on the biggest opportunities to increase sales and conversions
+2. **Key Issues to Fix (3-5 points)**: Focus on the biggest problems that are hurting their sales and conversions
 
-3. **Actionable Recommendations (3-5 points)**: Prioritize the most impactful changes that will drive more sales
+3. **Priority Improvements (3-5 points)**: Rank the most impactful fixes that will boost their sales immediately
 
-4. **Detailed Analysis**: In-depth breakdown of sales opportunities:
-   - Title Quality: How to make your title more compelling and searchable
-   - Bullet Points: How to write bullets that convert browsers into buyers
-   - Product Images: How to use images to build trust and drive sales
-   - Product Description: How to write descriptions that answer customer questions
-   - Product Information: How to provide complete details that build confidence
-   - Keywords: How to get found by customers searching for your product
+4. **Detailed Analysis**: In-depth breakdown of what needs to be FIXED and OPTIMIZED:
+   - Title Quality: What's wrong with their current title and how to fix it
+   - Bullet Points: What's missing from their bullets and how to improve conversion
+   - Product Images: What's wrong with their images and how to fix them
+   - Product Description: What's missing from their description and how to improve it
+   - Product Information: What details are missing and how to add them
+   - Keywords: What keywords they're missing and how to optimize for search
 
 Format your response as JSON:
 {
@@ -121,7 +121,7 @@ Format your response as JSON:
   "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on helping this seller increase their sales and conversions. Use the binary evaluation as the foundation and provide actionable insights that will help them sell more products.`;
+Focus on HELPING THIS EXISTING SELLER FIX THEIR CURRENT LISTING. Use the binary evaluation to identify problems and provide specific fixes that will improve their sales and conversions.`;
 
   try {
     const completion = await openai.chat.completions.create({
@@ -178,7 +178,7 @@ export async function analyzeNewSeller(data: NewSellerData, productData?: Generi
   } else {
     console.log('No HTML content available for IDQ evaluation (new seller)');
   }
-  const prompt = `You are an expert Amazon FBA consultant creating a complete listing pack for a new seller.
+  const prompt = `You are an expert Amazon FBA consultant creating a complete listing pack for a NEW SELLER who wants to launch their first Amazon product.
 
 ${productData ? `
 REAL PRODUCT DATA (scraped from website):
@@ -243,39 +243,39 @@ IMPORTANT: If structured data is missing (like title, description, price), analy
 - Brand information
 - Category clues
 
-Please create a sales-focused Amazon listing optimization guide that addresses the issues found. Instead of scoring, provide field-by-field analysis and recommendations to maximize sales and conversions.
+Please create a complete Amazon listing creation guide for this NEW SELLER. Instead of scoring, provide field-by-field analysis and recommendations to help them launch a high-converting Amazon listing from scratch.
 
-**Sales Optimization Analysis:**
+**Complete Listing Creation Guide:**
 
-1. **TITLE OPTIMIZATION**:
-   - Current Title: [What we found from scraping]
-   - Sales Issues: [What's preventing customers from clicking and buying]
-   - Optimized Title: [Title that converts browsers into buyers]
+1. **TITLE CREATION**:
+   - Current Title: [What we found from scraping or user input]
+   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Optimized Title: [Title that converts browsers into buyers and ranks well]
 
-2. **BULLET POINTS OPTIMIZATION**:
-   - Current Bullets: [What we found from scraping]
-   - Sales Issues: [What's missing that customers need to see]
-   - Optimized Bullets: [5 bullet points that drive conversions]
+2. **BULLET POINTS CREATION**:
+   - Current Bullets: [What we found from scraping or user input]
+   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Optimized Bullets: [5 bullet points that drive conversions and meet IDQ standards]
 
-3. **PRODUCT DESCRIPTION OPTIMIZATION**:
-   - Current Description: [What we found from scraping]
-   - Sales Issues: [What's preventing customers from feeling confident]
-   - Optimized Description: [Description that answers questions and builds trust]
+3. **PRODUCT DESCRIPTION CREATION**:
+   - Current Description: [What we found from scraping or user input]
+   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Optimized Description: [Description that answers questions, builds trust, and meets IDQ standards]
 
-4. **KEYWORD STRATEGY**:
-   - Current Keywords: [What we found from scraping]
-   - Sales Issues: [Why customers can't find your product]
-   - Optimized Keywords: [Keywords that bring in qualified buyers]
+4. **KEYWORD STRATEGY FOR NEW LISTINGS**:
+   - Current Keywords: [What we found from scraping or user input]
+   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Optimized Keywords: [Keywords that bring in qualified buyers and help with ranking]
 
-5. **IMAGE STRATEGY**:
-   - Current Images: [What we found from scraping]
-   - Sales Issues: [What's missing that builds trust and confidence]
-   - Required Images: [6 images that convert browsers into buyers]
+5. **IMAGE STRATEGY FOR NEW LISTINGS**:
+   - Current Images: [What we found from scraping or user input]
+   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Required Images: [6 images that convert browsers into buyers and meet IDQ standards]
 
-6. **TRUST & CREDIBILITY**:
+6. **TRUST & CREDIBILITY FOR NEW SELLERS**:
    - Current Trust Elements: [What we found]
-   - Sales Issues: [What's missing that builds customer confidence]
-   - Trust Requirements: [Elements that make customers feel safe buying]
+   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Trust Requirements: [Elements that make customers feel safe buying from a new seller]
 
 Format your response as JSON:
 {
@@ -330,7 +330,7 @@ Format your response as JSON:
   "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on helping this seller maximize their sales potential. Use the binary evaluation results to prioritize the most impactful changes that will drive more conversions and revenue.`;
+Focus on HELPING THIS NEW SELLER CREATE A HIGH-CONVERTING AMAZON LISTING FROM SCRATCH. Use the binary evaluation results to guide them on what Amazon requires for high IDQ scores and provide them with a complete listing creation strategy.`;
 
   try {
     const completion = await openai.chat.completions.create({

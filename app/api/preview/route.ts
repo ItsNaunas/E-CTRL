@@ -1,28 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { analyzeNewSeller } from '@/lib/ai';
+import { analyzeNewSeller, analyzeExistingSeller } from '@/lib/ai';
 import { scrapeProductPage } from '@/lib/product-scraper';
-import { newSellerSchema } from '@/lib/validation';
+import { scrapeProduct } from '@/lib/amazon-scraper';
+import { newSellerSchema, existingSellerSchema } from '@/lib/validation';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { type, data } = body;
 
-    if (type !== 'new_seller') {
+    if (type !== 'new_seller' && type !== 'existing_seller') {
       return NextResponse.json({ 
         success: false, 
         error: 'Invalid request type' 
       }, { status: 400 });
     }
 
-    // Validate the data
-    const validatedData = newSellerSchema.parse(data);
+    // Validate the data based on type
+    let validatedData;
+    if (type === 'new_seller') {
+      validatedData = newSellerSchema.parse(data);
+    } else {
+      validatedData = existingSellerSchema.parse(data);
+    }
     
-    // For new sellers, try to scrape product data if website URL is provided
+    // Scrape product data based on type
     let productData = undefined;
     
-    if (validatedData.websiteUrl) {
-      console.log('Scraping product data for preview:', validatedData.websiteUrl);
+    if (type === 'new_seller' && validatedData.websiteUrl) {
+      console.log('Scraping product data for new seller preview:', validatedData.websiteUrl);
       const scrapedData = await scrapeProductPage(validatedData.websiteUrl);
       
       if ('error' in scrapedData) {
@@ -31,12 +37,27 @@ export async function POST(request: NextRequest) {
         console.log('Successfully scraped product data for preview');
         productData = scrapedData;
       }
+    } else if (type === 'existing_seller' && validatedData.asin) {
+      console.log('Scraping Amazon product data for existing seller preview:', validatedData.asin);
+      const scrapedData = await scrapeProduct(validatedData.asin);
+      
+      if ('error' in scrapedData) {
+        console.warn('Amazon scraping failed for preview:', scrapedData.error);
+      } else {
+        console.log('Successfully scraped Amazon product data for preview');
+        productData = scrapedData;
+      }
     } else {
-      console.log('No website URL provided for preview, using user data only');
+      console.log('No product data available for preview, using user data only');
     }
     
     // Generate AI analysis WITHOUT creating database entries
-    const aiResult = await analyzeNewSeller(validatedData, productData);
+    let aiResult;
+    if (type === 'new_seller') {
+      aiResult = await analyzeNewSeller(validatedData, productData);
+    } else {
+      aiResult = await analyzeExistingSeller(validatedData, productData);
+    }
     
     if (!aiResult) {
       return NextResponse.json({ 
