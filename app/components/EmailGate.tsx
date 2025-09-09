@@ -76,7 +76,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
             Unlock Your Complete Amazon Audit Report
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
-            You've seen the preview! Enter your email to get the full detailed report with specific recommendations, action steps, and a downloadable PDF.
+            You&apos;ve seen the preview! Enter your email to get the full detailed report with specific recommendations, action steps, and a downloadable PDF.
           </p>
 
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
