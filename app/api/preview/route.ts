@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Scrape product data based on type
     let productData = undefined;
     
-    if (type === 'new_seller' && validatedData.websiteUrl) {
+    if (type === 'new_seller' && 'websiteUrl' in validatedData && validatedData.websiteUrl) {
       console.log('Scraping product data for new seller preview:', validatedData.websiteUrl);
       const scrapedData = await scrapeProductPage(validatedData.websiteUrl);
       
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         console.log('Successfully scraped product data for preview');
         productData = scrapedData;
       }
-    } else if (type === 'existing_seller' && validatedData.asin) {
+    } else if (type === 'existing_seller' && 'asin' in validatedData && validatedData.asin) {
       console.log('Scraping Amazon product data for existing seller preview:', validatedData.asin);
       const scrapedData = await scrapeProduct(validatedData.asin);
       
