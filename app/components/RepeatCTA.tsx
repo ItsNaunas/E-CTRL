@@ -22,15 +22,15 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
 
   if (variant === 'mid') {
     return (
-      <section className="py-16 bg-gradient-to-r from-orange-50 to-red-50">
+      <section className="py-16 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">
             {mode === 'audit' 
               ? 'Ready to Optimize Your Amazon Listing?' 
               : 'Ready to Create Your Amazon Listing?'
             }
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-white/70 mb-8 max-w-2xl mx-auto">
             {mode === 'audit'
               ? 'Join thousands of sellers who\'ve improved their sales with our AI-powered audit tool.'
               : 'Join thousands of brand owners who\'ve successfully launched on Amazon using our AI-powered listing creation tool.'
@@ -46,7 +46,7 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
             data-testid="repeat-cta-mid"
           />
           
-          <p className="text-sm text-gray-500" data-testid="microcopy-free">
+          <p className="text-sm text-white/70" data-testid="microcopy-free">
             Free forever • No credit card required • Get results in minutes
           </p>
         </div>
@@ -56,15 +56,15 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
 
   // Footer variant
   return (
-    <section className="py-12 bg-gray-50 border-t border-gray-200">
+    <section className="py-16 md:py-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">
           {mode === 'audit' 
             ? 'Start Your Free Amazon Audit Today' 
             : 'Create Your Amazon Listing Today'
           }
         </h2>
-        <p className="text-gray-600 mb-6 max-w-xl mx-auto">
+        <p className="text-white/70 mb-6 max-w-xl mx-auto">
           {mode === 'audit'
             ? 'Get actionable insights to boost your Amazon sales. No strings attached.'
             : 'Get your complete Amazon listing with 6 optimized images. No strings attached.'
@@ -80,7 +80,7 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
           data-testid="repeat-cta-footer"
         />
         
-        <p className="text-sm text-gray-500" data-testid="microcopy-free">
+        <p className="text-sm text-white/70" data-testid="microcopy-free">
           Secure & private • No spam • Instant results
         </p>
       </div>

@@ -15,7 +15,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-foreground"
+            className="block text-sm font-medium text-white"
           >
             {label}
           </label>
@@ -24,8 +24,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={inputId}
-          className={`block w-full rounded-lg border border-border bg-input px-3 py-2 text-foreground placeholder-muted-foreground transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-            error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+          className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+            error ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' : ''
           } ${className}`}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={
@@ -35,13 +35,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         />
         
         {help && !error && (
-          <p id={`${inputId}-help`} className="text-sm text-muted-foreground">
+          <p id={`${inputId}-help`} className="text-sm text-white/60">
             {help}
           </p>
         )}
         
         {error && (
-          <p id={`${inputId}-error`} className="text-sm text-red-600">
+          <p id={`${inputId}-error`} className="text-sm text-red-400">
             {error}
           </p>
         )}

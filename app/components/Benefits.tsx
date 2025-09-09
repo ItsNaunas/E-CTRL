@@ -25,28 +25,28 @@ export default function Benefits() {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">
             What you&apos;ll get from your audit
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
             Comprehensive analysis backed by real Amazon expertise to help you optimize every aspect of your listing.
           </p>
         </div>
         
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {benefits.map((benefit, index) => (
-            <div key={index} className="bg-white rounded-lg p-6 border border-gray-100 text-center hover:shadow-md transition-shadow">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <div key={index} className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition p-6 md:p-8 text-center hover:-translate-y-[2px] transition-transform">
+              <h3 className="text-xl md:text-2xl font-semibold text-white mb-2">
                 {benefit.title}
               </h3>
-              <p className="text-gray-600 text-sm mb-3">
+              <p className="text-white/80 text-sm mb-3">
                 {benefit.description}
               </p>
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-2">
-                <p className="text-xs text-orange-800 font-medium">
+              <div className="bg-[#FF6B00]/10 border border-[#FF6B00]/20 rounded-lg p-2">
+                <p className="text-xs text-[#FF6B00] font-medium">
                   {benefit.expertNote}
                 </p>
               </div>
@@ -56,25 +56,25 @@ export default function Benefits() {
 
         {/* Expert Credibility Footer */}
         <div className="mt-12 text-center">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition p-6 md:p-8">
             <div className="text-center mb-3">
-              <h3 className="text-lg font-semibold text-gray-900">Amazon Expert Insights</h3>
+              <h3 className="text-xl md:text-2xl font-semibold text-white">Amazon Expert Insights</h3>
             </div>
-            <p className="text-gray-600 mb-4">
+            <p className="text-white/80 mb-4">
               Every recommendation is based on real Amazon experience, not just theory
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <div className="flex items-center gap-2">
-                <span className="text-green-600">✓</span>
-                                 <span className="text-gray-700">4+ years at Amazon</span>
+                <span className="text-green-400">✓</span>
+                <span className="text-white/80">4+ years at Amazon</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-green-600">✓</span>
-                <span className="text-gray-700">$5.5M client portfolio</span>
+                <span className="text-green-400">✓</span>
+                <span className="text-white/80">$5.5M client portfolio</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-green-600">✓</span>
-                <span className="text-gray-700">Proven results</span>
+                <span className="text-green-400">✓</span>
+                <span className="text-white/80">Proven results</span>
               </div>
             </div>
           </div>

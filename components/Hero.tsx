@@ -43,17 +43,17 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
   };
 
   return (
-    <section className="bg-background py-20 sm:py-24 lg:py-32">
+    <section className="relative py-16 md:py-20 after:content-[''] after:absolute after:inset-0 after:-z-10 after:bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,122,255,0.25),transparent_60%)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           
           {/* Left Column - Content */}
           <div className="max-w-xl">
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white">
               Free AI Audit of Your Amazon Listing — Boost Sales in Minutes
             </h1>
             
-            <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
+            <p className="mt-6 text-lg md:text-xl text-white/70 max-w-2xl">
               Enter your ASIN or product link. Get a basic audit via email. Create an account anytime for the full report.
             </p>
             
@@ -72,17 +72,17 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                     if (error) setError('');
                   }}
                   placeholder="Enter your Amazon ASIN or product URL"
-                  className={`block w-full rounded-lg border px-4 py-3 text-foreground placeholder-muted-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-lg ${
+                  className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none sm:text-lg ${
                     error 
-                      ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500' 
-                      : 'border-border bg-input focus:border-accent focus:ring-accent'
+                      ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                      : ''
                   }`}
                   required
                   aria-describedby={error ? "asin-error" : "asin-help"}
                   aria-invalid={!!error}
                 />
                 {error && (
-                  <p id="asin-error" className="mt-2 text-sm text-red-600" role="alert">
+                  <p id="asin-error" className="mt-2 text-sm text-red-400" role="alert">
                     {error}
                   </p>
                 )}
@@ -99,7 +99,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                 data-testid="hero-cta"
               />
               
-              <p id="asin-help" className="text-sm text-muted-foreground text-center" data-testid="microcopy-free">
+              <p id="asin-help" className="text-sm text-white/70 text-center" data-testid="microcopy-free">
                 Instant results. 100% free. Secure & private.
               </p>
             </form>
@@ -107,10 +107,10 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
           
           {/* Right Column - Blurred Preview */}
           <div className="relative">
-            <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+            <div className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition overflow-hidden">
               {/* Blurred Report Preview */}
               <div className="relative">
-                <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                <div className="bg-gradient-to-r from-[#007AFF] to-[#FF6B00] px-6 py-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-white font-semibold text-lg">Amazon Listing Audit Report</h3>
                     <div className="text-white text-sm">Score: 74/100</div>
@@ -119,31 +119,31 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                 
                 <div className="p-6 space-y-4">
                   <div className="text-center py-4">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">74/100</div>
-                    <div className="text-sm text-gray-600">Overall Listing Score</div>
+                    <div className="text-3xl font-bold bg-gradient-to-r from-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent mb-2">74/100</div>
+                    <div className="text-sm text-white/70">Overall Listing Score</div>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Key Findings:</h4>
+                    <h4 className="font-semibold text-white mb-3">Key Findings:</h4>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
-                        <span className="text-red-500 mt-1">⚠️</span>
-                        <span className="text-sm text-gray-700">Bullet clarity needs improvement</span>
+                        <span className="text-red-400 mt-1">⚠️</span>
+                        <span className="text-sm text-white/80">Bullet clarity needs improvement</span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="text-green-500 mt-1">✅</span>
-                        <span className="text-sm text-gray-700">Image size meets requirements</span>
+                        <span className="text-green-400 mt-1">✅</span>
+                        <span className="text-sm text-white/80">Image size meets requirements</span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="text-orange-500 mt-1">💡</span>
-                        <span className="text-sm text-gray-700">Keyword gap: &apos;eco friendly&apos; missing</span>
+                        <span className="text-orange-400 mt-1">💡</span>
+                        <span className="text-sm text-white/80">Keyword gap: &apos;eco friendly&apos; missing</span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Quick Wins:</h4>
-                    <ul className="text-sm text-gray-700 space-y-1">
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <h4 className="font-semibold text-white mb-2">Quick Wins:</h4>
+                    <ul className="text-sm text-white/80 space-y-1">
                       <li>• Add missing keywords to title</li>
                       <li>• Improve bullet point clarity</li>
                       <li>• Optimize image background</li>
@@ -152,17 +152,17 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                 </div>
                 
                 {/* Blur Overlay */}
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#0D0D0D]/80 backdrop-blur-sm flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-2xl mb-2">🔍</div>
-                    <p className="text-gray-600 font-medium">Enter your ASIN to see your audit</p>
-                    <p className="text-sm text-gray-500 mt-1">Sample report preview</p>
+                    <p className="text-white font-medium">Enter your ASIN to see your audit</p>
+                    <p className="text-sm text-white/70 mt-1">Sample report preview</p>
                   </div>
                 </div>
               </div>
               
               {/* Watermark */}
-              <div className="absolute top-2 right-2 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded">
+              <div className="absolute top-2 right-2 text-xs text-white/60 bg-[#0D0D0D]/80 px-2 py-1 rounded">
                 Sample Report
               </div>
             </div>

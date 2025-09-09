@@ -16,12 +16,12 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantClasses = {
-    primary: 'bg-accent text-accent-foreground hover:bg-accent/90 focus:ring-accent',
-    secondary: 'bg-muted text-muted-foreground hover:bg-muted/80 focus:ring-muted-foreground',
-    ghost: 'text-foreground hover:bg-muted focus:ring-muted-foreground',
+    primary: 'bg-gradient-to-r from-[#007AFF] to-[#FF6B00] text-white font-medium shadow-lg transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99] focus:ring-[#007AFF]/30',
+    secondary: 'border border-white/15 text-white/90 hover:border-white/40 hover:bg-white/5 transition focus:ring-white/20',
+    ghost: 'text-white/90 hover:bg-white/5 focus:ring-white/20',
   };
   
   const sizeClasses = {

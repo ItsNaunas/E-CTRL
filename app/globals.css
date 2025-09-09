@@ -12,7 +12,7 @@
   }
   
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-[#0D0D0D] text-white antialiased;
     font-size: 16px;
     line-height: 1.5;
   }
@@ -32,25 +32,25 @@
     }
   }
 
-  /* Typography scale following minimalist principles */
+  /* Typography scale following e-ctrl dark theme */
   h1 {
-    @apply text-3xl sm:text-4xl font-semibold text-foreground leading-tight;
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white;
   }
   
   h2 {
-    @apply text-2xl sm:text-3xl font-semibold text-foreground leading-tight;
+    @apply text-3xl md:text-4xl font-semibold tracking-tight text-white;
   }
   
   h3 {
-    @apply text-xl sm:text-2xl font-semibold text-foreground leading-tight;
+    @apply text-2xl md:text-3xl font-semibold text-white;
   }
   
   h4 {
-    @apply text-lg font-medium text-foreground leading-tight;
+    @apply text-xl md:text-2xl font-semibold text-white;
   }
   
   p {
-    @apply text-foreground leading-relaxed;
+    @apply text-base md:text-lg leading-relaxed text-white/90;
   }
 
   /* Remove default form styling */

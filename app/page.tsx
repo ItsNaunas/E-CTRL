@@ -613,6 +613,9 @@ export default function HomePage() {
       {/* Trust Bar - Build Credibility */}
       <TrustBar />
 
+      {/* Section Divider */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-12 md:my-16" />
+
       {/* Usage Counter - Social Proof */}
       <UsageCounter />
 
@@ -630,11 +633,17 @@ export default function HomePage() {
         <NewSellerBenefits />
       )}
 
+      {/* Section Divider */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-12 md:my-16" />
+
       {/* Testimonials - Social Proof */}
       <Testimonials />
 
       {/* Guarantees - Trust Building */}
       <Guarantees />
+
+      {/* Section Divider */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-12 md:my-16" />
 
       {/* FAQ - Address Objections */}
       {mode === 'audit' ? (
@@ -733,23 +742,23 @@ export default function HomePage() {
       <RepeatCTA variant="footer" onCtaClick={handleCtaClick} mode={mode} />
 
       {/* Minimal Footer with Legal Links */}
-      <footer className="py-8 bg-gray-900 text-white">
+      <footer className="py-8 bg-[#0D0D0D] text-white/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <span className="text-lg font-bold">e-ctrl</span>
-              <span className="ml-2 text-gray-400">Amazon Audit Tool</span>
+              <span className="text-lg font-bold text-white">e-ctrl</span>
+              <span className="ml-2 text-white/70">Amazon Audit Tool</span>
             </div>
             <div className="flex gap-6 text-sm">
-              <a href="/legal/privacy" className="text-gray-400 hover:text-white transition-colors">
+              <a href="/legal/privacy" className="text-white/70 hover:text-white transition-colors">
                 Privacy Policy
               </a>
-              <a href="/legal/terms" className="text-gray-400 hover:text-white transition-colors">
+              <a href="/legal/terms" className="text-white/70 hover:text-white transition-colors">
                 Terms of Service
               </a>
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-800 text-center text-xs text-gray-400">
+          <div className="mt-4 pt-4 border-t border-white/10 text-center text-xs text-white/60">
             © 2024 e-ctrl. All rights reserved.
           </div>
         </div>

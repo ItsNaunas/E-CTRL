@@ -56,7 +56,7 @@ export default function FAQ() {
   };
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 md:py-20">
       <Script
         id="faq-schema"
         type="application/ld+json"
@@ -65,28 +65,28 @@ export default function FAQ() {
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
             Everything you need to know about our free Amazon audit tool.
           </p>
         </div>
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg" data-testid="faq-item">
+            <div key={index} className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition" data-testid="faq-item">
               <button
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#007AFF]/30 focus:ring-inset"
                 onClick={() => toggleFAQ(index)}
                 aria-expanded={openIndex === index}
                 aria-controls={`faq-answer-${index}`}
                 data-testid="faq-accordion-q"
               >
-                <span className="font-semibold text-gray-900 pr-4">
+                <span className="font-semibold text-white pr-4">
                   {faq.question}
                 </span>
-                <span className="flex-shrink-0 text-gray-400">
+                <span className="flex-shrink-0 text-white/60">
                   {openIndex === index ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -102,7 +102,7 @@ export default function FAQ() {
               {openIndex === index && (
                 <div
                   id={`faq-answer-${index}`}
-                  className="px-6 pb-4 text-gray-600"
+                  className="px-6 pb-4 text-white/80"
                   role="region"
                   aria-labelledby={`faq-question-${index}`}
                 >
@@ -114,7 +114,7 @@ export default function FAQ() {
         </div>
 
         <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-white/60">
             Still have questions? Contact us at support@e-ctrl.com
           </p>
           {/* TODO: Replace with client-provided contact information */}
