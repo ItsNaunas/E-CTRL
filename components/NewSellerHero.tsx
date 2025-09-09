@@ -96,7 +96,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
           
           {/* Left Column - Content */}
           <div className="max-w-xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-white via-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">
               Create Your Amazon Listing from Your Website — Launch Faster
             </h1>
             
