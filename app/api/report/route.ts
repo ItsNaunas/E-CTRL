@@ -30,14 +30,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check rate limit first
-    const rateLimitAllowed = await checkRateLimit(data.email, type);
-    if (!rateLimitAllowed) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded. One report per email per day.' },
-        { status: 429 }
-      );
-    }
+    // Check rate limit first (disabled for testing)
+    // const rateLimitAllowed = await checkRateLimit(data.email, type);
+    // if (!rateLimitAllowed) {
+    //   return NextResponse.json(
+    //     { error: 'Rate limit exceeded. One report per email per day.' },
+    //     { status: 429 }
+    //   );
+    // }
 
     // Validate form data based on type
     let validatedData: ExistingSellerData | NewSellerData;

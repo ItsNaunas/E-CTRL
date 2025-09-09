@@ -13,14 +13,22 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
   // First, run binary IDQ evaluation if we have HTML content
   let binaryIdqResult: IdqResult | null = null;
   if (productData?.htmlContent) {
-    const idqConfig: IdqConfig = {
-      keywords: data.keywords || [],
-      maxTitleLength: 200,
-      minBulletCount: 5,
-      minDescriptionChars: 200,
-      minImageCount: 6
-    };
-    binaryIdqResult = evaluateIdq(productData.htmlContent, idqConfig);
+    try {
+      const idqConfig: IdqConfig = {
+        keywords: data.keywords || [],
+        maxTitleLength: 200,
+        minBulletCount: 5,
+        minDescriptionChars: 200,
+        minImageCount: 6
+      };
+      binaryIdqResult = evaluateIdq(productData.htmlContent, idqConfig);
+      console.log('IDQ evaluation completed:', binaryIdqResult);
+    } catch (error) {
+      console.error('IDQ evaluation failed:', error);
+      // Continue without IDQ results
+    }
+  } else {
+    console.log('No HTML content available for IDQ evaluation');
   }
   const prompt = `You are an expert Amazon FBA consultant analyzing a product listing for UK/EU markets using Amazon's IDQ (Item Data Quality) criteria.
 
@@ -153,14 +161,22 @@ export async function analyzeNewSeller(data: NewSellerData, productData?: Generi
   // First, run binary IDQ evaluation if we have HTML content
   let binaryIdqResult: IdqResult | null = null;
   if (productData?.rawContent) {
-    const idqConfig: IdqConfig = {
-      keywords: data.keywords || [],
-      maxTitleLength: 200,
-      minBulletCount: 5,
-      minDescriptionChars: 200,
-      minImageCount: 6
-    };
-    binaryIdqResult = evaluateIdq(productData.rawContent, idqConfig);
+    try {
+      const idqConfig: IdqConfig = {
+        keywords: data.keywords || [],
+        maxTitleLength: 200,
+        minBulletCount: 5,
+        minDescriptionChars: 200,
+        minImageCount: 6
+      };
+      binaryIdqResult = evaluateIdq(productData.rawContent, idqConfig);
+      console.log('IDQ evaluation completed for new seller:', binaryIdqResult);
+    } catch (error) {
+      console.error('IDQ evaluation failed for new seller:', error);
+      // Continue without IDQ results
+    }
+  } else {
+    console.log('No HTML content available for IDQ evaluation (new seller)');
   }
   const prompt = `You are an expert Amazon FBA consultant creating a complete listing pack for a new seller.
 
