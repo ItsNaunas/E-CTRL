@@ -153,7 +153,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not found in bullets or description');
   if (!checks.has_reviews) notes.push('No reviews found');
   if (!checks.has_star_rating) notes.push('No rating element found');
-  if (checks.relevant_attributes_covered === 0 && cfg.requiredAttributes.length > 0) {
+  if ((checks as any).relevant_attributes_covered === 0 && cfg.requiredAttributes.length > 0) {
     notes.push('Insufficient attribute coverage');
   }
 
