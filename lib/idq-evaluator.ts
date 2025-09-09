@@ -126,7 +126,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     const foundAttributes = cfg.requiredAttributes.filter(attr => 
       attributeLabels.some(label => normText(label).includes(normText(attr)))
     );
-    checks.relevant_attributes_covered = (foundAttributes.length >= minRequired) ? 1 : 0;
+    (checks as any).relevant_attributes_covered = (foundAttributes.length >= minRequired) ? 1 : 0;
   }
 
   // Calculate score
