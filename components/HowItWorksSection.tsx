@@ -2,12 +2,12 @@
 
 export default function HowItWorksSection() {
   return (
-    <section className="relative bg-[#0B0B0C] text-white py-16">
-      {/* Background auras */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_20%_20%,#0e132d,transparent_65%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(65%_55%_at_80%_35%,#2a0f03,transparent_60%)]" />
-      </div>
+    <section className="relative bg-gradient-to-br from-[#0a0b1a] via-[#0f1020] to-[#1a0c00] text-white py-16 overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-0 w-[60vw] h-[60vw] bg-gradient-to-br from-[#296AFF] to-[#1e3a8a] rounded-full blur-3xl opacity-25"></div>
+      <div className="absolute bottom-0 right-0 w-[70vw] h-[70vw] bg-gradient-to-tl from-[#FF7D2B] to-[#dc2626] rounded-full blur-3xl opacity-25"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(41,106,255,0.15)_0%,rgba(255,125,43,0.15)_50%,transparent_70%)]"></div>
 
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
