@@ -116,11 +116,11 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
           </div>
 
           {/* Right: Mockup Image - Hidden on mobile */}
-          <div className="justify-self-center lg:justify-self-end hidden md:block">
+          <div className="justify-self-end hidden md:block -mr-12 lg:-mr-24">
             <img
               src="/ipad-mockup.png"
               alt="Amazon Audit Report preview"
-              className="block h-auto w-[800px] max-w-[95vw]"
+              className="block h-auto w-[1012px] max-w-[95vw]"
               draggable={false}
             />
           </div>

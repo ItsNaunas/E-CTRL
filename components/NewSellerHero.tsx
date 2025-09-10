@@ -276,11 +276,11 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
             </div>
 
             {/* Right: iPad Mockup - Hidden on mobile */}
-            <div className="justify-self-center lg:justify-self-end hidden md:block">
+            <div className="justify-self-end hidden md:block -mr-12 lg:-mr-24">
               <img
                 src="/ipad-mockup.png"
                 alt="iPad showing Amazon listing creation"
-                className="block h-auto w-[800px] max-w-[95vw]"
+                className="block h-auto w-[1012px] max-w-[95vw]"
                 draggable={false}
               />
             </div>
