@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import CTAButton from '@/components/CTAButton';
+import ClientTestimonials from '@/components/ClientTestimonials';
 
 interface NewSellerHeroProps {
   onUrlSubmit: (url: string) => void;
@@ -89,8 +90,8 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 rounded-full blur-3xl"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(41,106,255,0.15)_0%,rgba(255,125,43,0.15)_50%,transparent_70%)]"></div>
       
-      <div className="relative mx-auto w-full max-w-[1320px] px-6 py-20">
-        <div className="grid items-center gap-16 lg:grid-cols-2">
+      <div className="relative mx-auto w-full max-w-[1320px] px-6 py-6 md:py-20">
+        <div className="grid items-center gap-8 lg:gap-16 lg:grid-cols-2">
             
             {/* Left: Content */}
             <div>
@@ -273,6 +274,16 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
                 </button>
                 
               </form>
+
+              {/* Client Testimonials - Social Proof (Mobile only) */}
+              <div className="mt-6 md:hidden">
+                <div className="text-center mb-3">
+                  <p className="text-xs text-white/40">
+                    Trusted by Amazon sellers worldwide
+                  </p>
+                </div>
+                <ClientTestimonials />
+              </div>
             </div>
 
             {/* Right: iPad Mockup - Hidden on mobile */}
@@ -284,6 +295,16 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
                 draggable={false}
               />
             </div>
+        </div>
+
+        {/* Client Testimonials - Social Proof (Desktop only - below image) */}
+        <div className="hidden md:block mt-8">
+          <div className="text-center mb-3">
+            <p className="text-xs text-white/40">
+              Trusted by Amazon sellers worldwide
+            </p>
+          </div>
+          <ClientTestimonials />
         </div>
       </div>
     </section>

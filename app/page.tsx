@@ -6,7 +6,7 @@ import Hero from '@/components/Hero';
 import NewSellerHero from '@/components/NewSellerHero';
 import ModeToggle from '@/components/ModeToggle';
 import StickyTabs from '@/components/StickyTabs';
-import TrustBar from './components/TrustBar';
+import TrustSection from '@/components/TrustSection';
 import UsageCounter from './components/UsageCounter';
 import HowItWorks from './components/HowItWorks';
 import NewSellerHowItWorks from './components/NewSellerHowItWorks';
@@ -606,8 +606,8 @@ export default function HomePage() {
         />
       )}
 
-      {/* Trust Bar - Build Credibility */}
-      <TrustBar />
+      {/* Trust Section - Build Credibility */}
+      <TrustSection />
 
       {/* Section Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
