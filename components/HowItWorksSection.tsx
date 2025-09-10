@@ -36,64 +36,101 @@ export default function HowItWorksSection() {
           </p>
         </div>
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {/* Step 1 */}
-          <div className="group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.05] hover:-translate-y-0.5 transition-all duration-300">
-            {/* Step number badge */}
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] mb-4">
-              <span className="text-white font-bold text-sm">1</span>
-            </div>
-            
-            {/* Step content */}
-            <h3 className="text-xl font-bold text-white mb-3">Paste Your URL</h3>
-            <p className="text-sm text-white/70 mb-4">
-              Enter your product page link so we can fetch details.
-            </p>
-            
-            {/* Step image */}
-            <img 
-              src="/steps/url.png" 
-              alt="Paste URL" 
-              className="h-24 w-auto mx-auto mt-4" 
-            />
-          </div>
-
-          {/* Step 2 - Placeholder */}
-          <div className="group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.05] hover:-translate-y-0.5 transition-all duration-300">
-            {/* Step number badge */}
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] mb-4">
-              <span className="text-white font-bold text-sm">2</span>
-            </div>
-            
-            {/* Step content */}
-            <h3 className="text-xl font-bold text-white mb-3">Step 2 Title</h3>
-            <p className="text-sm text-white/70 mb-4">
-              Step 2 description will go here.
-            </p>
-            
-            {/* Step image placeholder */}
-            <div className="h-24 w-full bg-white/[0.05] rounded-lg flex items-center justify-center mt-4">
-              <span className="text-white/40 text-sm">Image placeholder</span>
+        {/* Steps Grid with Connectors */}
+        <div className="relative">
+          {/* Connector arrows - hidden on mobile */}
+          <div className="hidden md:block absolute top-16 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
+            <div className="flex justify-between items-center px-8">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-white/40"></div>
+              <div className="mx-4">
+                <svg className="w-6 h-6 text-white/40" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="flex-1 h-px bg-gradient-to-r from-white/40 via-white/20 to-transparent"></div>
             </div>
           </div>
 
-          {/* Step 3 - Placeholder */}
-          <div className="group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.05] hover:-translate-y-0.5 transition-all duration-300">
-            {/* Step number badge */}
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] mb-4">
-              <span className="text-white font-bold text-sm">3</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 relative z-10">
+            {/* Step 1 */}
+            <div className="group relative">
+              {/* Background glow */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Glass card */}
+              <div className="relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.05] hover:-translate-y-0.5 hover:scale-105 transition-all duration-300">
+                {/* Step number badge */}
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] mb-4 shadow-lg">
+                  <span className="text-white font-bold text-lg">1</span>
+                </div>
+                
+                {/* Step content */}
+                <h3 className="text-xl font-bold text-white mb-3">Enter ASIN</h3>
+                <p className="text-sm text-white/70 mb-4">
+                  Paste your product URL or ASIN to get started
+                </p>
+                
+                {/* Step illustration */}
+                <div className="flex items-center justify-center h-20 w-full bg-white/[0.05] rounded-lg mt-4 group-hover:bg-white/[0.08] transition-colors">
+                  <svg className="w-8 h-8 text-[#296AFF] group-hover:text-[#FF7D2B] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
             </div>
-            
-            {/* Step content */}
-            <h3 className="text-xl font-bold text-white mb-3">Step 3 Title</h3>
-            <p className="text-sm text-white/70 mb-4">
-              Step 3 description will go here.
-            </p>
-            
-            {/* Step image placeholder */}
-            <div className="h-24 w-full bg-white/[0.05] rounded-lg flex items-center justify-center mt-4">
-              <span className="text-white/40 text-sm">Image placeholder</span>
+
+            {/* Step 2 */}
+            <div className="group relative">
+              {/* Background glow */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Glass card */}
+              <div className="relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.05] hover:-translate-y-0.5 hover:scale-105 transition-all duration-300">
+                {/* Step number badge */}
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] mb-4 shadow-lg">
+                  <span className="text-white font-bold text-lg">2</span>
+                </div>
+                
+                {/* Step content */}
+                <h3 className="text-xl font-bold text-white mb-3">AI Audit</h3>
+                <p className="text-sm text-white/70 mb-4">
+                  Our AI analyzes your listing for optimization opportunities
+                </p>
+                
+                {/* Step illustration */}
+                <div className="flex items-center justify-center h-20 w-full bg-white/[0.05] rounded-lg mt-4 group-hover:bg-white/[0.08] transition-colors">
+                  <svg className="w-8 h-8 text-[#296AFF] group-hover:text-[#FF7D2B] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="group relative">
+              {/* Background glow */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Glass card */}
+              <div className="relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.05] hover:-translate-y-0.5 hover:scale-105 transition-all duration-300">
+                {/* Step number badge */}
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] mb-4 shadow-lg">
+                  <span className="text-white font-bold text-lg">3</span>
+                </div>
+                
+                {/* Step content */}
+                <h3 className="text-xl font-bold text-white mb-3">Instant Report</h3>
+                <p className="text-sm text-white/70 mb-4">
+                  Download your optimized listing and checklist
+                </p>
+                
+                {/* Step illustration */}
+                <div className="flex items-center justify-center h-20 w-full bg-white/[0.05] rounded-lg mt-4 group-hover:bg-white/[0.08] transition-colors">
+                  <svg className="w-8 h-8 text-[#296AFF] group-hover:text-[#FF7D2B] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
