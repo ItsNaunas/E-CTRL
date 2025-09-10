@@ -9,6 +9,7 @@ import StickyTabs from '@/components/StickyTabs';
 import TrustSection from '@/components/TrustSection';
 import HowItWorks from './components/HowItWorks';
 import NewSellerHowItWorks from './components/NewSellerHowItWorks';
+import HowItWorksSection from '@/components/HowItWorksSection';
 import Benefits from './components/Benefits';
 import NewSellerBenefits from './components/NewSellerBenefits';
 import Testimonials from './components/Testimonials';
@@ -613,11 +614,7 @@ export default function HomePage() {
 
 
       {/* How It Works - Process Explanation */}
-      {mode === 'audit' ? (
-        <HowItWorks />
-      ) : (
-        <NewSellerHowItWorks />
-      )}
+      <HowItWorksSection />
 
       {/* Benefits - Value Proposition */}
       {mode === 'audit' ? (

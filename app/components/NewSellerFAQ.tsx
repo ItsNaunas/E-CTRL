@@ -12,11 +12,11 @@ export default function NewSellerFAQ() {
     },
     {
       question: "How long does it take to get my listing?",
-      answer: "You'll receive your complete Amazon listing with 6 optimized images and conversion-focused copy within minutes of submitting your email. No waiting, no delays."
+      answer: "You'll receive your complete Amazon listing optimization checklist and conversion-focused copy within minutes of submitting your email. No waiting, no delays."
     },
     {
-      question: "Are the images really optimized for Amazon?",
-      answer: "Yes! Each of the 6 images follows Amazon's specific requirements: main image on white background (85% frame), lifestyle shots, benefit infographics, measurements, cross-sections, and competitive comparisons."
+      question: "Is the optimization checklist really comprehensive?",
+      answer: "Yes! Our optimization checklist covers all of Amazon's specific requirements: title structure, bullet point optimization, description formatting, keyword placement, and listing completeness standards."
     },
     {
       question: "What if I need to modify the listing after receiving it?",

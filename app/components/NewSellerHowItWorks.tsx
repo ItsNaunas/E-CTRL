@@ -15,7 +15,7 @@ export default function NewSellerHowItWorks() {
     {
       icon: "📧",
       title: "Get Your Listing",
-      description: "Receive 6 images + complete listing via email"
+      description: "Receive optimization checklist + complete listing via email"
     }
   ];
 
@@ -56,8 +56,8 @@ export default function NewSellerHowItWorks() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="text-2xl mb-2">📸</div>
-                <h4 className="font-semibold text-gray-900 mb-1">6 Optimized Images</h4>
-                <p className="text-sm text-gray-600">Main, lifestyle, benefits, measurements, cross-section, and comparison images</p>
+                <h4 className="font-semibold text-gray-900 mb-1">Optimization Checklist</h4>
+                <p className="text-sm text-gray-600">Complete checklist covering title, bullets, description, keywords, and listing requirements</p>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="text-2xl mb-2">📝</div>

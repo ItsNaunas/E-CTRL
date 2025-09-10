@@ -187,7 +187,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                   Ready to Create Your Amazon Listing?
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Get your complete listing with 6 optimized images and conversion-focused copy delivered to your email.
+                  Get your complete Amazon listing optimization checklist and conversion-focused copy delivered to your email.
                 </p>
                 
                                  <CTAButton

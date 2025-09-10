@@ -67,7 +67,7 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
         <p className="text-white/70 mb-6 max-w-xl mx-auto">
           {mode === 'audit'
             ? 'Get actionable insights to boost your Amazon sales. No strings attached.'
-            : 'Get your complete Amazon listing with 6 optimized images. No strings attached.'
+            : 'Get your complete Amazon listing optimization checklist. No strings attached.'
           }
         </p>
         

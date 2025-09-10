@@ -267,10 +267,10 @@ Please create a complete Amazon listing creation guide for this NEW SELLER. Inst
    - Amazon Requirements: [What Amazon requires for high IDQ scores]
    - Optimized Keywords: [Keywords that bring in qualified buyers and help with ranking]
 
-5. **IMAGE STRATEGY FOR NEW LISTINGS**:
-   - Current Images: [What we found from scraping or user input]
+5. **LISTING OPTIMIZATION CHECKLIST FOR NEW LISTINGS**:
+   - Current Listing Elements: [What we found from scraping or user input]
    - Amazon Requirements: [What Amazon requires for high IDQ scores]
-   - Required Images: [6 images that convert browsers into buyers and meet IDQ standards]
+   - Optimization Checklist: [Complete checklist covering title, bullets, description, keywords, and listing requirements]
 
 6. **TRUST & CREDIBILITY FOR NEW SELLERS**:
    - Current Trust Elements: [What we found]

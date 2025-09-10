@@ -122,7 +122,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
                 ))}
               </div>
               <p className="text-sm text-gray-500 mt-3 text-center">
-                <span className="font-medium">Upgrade to see all {isAuditMode ? '6 detailed image recommendations' : '6 optimized images'}</span>
+                <span className="font-medium">Upgrade to see all {isAuditMode ? 'detailed optimization recommendations' : 'complete optimization checklist'}</span>
               </p>
             </div>
 
@@ -165,7 +165,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
               <p className="text-orange-100 mb-4">
                 {isAuditMode 
                   ? 'Get your complete audit report with detailed insights, sharp image recommendations, and actionable checklist.'
-                  : 'Get your complete listing with 6 optimized images, SEO-optimized copy, and step-by-step guide.'
+                  : 'Get your complete listing optimization checklist, SEO-optimized copy, and step-by-step guide.'
                 }
               </p>
               

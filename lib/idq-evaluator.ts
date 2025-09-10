@@ -148,7 +148,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   if (!checks.has_aplus) notes.push('No A+ content - you\'re missing a huge conversion opportunity');
   if (!checks.has_premium_aplus) notes.push('No premium A+ content - competitors with this get more sales');
   if (!checks.has_main_image) notes.push('Main product image missing - first impression is everything');
-  if (!checks.images_6plus) notes.push(`Only ${imageCount} images - customers need to see more to feel confident buying`);
+  if (!checks.images_6plus) notes.push(`Only ${imageCount} images - customers need to see more to feel confident buying (check optimization checklist for image requirements)`);
   if (!checks.has_keywords && cfg.keywords.length > 0) notes.push('Target keywords not found in title or bullets - you\'re invisible in search');
   if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
   if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');

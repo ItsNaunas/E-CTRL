@@ -68,7 +68,7 @@ export default function NewSellerPage() {
         <div className="max-w-2xl mx-auto">
           <FileDropzone
             label="Product Image *"
-            help={isUploading ? "Uploading image..." : "Upload a high-quality product image (JPG/PNG, max 8MB). We'll use this to generate 6 optimized Amazon images."}
+            help={isUploading ? "Uploading image..." : "Upload a high-quality product image (JPG/PNG, max 8MB). We'll use this to create your Amazon listing optimization checklist."}
             error={imageError}
             onChange={handleImageChange}
             value={selectedImage}

@@ -43,7 +43,7 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">✓</span>
-                    <span className="text-gray-700">6 optimized Amazon images</span>
+                    <span className="text-gray-700">Complete Amazon listing optimization checklist</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">✓</span>
@@ -101,7 +101,7 @@ export default function NewSellerDeliveryNote({ email }: { email: string }) {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
                 <div>
-                  <strong>Image Optimization:</strong> Use all 6 images to maximize your listing&apos;s conversion potential.
+                  <strong>Optimization Checklist:</strong> Follow the complete checklist to maximize your listing&apos;s conversion potential.
                 </div>
                 <div>
                   <strong>Keyword Research:</strong> The title and description are already optimized for search visibility.
