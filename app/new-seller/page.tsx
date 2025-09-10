@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import FileDropzone from '@/components/FileDropzone';
 import type { ImageFile } from '@/lib/validation';
 
@@ -79,9 +80,11 @@ export default function NewSellerPage() {
             <div className="mt-4">
               <p className="text-sm font-medium text-foreground mb-2">Uploaded Image Preview:</p>
               <div className="relative inline-block">
-                <img
+                <Image
                   src={uploadedImageUrl}
                   alt="Product preview"
+                  width={320}
+                  height={240}
                   className="max-w-xs rounded-lg border border-border shadow-sm"
                 />
                 <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">

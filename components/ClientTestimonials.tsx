@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface ClientTestimonial {
   id: number;
@@ -100,7 +101,7 @@ export default function ClientTestimonials({
                       {testimonial.name}
                     </div>
                     <div className="text-white/90 text-xs leading-relaxed mb-2">
-                      "{testimonial.quote}"
+                      &ldquo;{testimonial.quote}&rdquo;
                     </div>
                     <div className="text-[#FF7D2B] text-xs font-medium">
                       {testimonial.result}
@@ -119,11 +120,12 @@ export default function ClientTestimonials({
                 className="w-12 h-12 rounded-full border-2 border-[#FF7D2B] group-hover:scale-110 transition-all duration-300 overflow-hidden cursor-pointer"
                 onClick={handleAvatarClick}
               >
-                <img
+                <Image
                   src={testimonial.avatar}
                   alt={testimonial.name}
+                  width={48}
+                  height={48}
                   className="w-full h-full object-cover pointer-events-none"
-                  onClick={handleAvatarClick}
                 />
               </div>
               

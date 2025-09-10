@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 import ClientTestimonials from '@/components/ClientTestimonials';
 
@@ -288,9 +289,11 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
 
             {/* Right: iPad Mockup - Hidden on mobile */}
             <div className="justify-self-end hidden md:block -mr-12 lg:-mr-24">
-              <img
+              <Image
                 src="/ipad-mockup.png"
                 alt="iPad showing Amazon listing creation"
+                width={1012}
+                height={600}
                 className="block h-auto w-[1012px] max-w-[95vw]"
                 draggable={false}
               />

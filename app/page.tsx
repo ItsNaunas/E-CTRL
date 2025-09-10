@@ -7,7 +7,6 @@ import NewSellerHero from '@/components/NewSellerHero';
 import ModeToggle from '@/components/ModeToggle';
 import StickyTabs from '@/components/StickyTabs';
 import TrustSection from '@/components/TrustSection';
-import UsageCounter from './components/UsageCounter';
 import HowItWorks from './components/HowItWorks';
 import NewSellerHowItWorks from './components/NewSellerHowItWorks';
 import Benefits from './components/Benefits';
@@ -612,8 +611,6 @@ export default function HomePage() {
       {/* Section Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
-      {/* Usage Counter - Social Proof */}
-      <UsageCounter />
 
       {/* How It Works - Process Explanation */}
       {mode === 'audit' ? (

@@ -128,9 +128,11 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
 
           {/* Right: Mockup Image - Hidden on mobile */}
           <div className="justify-self-end hidden md:block -mr-12 lg:-mr-24">
-            <img
+            <Image
               src="/ipad-mockup.png"
               alt="Amazon Audit Report preview"
+              width={1012}
+              height={600}
               className="block h-auto w-[1012px] max-w-[95vw]"
               draggable={false}
             />
