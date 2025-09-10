@@ -49,7 +49,7 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['General Sans', 'ui-sans-serif', 'system-ui'],
       },
       spacing: {
         // 8pt scale

@@ -27,7 +27,7 @@ export default function TrustBar() {
   }, []);
 
   return (
-    <section className="py-16 md:py-20" data-testid="trustbar">
+    <section className="py-8 md:py-20" data-testid="trustbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Usage Counter */}
         <div className="text-center mb-6">

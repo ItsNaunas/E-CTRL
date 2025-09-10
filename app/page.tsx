@@ -5,6 +5,7 @@ import { useCROChecks } from './hooks/useCROChecks';
 import Hero from '@/components/Hero';
 import NewSellerHero from '@/components/NewSellerHero';
 import ModeToggle from '@/components/ModeToggle';
+import StickyTabs from '@/components/StickyTabs';
 import TrustBar from './components/TrustBar';
 import UsageCounter from './components/UsageCounter';
 import HowItWorks from './components/HowItWorks';
@@ -19,7 +20,6 @@ import RepeatCTA from './components/RepeatCTA';
 import PartialResult from './components/PartialResult';
 import NewSellerPartialResult from './components/NewSellerPartialResult';
 import EmailGate from './components/EmailGate';
-import StickyCTA from './components/StickyCTA';
 import ReportDeliveryNote from './components/ReportDeliveryNote';
 import NewSellerDeliveryNote from './components/NewSellerDeliveryNote';
 import AccessControl from './components/AccessControl';
@@ -592,13 +592,9 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Sticky CTA - Appears on scroll */}
-      <StickyCTA onCtaClick={handleCtaClick} mode={mode} />
+      {/* Sticky Apple Glass Tabs */}
+      <StickyTabs activeTab={mode} onTabChange={setMode} onCtaClick={handleCtaClick} />
 
-      {/* Mode Toggle */}
-      <div className="pt-24">
-        <ModeToggle mode={mode} onModeChange={setMode} />
-      </div>
 
       {/* Hero Section - Primary Action */}
       {mode === 'audit' ? (
@@ -614,7 +610,7 @@ export default function HomePage() {
       <TrustBar />
 
       {/* Section Divider */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-12 md:my-16" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
       {/* Usage Counter - Social Proof */}
       <UsageCounter />
@@ -634,7 +630,7 @@ export default function HomePage() {
       )}
 
       {/* Section Divider */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-12 md:my-16" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
       {/* Testimonials - Social Proof */}
       <Testimonials />
@@ -643,7 +639,7 @@ export default function HomePage() {
       <Guarantees />
 
       {/* Section Divider */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-12 md:my-16" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
       {/* FAQ - Address Objections */}
       {mode === 'audit' ? (

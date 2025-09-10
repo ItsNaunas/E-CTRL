@@ -9,7 +9,7 @@ interface NewSellerHeroProps {
     category: string;
     description: string;
     keywords: string[];
-    fulfilmentIntent: string;
+    fulfilmentIntent: 'FBA' | 'FBM' | 'Unsure';
   }) => void;
 }
 
@@ -27,266 +27,263 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setIsSubmitting(true);
-
-    if (inputMode === 'url') {
-      // URL validation
-      try {
-        new URL(productUrl);
-      } catch {
-        setError('Please enter a valid product URL');
-        setIsSubmitting(false);
-        return;
-      }
-      
-      // Track listing creation start
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'listing_creation_start', {
-          event_category: 'engagement',
-          event_label: 'new_seller_url_form'
+    setError('');
+    
+    try {
+      if (inputMode === 'url') {
+        if (!productUrl.trim()) {
+          setError('Please enter a valid product URL');
+          return;
+        }
+        
+        // Track the event
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'listing_creation_start', {
+            event_category: 'engagement',
+            event_label: 'new_seller_url_form'
+          });
+        }
+        
+        onUrlSubmit(productUrl);
+      } else {
+        // Manual input validation
+        if (!category.trim() || !description.trim() || !keywords.trim()) {
+          setError('Please fill in all required fields');
+          return;
+        }
+        
+        const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k.length > 0);
+        if (keywordsArray.length < 2) {
+          setError('Please provide at least 2 keywords');
+          return;
+        }
+        
+        // Track the event
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'listing_creation_start', {
+            event_category: 'engagement',
+            event_label: 'new_seller_manual_form'
+          });
+        }
+        
+        onManualSubmit({
+          category: category.trim(),
+          description: description.trim(),
+          keywords: keywordsArray,
+          fulfilmentIntent: fulfilmentIntent as 'FBA' | 'FBM' | 'Unsure'
         });
       }
-
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      onUrlSubmit(productUrl);
-    } else {
-      // Manual input validation
-      if (!category || !description || !keywords) {
-        setError('Please fill in all required fields');
-        setIsSubmitting(false);
-        return;
-      }
-
-      const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k.length > 0);
-      if (keywordsArray.length < 2) {
-        setError('Please provide at least 2 keywords');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Track listing creation start
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'listing_creation_start', {
-          event_category: 'engagement',
-          event_label: 'new_seller_manual_form'
-        });
-      }
-
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      onManualSubmit({
-        category,
-        description,
-        keywords: keywordsArray,
-        fulfilmentIntent: fulfilmentIntent as 'FBA' | 'FBM' | 'Unsure'
-      });
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
     }
     
     setIsSubmitting(false);
   };
 
   return (
-    <section className="relative py-16 md:py-20 after:content-[''] after:absolute after:inset-0 after:-z-10 after:bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,122,255,0.25),transparent_60%)]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-          
-          {/* Left Column - Content */}
-          <div className="max-w-xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-white via-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">
-              Create Your Amazon Listing from Your Website — Launch Faster
-            </h1>
+    <section className="relative min-h-[92vh] bg-gradient-to-br from-[#0a0b1a] via-[#0f1020] to-[#1a0c00] text-white overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-0 w-[60vw] h-[60vw] bg-gradient-to-br from-[#296AFF] to-[#1e3a8a] rounded-full blur-3xl opacity-25"></div>
+      <div className="absolute bottom-0 right-0 w-[70vw] h-[70vw] bg-gradient-to-tl from-[#FF7D2B] to-[#dc2626] rounded-full blur-3xl opacity-25"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(41,106,255,0.15)_0%,rgba(255,125,43,0.15)_50%,transparent_70%)]"></div>
+      
+      <div className="relative mx-auto w-full max-w-[1320px] px-6 py-20">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
             
-            <p className="mt-6 text-lg md:text-xl text-white/70 max-w-2xl">
-              Enter your product landing page URL to generate an optimized Amazon listing with images, title, and description.
-            </p>
-            
-            <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-              {/* Input Mode Toggle */}
-              <div className="flex space-x-4 mb-6">
-                <button
-                  type="button"
-                  onClick={() => setInputMode('url')}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                    inputMode === 'url'
-                      ? 'bg-gradient-to-r from-[#007AFF] to-[#FF6B00] text-white'
-                      : 'border border-white/15 text-white/90 hover:border-white/40 hover:bg-white/5'
-                  }`}
-                >
-                  Product Link
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInputMode('manual')}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                    inputMode === 'manual'
-                      ? 'bg-gradient-to-r from-[#007AFF] to-[#FF6B00] text-white'
-                      : 'border border-white/15 text-white/90 hover:border-white/40 hover:bg-white/5'
-                  }`}
-                >
-                  Manual Input
-                </button>
-              </div>
-
-              {inputMode === 'url' ? (
-                <div>
-                  <label htmlFor="product-url-input" className="block text-sm font-medium text-white mb-2">
-                    Product Website URL
-                  </label>
-                  <input
-                    id="product-url-input"
-                    data-testid="new-seller-input"
-                    type="url"
-                    value={productUrl}
-                    onChange={(e) => {
-                      setProductUrl(e.target.value);
-                      if (error) setError('');
-                    }}
-                    placeholder="https://yourwebsite.com/product-page"
-                    className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none sm:text-lg ${
-                      error 
-                        ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                        : ''
-                    }`}
-                    required
-                    aria-describedby={error ? "url-error" : "url-help"}
-                    aria-invalid={!!error}
-                  />
-                  <p className="mt-2 text-sm text-white/70">
-                    We&apos;ll analyze your product page to create the perfect Amazon listing
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="category" className="block text-sm font-medium text-white mb-2">
-                      Product Category *
-                    </label>
-                    <input
-                      id="category"
-                      name="category"
-                      type="text"
-                      value={category}
-                      onChange={(e) => {
-                        setCategory(e.target.value);
-                        if (error) setError('');
-                      }}
-                      placeholder="e.g., Home & Garden, Electronics, Beauty"
-                      className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none ${
-                        error 
-                          ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                          : ''
-                      }`}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-white mb-2">
-                      Product Description *
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={description}
-                      onChange={(e) => {
-                        setDescription(e.target.value);
-                        if (error) setError('');
-                      }}
-                      placeholder="Describe your product, its features, and benefits..."
-                      rows={3}
-                      className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none ${
-                        error 
-                          ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                          : ''
-                      }`}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="keywords" className="block text-sm font-medium text-white mb-2">
-                      Keywords (comma-separated) *
-                    </label>
-                    <input
-                      id="keywords"
-                      name="keywords"
-                      type="text"
-                      value={keywords}
-                      onChange={(e) => {
-                        setKeywords(e.target.value);
-                        if (error) setError('');
-                      }}
-                      placeholder="eco-friendly, sustainable, organic, natural"
-                      className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none ${
-                        error 
-                          ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                          : ''
-                      }`}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="fulfilment" className="block text-sm font-medium text-white mb-2">
-                      Fulfilment Method
-                    </label>
-                    <select
-                      id="fulfilment"
-                      name="fulfilment"
-                      value={fulfilmentIntent}
-                      onChange={(e) => setFulfilmentIntent(e.target.value)}
-                      className="block w-full rounded-xl bg-white/5 text-white border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none"
-                    >
-                      <option value="FBA">FBA (Fulfilled by Amazon)</option>
-                      <option value="FBM">FBM (Fulfilled by Merchant)</option>
-                      <option value="Unsure">Not sure yet</option>
-                    </select>
-                  </div>
-                </div>
-              )}
-
-              {error && (
-                <p className="text-sm text-red-400" role="alert">
-                  {error}
-                </p>
-              )}
+            {/* Left: Content */}
+            <div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+                <span className="bg-gradient-to-r from-[#296AFF] to-white bg-clip-text text-transparent">
+                  Create Your Amazon Listing
+                </span><br/>
+                from Your Website<br/>
+                <span className="bg-gradient-to-r from-white to-[#FF7D2B] bg-clip-text text-transparent">
+                  Launch Faster
+                </span>
+              </h1>
               
-              <CTAButton
-                type="submit"
-                variant="primary"
-                size="lg"
-                text="create my amazon listing now"
-                fullWidth
-                className="w-full"
-                disabled={isSubmitting}
-                data-testid="new-seller-cta"
-              />
-              
-              <p id="url-help" className="text-sm text-white/70 text-center" data-testid="microcopy-free">
-                Get 6 optimized images + complete listing. 100% free.
+              <p className="mt-6 max-w-2xl text-white/70 text-base lg:text-lg leading-relaxed">
+                Enter your product landing page URL to generate an optimized Amazon listing with images, title, and description.
               </p>
-            </form>
-          </div>
-          
-          {/* Right Column - iPad Mockup */}
-          <div className="relative flex justify-center items-center">
-            {/* iPad Mockup Image */}
-            <div className="relative animate-fade-in-up">
-              <img 
-                src="/ipad-mockup.png" 
-                alt="iPad showing Amazon listing creation" 
-                className="w-80 h-96 object-contain transform scale-x-[-1]"
-              />
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-[#007AFF] to-[#FF6B00] rounded-full animate-pulse"></div>
-              <div className="absolute -bottom-8 -left-8 w-6 h-6 bg-gradient-to-r from-[#FF6B00] to-[#007AFF] rounded-full animate-pulse delay-1000"></div>
+
+              <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+                {/* Input Mode Toggle */}
+                <div className="flex justify-center mb-6">
+                  <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
+                    <button
+                      type="button"
+                      onClick={() => setInputMode('url')}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                        inputMode === 'url'
+                          ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
+                          : 'text-white/70 hover:text-white hover:bg-white/8 hover:border-white/10 border border-transparent'
+                      }`}
+                    >
+                      Product Link
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setInputMode('manual')}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                        inputMode === 'manual'
+                          ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
+                          : 'text-white/70 hover:text-white hover:bg-white/8 hover:border-white/10 border border-transparent'
+                      }`}
+                    >
+                      Manual Input
+                    </button>
+                  </div>
+                </div>
+
+                {inputMode === 'url' ? (
+                  <div>
+                    <label htmlFor="product-url-input" className="block text-sm font-medium text-white mb-2">
+                      Product Website URL
+                    </label>
+                    <input
+                      id="product-url-input"
+                      data-testid="new-seller-input"
+                      type="url"
+                      value={productUrl}
+                      onChange={(e) => {
+                        setProductUrl(e.target.value);
+                        if (error) setError('');
+                      }}
+                      placeholder="https://yourwebsite.com/product-page"
+                      className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                        error 
+                          ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                          : ''
+                      }`}
+                      required
+                      aria-describedby={error ? "url-error" : "url-help"}
+                      aria-invalid={!!error}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="category" className="block text-sm font-medium text-white mb-2">
+                        Product Category *
+                      </label>
+                      <input
+                        id="category"
+                        name="category"
+                        type="text"
+                        value={category}
+                        onChange={(e) => {
+                          setCategory(e.target.value);
+                          if (error) setError('');
+                        }}
+                        placeholder="e.g., Home & Garden, Electronics, Beauty"
+                        className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                          error 
+                            ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                            : ''
+                        }`}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="description" className="block text-sm font-medium text-white mb-2">
+                        Product Description *
+                      </label>
+                      <textarea
+                        id="description"
+                        name="description"
+                        value={description}
+                        onChange={(e) => {
+                          setDescription(e.target.value);
+                          if (error) setError('');
+                        }}
+                        placeholder="Describe your product, its features, and benefits..."
+                        rows={3}
+                        className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                          error 
+                            ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                            : ''
+                        }`}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="keywords" className="block text-sm font-medium text-white mb-2">
+                        Keywords (comma-separated) *
+                      </label>
+                      <input
+                        id="keywords"
+                        name="keywords"
+                        type="text"
+                        value={keywords}
+                        onChange={(e) => {
+                          setKeywords(e.target.value);
+                          if (error) setError('');
+                        }}
+                        placeholder="eco-friendly, sustainable, organic, natural"
+                        className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                          error 
+                            ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                            : ''
+                        }`}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="fulfilment" className="block text-sm font-medium text-white mb-2">
+                        Fulfilment Method
+                      </label>
+                      <select
+                        id="fulfilment"
+                        name="fulfilment"
+                        value={fulfilmentIntent}
+                        onChange={(e) => setFulfilmentIntent(e.target.value)}
+                        className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                      >
+                        <option value="FBA">FBA (Fulfilled by Amazon)</option>
+                        <option value="FBM">FBM (Fulfilled by Merchant)</option>
+                        <option value="Unsure">Not sure yet</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {error && (
+                  <p className="text-sm text-red-400" role="alert">
+                    {error}
+                  </p>
+                )}
+                
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="relative inline-flex w-full h-[60px] rounded-[45px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
+                  data-testid="new-seller-cta"
+                >
+                  {/* Inner fill (pure black) */}
+                  <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none">
+                    create my amazon listing now
+                    {/* Optional glossy overlay from your Figma fill @ ~38% */}
+                    <span className="pointer-events-none absolute inset-0 rounded-[43.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
+                  </span>
+                </button>
+                
+              </form>
             </div>
-          </div>
-          
+
+            {/* Right: iPad Mockup - Hidden on mobile */}
+            <div className="justify-self-center lg:justify-self-end hidden md:block">
+              <img
+                src="/ipad-mockup.png"
+                alt="iPad showing Amazon listing creation"
+                className="block h-auto w-[800px] max-w-[95vw]"
+                draggable={false}
+              />
+            </div>
         </div>
       </div>
     </section>

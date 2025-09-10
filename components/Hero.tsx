@@ -43,83 +43,87 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
   };
 
   return (
-    <section className="relative py-16 md:py-20 after:content-[''] after:absolute after:inset-0 after:-z-10 after:bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,122,255,0.25),transparent_60%)]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+    <section className="relative min-h-[92vh] bg-gradient-to-br from-[#0a0b1a] via-[#0f1020] to-[#1a0c00] text-white overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-0 w-[60vw] h-[60vw] bg-gradient-to-br from-[#296AFF] to-[#1e3a8a] rounded-full blur-3xl opacity-25"></div>
+      <div className="absolute bottom-0 right-0 w-[70vw] h-[70vw] bg-gradient-to-tl from-[#FF7D2B] to-[#dc2626] rounded-full blur-3xl opacity-25"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(41,106,255,0.15)_0%,rgba(255,125,43,0.15)_50%,transparent_70%)]"></div>
+      
+      <div className="relative mx-auto w-full max-w-[1320px] px-6 py-20">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
           
-          {/* Left Column - Content */}
-          <div className="max-w-xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-white via-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">
-              Free AI Audit of Your Amazon Listing — Boost Sales in Minutes
+          {/* Left: Content */}
+          <div>
+            {/* Headlines */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+              <span className="bg-gradient-to-r from-[#296AFF] to-white bg-clip-text text-transparent">
+                Free AI Audit
+              </span><br/>
+              <span className="text-white">of Your Amazon Listing</span><br/>
+              <span className="bg-gradient-to-r from-white to-[#FF7D2B] bg-clip-text text-transparent">
+                Boost Sales in Minutes
+              </span>
             </h1>
             
-            <p className="mt-6 text-lg md:text-xl text-white/70 max-w-2xl">
-              Enter your ASIN or product link. Get a basic audit via email. Create an account anytime for the full report.
+            <p className="mt-6 max-w-2xl text-white/70 text-base lg:text-lg leading-relaxed">
+              Enter your ASIN or product link. Get a comprehensive audit report with actionable insights to optimize your listing and increase sales.
             </p>
-            
+
+            {/* Input + CTA */}
             <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-              <div>
-                <label htmlFor="asin-input" className="sr-only">
-                  Amazon ASIN or Product URL
-                </label>
-                <input
-                  id="asin-input"
-                  data-testid="hero-input"
-                  type="text"
-                  value={asinInput}
-                  onChange={(e) => {
-                    setAsinInput(e.target.value);
-                    if (error) setError('');
-                  }}
-                  placeholder="Enter your Amazon ASIN or product URL"
-                  className={`block w-full rounded-xl bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-[#007AFF]/50 focus:ring-2 focus:ring-[#007AFF]/30 px-4 py-3 transition outline-none sm:text-lg ${
-                    error 
-                      ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                      : ''
-                  }`}
-                  required
-                  aria-describedby={error ? "asin-error" : "asin-help"}
-                  aria-invalid={!!error}
-                />
-                {error && (
-                  <p id="asin-error" className="mt-2 text-sm text-red-400" role="alert">
-                    {error}
-                  </p>
-                )}
-              </div>
+              <input
+                type="text"
+                value={asinInput}
+                onChange={(e) => {
+                  setAsinInput(e.target.value);
+                  if (error) setError('');
+                }}
+                placeholder="Enter ASIN or product URL"
+                className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm px-6 py-4 text-base text-white/90 border border-white/20 placeholder:text-white/50 outline-none focus:border-white/40 focus:ring-2 focus:ring-white/20 ${
+                  error ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' : ''
+                }`}
+                aria-invalid={error ? 'true' : 'false'}
+                aria-describedby={error ? 'asin-error' : 'asin-help'}
+                data-testid="hero-input"
+              />
               
-              <CTAButton
+              <button
                 type="submit"
-                variant="primary"
-                size="lg"
-                text="audit my listing now"
-                fullWidth
-                className="w-full"
                 disabled={isSubmitting}
+                className="relative inline-flex w-full h-[60px] rounded-[45px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
                 data-testid="hero-cta"
-              />
-              
-              <p id="asin-help" className="text-sm text-white/70 text-center" data-testid="microcopy-free">
-                Instant results. 100% free. Secure & private.
-              </p>
+              >
+                {/* Inner fill (pure black) */}
+                <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none">
+                  run free audit
+                  {/* Optional glossy overlay from your Figma fill @ ~38% */}
+                  <span className="pointer-events-none absolute inset-0 rounded-[43.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
+                </span>
+              </button>
             </form>
+
+            {error && (
+              <p id="asin-error" className="mt-4 text-base text-red-400" role="alert" data-testid="error-message">
+                {error}
+              </p>
+            )}
+            
+            <p className="mt-4 text-base text-white/60 text-center">
+              Instant results. 100% free. Secure &amp; private.
+            </p>
+
           </div>
-          
-          {/* Right Column - iPad Mockup */}
-          <div className="relative flex justify-center items-center">
-            {/* iPad Mockup Image */}
-            <div className="relative animate-fade-in-up">
-              <img 
-                src="/ipad-mockup.png" 
-                alt="iPad showing Amazon audit report" 
-                className="w-80 h-96 object-contain transform scale-x-[-1]"
-              />
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-[#007AFF] to-[#FF6B00] rounded-full animate-pulse"></div>
-              <div className="absolute -bottom-8 -left-8 w-6 h-6 bg-gradient-to-r from-[#FF6B00] to-[#007AFF] rounded-full animate-pulse delay-1000"></div>
-            </div>
+
+          {/* Right: Mockup Image - Hidden on mobile */}
+          <div className="justify-self-center lg:justify-self-end hidden md:block">
+            <img
+              src="/ipad-mockup.png"
+              alt="Amazon Audit Report preview"
+              className="block h-auto w-[800px] max-w-[95vw]"
+              draggable={false}
+            />
           </div>
-          
         </div>
       </div>
     </section>
