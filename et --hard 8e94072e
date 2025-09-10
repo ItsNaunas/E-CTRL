@@ -1,0 +1,10 @@
+[33mb41e0844[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Add premium testimonials marquee section
+[33m8e94072e[m feat: Transform sections into premium bento grid layouts
+[33m6fe99d07[m feat: Enhance HowItWorksSection with glassmorphism cards and interactive elements
+[33m98fa0d8b[m fix: Update HowItWorksSection background to match hero section
+[33m59e70e65[m feat: Add new HowItWorksSection component and replace image generation with optimization checklist
+[33meaa701b7[m fix: Add pravatar.cc domain to Next.js image config
+[33m9940aaaf[m fix: Resolve build errors and optimize images
+[33m290fe777[m feat: Add premium TrustSection with interactive testimonials and enhanced hero social proof
+[33mbff31a26[m Scale up iPad mockup and improve positioning
+[33m3dea759d[m Reduce mobile spacing between sections

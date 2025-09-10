@@ -46,12 +46,12 @@ export default function TrustSection() {
                 key={s.label}
                 className="group rounded-[45px] border border-white/10 bg-white/[0.04] px-6 py-4
                            shadow-[inset_0_1px_0_0_rgba(255,255,255,.05)]
-                           hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all duration-300"
+                           hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all duration-300
+                           text-center"
               >
                 <div className="text-[13px] text-white/65">{s.label}</div>
                 <div
-                  className="mt-1 text-xl font-semibold bg-gradient-to-r from-[#296AFF] to-[#FF7D2B]
-                             bg-clip-text text-transparent tracking-tight"
+                  className="mt-1 text-xl font-semibold text-[#296AFF] tracking-tight"
                 >
                   {s.value}
                 </div>

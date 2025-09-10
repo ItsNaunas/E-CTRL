@@ -12,10 +12,8 @@ import NewSellerHowItWorks from './components/NewSellerHowItWorks';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import Benefits from './components/Benefits';
 import NewSellerBenefits from './components/NewSellerBenefits';
-import Testimonials from './components/Testimonials';
-import FAQ from './components/FAQ';
-import NewSellerFAQ from './components/NewSellerFAQ';
-import Guarantees from './components/Guarantees';
+import TestimonialsCarousel from '@/components/TestimonialsCarousel';
+import FAQAccordion from '@/components/FAQAccordion';
 import RepeatCTA from './components/RepeatCTA';
 import PartialResult from './components/PartialResult';
 import NewSellerPartialResult from './components/NewSellerPartialResult';
@@ -24,6 +22,7 @@ import ReportDeliveryNote from './components/ReportDeliveryNote';
 import NewSellerDeliveryNote from './components/NewSellerDeliveryNote';
 import AccessControl from './components/AccessControl';
 import GuestResult from './components/GuestResult';
+import FooterGlow from '@/components/FooterGlow';
 
 export default function HomePage() {
   // CRO audit hook (development only)
@@ -627,23 +626,14 @@ export default function HomePage() {
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
       {/* Testimonials - Social Proof */}
-      <Testimonials />
-
-      {/* Guarantees - Trust Building */}
-      <Guarantees />
+      <TestimonialsCarousel />
 
       {/* Section Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
       {/* FAQ - Address Objections */}
-      {mode === 'audit' ? (
-        <FAQ />
-      ) : (
-        <NewSellerFAQ />
-      )}
+      <FAQAccordion />
 
-      {/* Mid-page Repeat CTA */}
-      <RepeatCTA variant="mid" onCtaClick={handleCtaClick} mode={mode} />
 
       {/* Conditional Flow Components */}
       {showPartial && (
@@ -728,31 +718,9 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Footer Repeat CTA */}
-      <RepeatCTA variant="footer" onCtaClick={handleCtaClick} mode={mode} />
 
-      {/* Minimal Footer with Legal Links */}
-      <footer className="py-8 bg-[#0D0D0D] text-white/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <span className="text-lg font-bold text-white">e-ctrl</span>
-              <span className="ml-2 text-white/70">Amazon Audit Tool</span>
-            </div>
-            <div className="flex gap-6 text-sm">
-              <a href="/legal/privacy" className="text-white/70 hover:text-white transition-colors">
-                Privacy Policy
-              </a>
-              <a href="/legal/terms" className="text-white/70 hover:text-white transition-colors">
-                Terms of Service
-              </a>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-white/10 text-center text-xs text-white/60">
-            © 2024 e-ctrl. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      {/* Premium Footer with Glass Effect */}
+      <FooterGlow />
     </>
   );
 }
