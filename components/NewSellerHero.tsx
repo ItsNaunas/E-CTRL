@@ -272,100 +272,19 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
             </form>
           </div>
           
-          {/* Right Column - Tablet Mockup */}
+          {/* Right Column - iPad Mockup */}
           <div className="relative flex justify-center items-center">
-            {/* Tablet Device Frame */}
+            {/* iPad Mockup Image */}
             <div className="relative animate-fade-in-up">
-              {/* Tablet Body */}
-              <div className="relative w-80 h-96 bg-gray-800 rounded-3xl p-2 shadow-2xl">
-                {/* Screen Bezel */}
-                <div className="w-full h-full bg-black rounded-2xl overflow-hidden relative">
-                  {/* Screen Content */}
-                  <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 relative">
-                    {/* Status Bar */}
-                    <div className="flex justify-between items-center px-4 py-2 text-white text-xs">
-                      <span>9:41</span>
-                      <div className="flex items-center gap-1">
-                        <div className="w-4 h-2 bg-white rounded-sm"></div>
-                        <div className="w-4 h-2 bg-white rounded-sm"></div>
-                        <div className="w-4 h-2 bg-white rounded-sm"></div>
-                      </div>
-                    </div>
-                    
-                    {/* App Header */}
-                    <div className="bg-gradient-to-r from-[#007AFF] to-[#FF6B00] px-4 py-3">
-                      <h3 className="text-white font-semibold text-sm">Amazon Listing Creator</h3>
-                    </div>
-                    
-                    {/* Listing Content */}
-                    <div className="p-4 space-y-3">
-                      {/* Images Display */}
-                      <div className="text-center py-2">
-                        <div className="text-2xl font-bold bg-gradient-to-r from-[#007AFF] to-[#FF6B00] bg-clip-text text-transparent">6 Images</div>
-                        <div className="text-xs text-white/70">Optimized for Conversion</div>
-                      </div>
-                      
-                      {/* What You'll Get */}
-                      <div>
-                        <h4 className="font-semibold text-white text-xs mb-2">What You&apos;ll Get:</h4>
-                        <div className="space-y-1">
-                          <div className="flex items-start gap-1">
-                            <span className="text-green-400 text-xs mt-0.5">📸</span>
-                            <span className="text-xs text-white/80">Main product image (85% frame)</span>
-                          </div>
-                          <div className="flex items-start gap-1">
-                            <span className="text-green-400 text-xs mt-0.5">🎯</span>
-                            <span className="text-xs text-white/80">Lifestyle image in use</span>
-                          </div>
-                          <div className="flex items-start gap-1">
-                            <span className="text-green-400 text-xs mt-0.5">📊</span>
-                            <span className="text-xs text-white/80">Benefits infographic</span>
-                          </div>
-                          <div className="flex items-start gap-1">
-                            <span className="text-green-400 text-xs mt-0.5">📏</span>
-                            <span className="text-xs text-white/80">Product measurements</span>
-                          </div>
-                          <div className="flex items-start gap-1">
-                            <span className="text-green-400 text-xs mt-0.5">🔍</span>
-                            <span className="text-xs text-white/80">Cross-section anatomy</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Optimized Listing */}
-                      <div className="bg-white/5 rounded p-2">
-                        <h4 className="font-semibold text-white text-xs mb-1">Optimized Listing:</h4>
-                        <ul className="text-xs text-white/80 space-y-0.5">
-                          <li>• SEO-optimized title structure</li>
-                          <li>• 5-10 benefit-focused bullet points</li>
-                          <li>• Keyword-rich product description</li>
-                          <li>• Conversion-optimized copy</li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    {/* Blur Overlay */}
-                    <div className="absolute inset-0 bg-[#0D0D0D]/80 backdrop-blur-sm flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="text-xl mb-1">🚀</div>
-                        <p className="text-white font-medium text-xs">Enter your product URL to create listing</p>
-                        <p className="text-xs text-white/70 mt-0.5">Sample preview</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Home Button */}
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gray-700 rounded-full border-2 border-gray-600"></div>
-              </div>
-              
-              {/* Tablet Shadow */}
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-72 h-8 bg-black/20 rounded-full blur-xl"></div>
+              <img 
+                src="/ipad-mockup.png" 
+                alt="iPad showing Amazon listing creation" 
+                className="w-80 h-96 object-contain transform scale-x-[-1]"
+              />
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-[#007AFF] to-[#FF6B00] rounded-full animate-pulse"></div>
+              <div className="absolute -bottom-8 -left-8 w-6 h-6 bg-gradient-to-r from-[#FF6B00] to-[#007AFF] rounded-full animate-pulse delay-1000"></div>
             </div>
-            
-            {/* Floating Elements */}
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-[#007AFF] to-[#FF6B00] rounded-full animate-pulse"></div>
-            <div className="absolute -bottom-8 -left-8 w-6 h-6 bg-gradient-to-r from-[#FF6B00] to-[#007AFF] rounded-full animate-pulse delay-1000"></div>
           </div>
           
         </div>
