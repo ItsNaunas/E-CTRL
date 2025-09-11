@@ -92,14 +92,14 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="relative inline-flex w-full h-[60px] rounded-[45px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
+                className="relative inline-flex w-full h-[52px] sm:h-[56px] rounded-[26px] sm:rounded-[28px] p-[1px] sm:p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
                 data-testid="hero-cta"
               >
                 {/* Inner fill (pure black) */}
-                <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none">
+                <span className="relative flex-1 rounded-[25px] sm:rounded-[26.5px] bg-black text-white font-medium text-sm sm:text-base leading-none inline-flex items-center justify-center select-none">
                   run free audit
-                  {/* Optional glossy overlay from your Figma fill @ ~38% */}
-                  <span className="pointer-events-none absolute inset-0 rounded-[43.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
+                  {/* Enhanced glossy overlay for better mobile appearance */}
+                  <span className="pointer-events-none absolute inset-0 rounded-[25px] sm:rounded-[26.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.08)_40%,rgba(255,255,255,0)_70%)] opacity-60" />
                 </span>
               </button>
             </form>
