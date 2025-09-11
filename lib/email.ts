@@ -137,9 +137,9 @@ export async function sendWelcomeEmail(data: EmailData) {
     
     // Use a verified sender domain or the default Resend domain
     // TODO: Replace with your own domain once you upgrade to paid Resend plan
-    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
+    const fromEmail = 'noreply@send.e-ctrl.co.uk'; // Use your verified subdomain
     console.log('Using sender email:', fromEmail);
-    console.log('NOTE: Free tier has restrictions - upgrade to paid plan for full functionality');
+    console.log('Using verified domain with SPF/DKIM alignment');
     
     console.log('About to call resend.emails.send...');
     const emailData: any = {
@@ -239,7 +239,7 @@ export async function sendWelcomeEmail(data: EmailData) {
 export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
   try {
     // Use a verified sender domain or the default Resend domain
-    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default verified domain
+    const fromEmail = 'noreply@send.e-ctrl.co.uk'; // Use your verified subdomain
     
     const resend = getResendClient();
     const { data: result, error } = await resend.emails.send({
