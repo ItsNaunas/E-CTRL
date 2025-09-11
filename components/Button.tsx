@@ -38,8 +38,8 @@ export default function Button({
     >
       {variant === 'primary' ? (
         <>
-          {/* Inner fill (pure black) */}
-          <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none px-6">
+          {/* Inner fill (pure black) - Fixed responsive sizing */}
+          <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-sm sm:text-base leading-tight inline-flex items-center justify-center select-none px-4 sm:px-6 py-2 sm:py-3 min-h-[58px] sm:min-h-[58px]">
             {loading && (
               <svg
                 className="mr-2 h-4 w-4 animate-spin"

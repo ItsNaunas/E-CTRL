@@ -63,8 +63,8 @@ export default function CTAButton({
     >
       {(variant === 'primary' || variant === 'sticky') ? (
         <>
-          {/* Inner fill (pure black) */}
-          <span className="relative flex-1 rounded-[25px] sm:rounded-[26.5px] bg-black text-white font-medium text-sm sm:text-base leading-none inline-flex items-center justify-center select-none px-4 sm:px-6">
+          {/* Inner fill (pure black) - Fixed responsive sizing */}
+          <span className="relative flex-1 rounded-[25px] sm:rounded-[26.5px] bg-black text-white font-medium text-sm sm:text-base leading-tight inline-flex items-center justify-center select-none px-4 sm:px-6 py-2 sm:py-3 min-h-[50px] sm:min-h-[54px]">
             {buttonContent}
             {/* Enhanced glossy overlay for better mobile appearance */}
             <span className="pointer-events-none absolute inset-0 rounded-[25px] sm:rounded-[26.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.08)_40%,rgba(255,255,255,0)_70%)] opacity-60" />
