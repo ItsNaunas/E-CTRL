@@ -438,7 +438,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     }
     
     // Remove duplicates
-    productData.images = [...new Set(productData.images)];
+    productData.images = Array.from(new Set(productData.images));
     
     // Sort by likely importance (larger images first)
     productData.images.sort((a, b) => {
