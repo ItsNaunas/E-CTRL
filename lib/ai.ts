@@ -9,7 +9,7 @@ const openai = new OpenAI({
 });
 
 // AI-powered audit analysis for existing sellers with real Amazon data
-export async function analyzeExistingSeller(data: ExistingSellerData, productData?: AmazonProductData) {
+export async function analyzeExistingSeller(data: ExistingSellerData, productData?: AmazonProductData, accessType: 'guest' | 'account' = 'guest') {
   // Use regex extraction as primary method (it works reliably)
   let binaryIdqResult: IdqResult | null = null;
   if (productData?.htmlContent) {
@@ -78,6 +78,20 @@ BINARY IDQ EVALUATION RESULTS:
 Note: A+ content, premium A+ content, and backend keyword optimization are not included in this analysis as they cannot be reliably detected from visible page content.
 ` : ''}
 
+${accessType === 'account' ? `
+ENHANCED ANALYSIS REQUESTED: This user has an account and should receive premium-level analysis including:
+- Advanced competitive analysis and benchmarking
+- Detailed keyword optimization strategies with search volume insights
+- Conversion rate optimization with psychological triggers
+- Seasonal trend considerations and timing recommendations
+- Advanced A/B testing recommendations for experienced sellers
+- Detailed competitor gap analysis
+- ROI projections and impact estimates for each improvement
+- Advanced Amazon algorithm optimization strategies
+` : `
+STANDARD ANALYSIS: This is a guest user - provide comprehensive but focused insights suitable for preview access.
+`}
+
 Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that focuses on IMPROVEMENTS and OPTIMIZATION based on what we can actually measure from the visible listing content:
 
 1. **IDQ Score (0-100)**: Use the binary score as foundation, then adjust based on content quality analysis:
@@ -85,7 +99,7 @@ Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that fo
    - Content Quality Adjustments: ±10 points based on benefit focus and conversion potential
    - Final Score: Weighted combination of binary compliance and content quality
 
-2. **Key Issues to Fix (3-5 points)**: Focus on the biggest problems that are hurting their sales and conversions
+2. **Key Issues to Fix (${accessType === 'account' ? '5-7' : '3-5'} points)**: Focus on the biggest problems that are hurting their sales and conversions
 
 3. **Priority Improvements (3-5 points)**: Rank the most impactful fixes that will boost their sales immediately
 

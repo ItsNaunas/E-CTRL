@@ -75,12 +75,15 @@ export async function POST(request: NextRequest) {
       console.log('Scraping Amazon product data for ASIN:', (validatedData as ExistingSellerData).asin);
       const productData = await scrapeProduct((validatedData as ExistingSellerData).asin);
       
+      // Determine access type from lead data
+      const accessType = lead.audit_type === 'existing_seller' ? 'guest' : 'guest'; // Default to guest, will be enhanced later
+      
       if ('error' in productData) {
         console.warn('Scraping failed, proceeding with limited data:', productData.error);
-        aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData);
+        aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData, undefined, accessType);
       } else {
         console.log('Successfully scraped product data, analyzing with real data');
-        aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData, productData);
+        aiResult = await analyzeExistingSeller(validatedData as ExistingSellerData, productData, accessType);
       }
     } else {
       // For new sellers, try to scrape product data if website URL is provided

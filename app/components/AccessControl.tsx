@@ -85,18 +85,22 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
     : 'Choose your access level to create your listing';
 
   return (
-    <section className="py-16 bg-gradient-to-br from-orange-50 to-orange-100">
+    <section className="py-16 bg-[#0B0B0C]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+        <div className="bg-[#0B0B0C] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
           
           {/* Header */}
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] px-8 py-6">
             <div className="text-center">
-              <div className="text-4xl mb-4">🔐</div>
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-white/10 mb-4">
+                <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
               <h2 className="text-2xl font-bold text-white">
                 {title}
               </h2>
-              <p className="text-orange-100 mt-2">
+              <p className="text-white/90 mt-2">
                 {subtitle}
               </p>
             </div>
@@ -110,20 +114,47 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 {/* Guest Access */}
                 <button
                   onClick={() => setAccessType('guest')}
-                  className={`p-6 rounded-xl border-2 transition-all ${
+                  className={`p-6 rounded-xl border-2 transition-all text-left ${
                     accessType === 'guest'
-                      ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[#296AFF] bg-[#296AFF]/10'
+                      : 'border-white/20 hover:border-white/40 bg-white/5'
                   }`}
                 >
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">📧</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Guest Access</h3>
-                    <p className="text-sm text-gray-600 mb-3">Quick preview with email only</p>
-                    <div className="text-xs text-gray-500 space-y-1">
-                      <div>• Basic insights preview</div>
-                      <div>• Limited recommendations</div>
-                      <div>• No account required</div>
+                  <div className="flex items-start gap-4">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${
+                      accessType === 'guest' ? 'border-[#296AFF] bg-[#296AFF]' : 'border-white/40'
+                    }`}>
+                      {accessType === 'guest' && (
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-white font-semibold text-lg">Guest Access</h3>
+                        <span className="bg-[#296AFF]/20 text-[#296AFF] px-2 py-1 rounded-full text-xs font-medium">Free</span>
+                      </div>
+                      <p className="text-white/70 text-sm mb-4">Quick access with just your email. Get your report instantly.</p>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Instant report delivery</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>PDF download</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Basic analysis</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </button>
@@ -131,20 +162,53 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 {/* Account Access */}
                 <button
                   onClick={() => setAccessType('account')}
-                  className={`p-6 rounded-xl border-2 transition-all ${
+                  className={`p-6 rounded-xl border-2 transition-all text-left ${
                     accessType === 'account'
-                      ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[#FF7D2B] bg-[#FF7D2B]/10'
+                      : 'border-white/20 hover:border-white/40 bg-white/5'
                   }`}
                 >
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">🚀</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Full Account</h3>
-                    <p className="text-sm text-gray-600 mb-3">Complete access with registration</p>
-                    <div className="text-xs text-gray-500 space-y-1">
-                      <div>• Full comprehensive report</div>
-                      <div>• PDF export & follow-ups</div>
-                      <div>• Future perks & updates</div>
+                  <div className="flex items-start gap-4">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${
+                      accessType === 'account' ? 'border-[#FF7D2B] bg-[#FF7D2B]' : 'border-white/40'
+                    }`}>
+                      {accessType === 'account' && (
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-white font-semibold text-lg">Create Account</h3>
+                        <span className="bg-[#FF7D2B]/20 text-[#FF7D2B] px-2 py-1 rounded-full text-xs font-medium">Enhanced</span>
+                      </div>
+                      <p className="text-white/70 text-sm mb-4">Save your reports, track progress, and get enhanced analysis features.</p>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#FF7D2B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Everything in Guest Access</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#FF7D2B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Enhanced AI analysis</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#FF7D2B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Report history & tracking</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#FF7D2B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Priority support</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </button>
@@ -152,10 +216,10 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {accessType === 'account' && (
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
                     Full Name
                   </label>
                   <input
@@ -164,14 +228,14 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your full name"
-                    className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                    className="block w-full rounded-lg border border-white/20 bg-[#0B0B0C] px-4 py-3 text-white placeholder-white/50 focus:border-[#FF7D2B] focus:ring-[#FF7D2B] transition-colors"
                     required
                   />
                 </div>
               )}
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
                   Email Address
                 </label>
                 <input
@@ -180,14 +244,14 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="block w-full rounded-lg border border-white/20 bg-[#0B0B0C] px-4 py-3 text-white placeholder-white/50 focus:border-[#296AFF] focus:ring-[#296AFF] transition-colors"
                   required
                 />
               </div>
 
               {accessType === 'account' && (
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
                     Create Password
                   </label>
                   <input
@@ -196,19 +260,21 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a secure password"
-                    className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                    className="block w-full rounded-lg border border-white/20 bg-[#0B0B0C] px-4 py-3 text-white placeholder-white/50 focus:border-[#FF7D2B] focus:ring-[#FF7D2B] transition-colors"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-white/60 mt-1">
                     Minimum 8 characters, includes letters and numbers
                   </p>
                 </div>
               )}
 
               {error && (
-                <p className="text-sm text-red-600" role="alert">
-                  {error}
-                </p>
+                <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                  <p className="text-sm text-red-400" role="alert">
+                    {error}
+                  </p>
+                </div>
               )}
 
               <CTAButton
@@ -224,7 +290,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 className="w-full"
               />
 
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm text-white/70 text-center">
                 {accessType === 'guest' 
                   ? 'No credit card required • Instant access • Limited preview'
                   : 'Free account • Full access • Export & follow-ups included'
@@ -233,67 +299,75 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
             </form>
 
             {/* Benefits Comparison */}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+            <div className="mt-8 pt-8 border-t border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-4 text-center">
                 What&apos;s included with each access level?
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Guest Access Benefits */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-                    <span>📧</span>
+                <div className="bg-gradient-to-br from-[#296AFF]/10 to-[#296AFF]/5 rounded-lg p-4 border border-[#296AFF]/20">
+                  <h4 className="font-medium text-white mb-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-[#296AFF]/20 flex items-center justify-center">
+                      <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
                     Guest Access
                   </h4>
-                  <ul className="text-sm text-gray-600 space-y-2">
+                  <ul className="text-sm text-white/80 space-y-2">
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#296AFF] mt-1">✓</span>
                       <span>2-3 quick win insights</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#296AFF] mt-1">✓</span>
                       <span>Blurred image recommendations</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#296AFF] mt-1">✓</span>
                       <span>1-2 checklist items preview</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">○</span>
-                      <span className="text-gray-400">No PDF export</span>
+                      <span className="text-white/40 mt-1">○</span>
+                      <span className="text-white/40">No PDF export</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">○</span>
-                      <span className="text-gray-400">No follow-up emails</span>
+                      <span className="text-white/40 mt-1">○</span>
+                      <span className="text-white/40">No follow-up emails</span>
                     </li>
                   </ul>
                 </div>
 
                 {/* Account Access Benefits */}
-                <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
-                  <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-                    <span>🚀</span>
+                <div className="bg-gradient-to-br from-[#FF7D2B]/10 to-[#FF7D2B]/5 rounded-lg p-4 border border-[#FF7D2B]/20">
+                  <h4 className="font-medium text-white mb-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-[#FF7D2B]/20 flex items-center justify-center">
+                      <svg className="h-4 w-4 text-[#FF7D2B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
                     Full Account
                   </h4>
-                  <ul className="text-sm text-gray-600 space-y-2">
+                  <ul className="text-sm text-white/80 space-y-2">
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#FF7D2B] mt-1">✓</span>
                       <span>Complete comprehensive report</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#FF7D2B] mt-1">✓</span>
                       <span>Sharp, detailed image recommendations</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#FF7D2B] mt-1">✓</span>
                       <span>Full checklist with effort/impact ratings</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#FF7D2B] mt-1">✓</span>
                       <span>PDF export functionality</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 mt-1">✓</span>
+                      <span className="text-[#FF7D2B] mt-1">✓</span>
                       <span>Automated follow-up system</span>
                     </li>
                   </ul>
