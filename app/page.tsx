@@ -94,24 +94,6 @@ export default function HomePage() {
     });
   }, [showPartial, hasUserInput, isAnalyzing, aiResult]);
 
-  // Listen for manual input switch event
-  useEffect(() => {
-    const handleSwitchToManualInput = () => {
-      console.log('Switching to manual input due to URL scraping failure');
-      // Reset the form state
-      setAiResult(null);
-      setShowPartial(false);
-      setHasUserInput(false);
-      setIsAnalyzing(false);
-      // Trigger the manual input tab switch
-      // This will be handled by the NewSellerHero component
-    };
-
-    window.addEventListener('switchToManualInput', handleSwitchToManualInput);
-    return () => {
-      window.removeEventListener('switchToManualInput', handleSwitchToManualInput);
-    };
-  }, []);
 
   // Handle ASIN submission from Hero
   const handleAsinSubmit = async (asin: string) => {

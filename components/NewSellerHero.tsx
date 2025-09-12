@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 import ClientTestimonials from '@/components/ClientTestimonials';
@@ -52,19 +52,6 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
 
-  // Listen for manual input switch event
-  useEffect(() => {
-    const handleSwitchToManualInput = () => {
-      console.log('Switching to manual input mode');
-      setInputMode('manual');
-      setError(''); // Clear any existing errors
-    };
-
-    window.addEventListener('switchToManualInput', handleSwitchToManualInput);
-    return () => {
-      window.removeEventListener('switchToManualInput', handleSwitchToManualInput);
-    };
-  }, []);
 
   // Wizard navigation
   const nextStep = () => {
@@ -102,18 +89,63 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
       if (inputMode === 'url') {
         if (!productUrl.trim()) {
           setError('Please enter a valid product URL');
+          setIsSubmitting(false);
           return;
         }
         
-        // Track the event
-        if (typeof window !== 'undefined' && window.gtag) {
-          window.gtag('event', 'listing_creation_start', {
-            event_category: 'engagement',
-            event_label: 'new_seller_url_form'
+        // First, validate the URL can be scraped before proceeding
+        try {
+          const response = await fetch('/api/preview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'new_seller',
+              data: {
+                name: 'Preview User',
+                email: 'preview@example.com',
+                keywords: ["eco friendly", "sustainable", "organic"],
+                websiteUrl: productUrl,
+                category: "Home & Garden",
+                desc: "Eco-friendly product for sustainable living",
+                fulfilmentIntent: "FBA",
+                image: {
+                  name: "placeholder.jpg",
+                  size: 1024,
+                  type: "image/jpeg"
+                }
+              }
+            })
           });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            if (errorData.code === 'URL_SCRAPING_FAILED') {
+              setError('This URL cannot be accessed. Please use the manual input form instead to create your Amazon listing.');
+              setIsSubmitting(false);
+              return;
+            } else {
+              setError('Something went wrong. Please try again or use manual input.');
+              setIsSubmitting(false);
+              return;
+            }
+          }
+
+          // URL is valid, proceed with analysis
+          // Track the event
+          if (typeof window !== 'undefined' && window.gtag) {
+            window.gtag('event', 'listing_creation_start', {
+              event_category: 'engagement',
+              event_label: 'new_seller_url_form'
+            });
+          }
+          
+          onUrlSubmit(productUrl);
+        } catch (fetchError) {
+          console.error('URL validation failed:', fetchError);
+          setError('Unable to access this URL. Please use the manual input form instead.');
+          setIsSubmitting(false);
+          return;
         }
-        
-        onUrlSubmit(productUrl);
       } else {
         // Enhanced manual input validation
         if (!productName.trim() || !category.trim() || !description.trim() || !keywords.trim()) {
@@ -552,9 +584,22 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
                 )}
 
                 {error && (
-                  <p className="text-sm text-red-400" role="alert">
-                    {error}
-                  </p>
+                  <div className="space-y-3">
+                    <p className="text-sm text-red-400" role="alert">
+                      {error}
+                    </p>
+                    {error.includes('cannot be accessed') && (
+                      <div className="flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => setInputMode('manual')}
+                          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                        >
+                          Switch to Manual Input
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
                 
                 <button
