@@ -170,9 +170,14 @@ export default function HomePage() {
 
   // Handle product URL submission from NewSellerHero
   const handleProductUrlSubmit = async (url: string) => {
+    console.log('Product URL submitted:', url);
     setProductUrl(url);
     setHasUserInput(true);
     setIsAnalyzing(true);
+    setShowPartial(true); // Show partial results immediately like existing seller
+    
+    // Scroll to partial result immediately when analysis starts
+    scrollToElement('partial-result', 80);
     
     try {
       // Generate REAL preview WITHOUT creating database entry
@@ -199,43 +204,83 @@ export default function HomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Real preview result:', result);
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('New seller preview result received:', result.aiResult);
       
       if (result.success && result.aiResult) {
         // Convert new IDQ structure to old structure for compatibility
         const idqAnalysis = result.aiResult.idqAnalysis;
         const summary = result.aiResult.summary;
         
+        console.log('AI Result for new seller URL:', result.aiResult);
+        console.log('Summary:', summary);
+        console.log('Key improvements:', summary?.keyImprovements);
+        console.log('Next steps:', summary?.nextSteps);
+        
+        // Create highlights from actual generated content
+        const generatedHighlights = [];
+        if (idqAnalysis?.title?.optimized) {
+          generatedHighlights.push(idqAnalysis.title.optimized);
+        }
+        if (idqAnalysis?.bullets?.optimized) {
+          generatedHighlights.push(...idqAnalysis.bullets.optimized);
+        }
+        if (idqAnalysis?.description?.optimized) {
+          generatedHighlights.push(idqAnalysis.description.optimized);
+        }
+        // Add any additional key improvements
+        if (summary?.keyImprovements) {
+          generatedHighlights.push(...summary.keyImprovements);
+        }
+        
         setAiResult({
           score: 0, // No score in new format
-          highlights: summary?.keyImprovements || [],
+          highlights: generatedHighlights,
           recommendations: summary?.nextSteps || [],
           detailedAnalysis: {
             idqAnalysis: idqAnalysis,
             summary: summary
           }
         });
-        
-        setShowPartial(true); // Show preview first
-        
-        // Scroll to preview
-        setTimeout(() => {
-          scrollToElement('partial-result', 80);
-        }, 100);
+        // No lead ID needed for preview
+        setLeadId(null);
       } else {
-        console.error('Failed to generate real preview:', result.error);
+        console.error('No AI result received from successful response');
+        setAiResult(null);
       }
-    } catch (error) {
-      console.error('Error generating real preview:', error);
-    } finally {
-      setIsAnalyzing(false);
+    } else {
+      // Get error details from response - same pattern as existing seller
+      const errorData = await response.json();
+      console.error('New seller preview API request failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
+      });
+      
+      // Show specific error message to user - same pattern as existing seller
+      if (errorData.error) {
+        setAiResult({
+          score: 0,
+          highlights: [],
+          recommendations: [],
+          detailedAnalysis: {
+            error: errorData.error,
+            errorCode: errorData.code
+          }
+        });
+      } else {
+        setAiResult(null);
+      }
     }
+  } catch (error) {
+    console.error('New seller preview analysis failed:', error);
+    // Fallback to error state - same pattern as existing seller
+    setAiResult(null);
+  } finally {
+    setIsAnalyzing(false);
+  }
   };
 
   // Handle manual product data submission from NewSellerHero
@@ -245,10 +290,15 @@ export default function HomePage() {
     keywords: string[];
     fulfilmentIntent: string;
   }) => {
+    console.log('Manual product data submitted:', data);
     // Store the manual data for later use
     setManualProductData(data);
     setHasUserInput(true);
     setIsAnalyzing(true);
+    setShowPartial(true); // Show partial results immediately like existing seller
+    
+    // Scroll to partial result immediately when analysis starts
+    scrollToElement('partial-result', 80);
     
     try {
       // Generate REAL preview WITHOUT creating database entry
@@ -275,40 +325,75 @@ export default function HomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Real manual preview result:', result);
       
-      if (result.success && result.aiResult) {
-        // Convert new IDQ structure to old structure for compatibility
-        const idqAnalysis = result.aiResult.idqAnalysis;
-        const summary = result.aiResult.summary;
+      if (response.ok) {
+        const result = await response.json();
+        console.log('New seller manual preview result received:', result.aiResult);
         
-        setAiResult({
-          score: 0, // No score in new format
-          highlights: summary?.keyImprovements || [],
-          recommendations: summary?.nextSteps || [],
-          detailedAnalysis: {
-            idqAnalysis: idqAnalysis,
-            summary: summary
+        if (result.success && result.aiResult) {
+          // Convert new IDQ structure to old structure for compatibility
+          const idqAnalysis = result.aiResult.idqAnalysis;
+          const summary = result.aiResult.summary;
+          
+          // Create highlights from actual generated content
+          const generatedHighlights = [];
+          if (idqAnalysis?.title?.optimized) {
+            generatedHighlights.push(idqAnalysis.title.optimized);
           }
+          if (idqAnalysis?.bullets?.optimized) {
+            generatedHighlights.push(...idqAnalysis.bullets.optimized);
+          }
+          if (idqAnalysis?.description?.optimized) {
+            generatedHighlights.push(idqAnalysis.description.optimized);
+          }
+          // Add any additional key improvements
+          if (summary?.keyImprovements) {
+            generatedHighlights.push(...summary.keyImprovements);
+          }
+          
+          setAiResult({
+            score: 0, // No score in new format
+            highlights: generatedHighlights,
+            recommendations: summary?.nextSteps || [],
+            detailedAnalysis: {
+              idqAnalysis: idqAnalysis,
+              summary: summary
+            }
+          });
+          // No lead ID needed for preview
+          setLeadId(null);
+        } else {
+          console.error('No AI result received from successful response');
+          setAiResult(null);
+        }
+      } else {
+        // Get error details from response - same pattern as existing seller
+        const errorData = await response.json();
+        console.error('New seller manual preview API request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
         });
         
-        setShowPartial(true); // Show preview first
-        
-        // Scroll to preview
-        setTimeout(() => {
-          scrollToElement('partial-result', 80);
-        }, 100);
-      } else {
-        console.error('Failed to generate real manual preview:', result.error);
+        // Show specific error message to user - same pattern as existing seller
+        if (errorData.error) {
+          setAiResult({
+            score: 0,
+            highlights: [],
+            recommendations: [],
+            detailedAnalysis: {
+              error: errorData.error,
+              errorCode: errorData.code
+            }
+          });
+        } else {
+          setAiResult(null);
+        }
       }
     } catch (error) {
-      console.error('Error generating real manual preview:', error);
+      console.error('New seller manual preview analysis failed:', error);
+      // Fallback to error state - same pattern as existing seller
+      setAiResult(null);
     } finally {
       setIsAnalyzing(false);
     }
@@ -615,6 +700,7 @@ export default function HomePage() {
         <NewSellerHero 
           onUrlSubmit={handleProductUrlSubmit} 
           onManualSubmit={handleManualProductSubmit}
+          isAnalyzing={isAnalyzing}
         />
       )}
 
@@ -673,14 +759,10 @@ export default function HomePage() {
                manualData={manualProductData || undefined}
                onUnlock={handleUnlock}
                score={hasUserInput ? (aiResult?.score || 0) : undefined}
-               highlights={hasUserInput ? (aiResult?.highlights || [
-                 "AI analysis in progress...",
-                 "Enter a product URL above to see real results",
-                 "No results available yet"
-               ]) : [
-                 "Ready to analyze your product",
-                 "Enter a product URL above to get started",
-                 "Get instant AI-powered insights"
+               highlights={hasUserInput && aiResult?.highlights?.length ? aiResult.highlights : [
+                 hasUserInput ? "AI analysis in progress..." : "Ready to analyze your product",
+                 hasUserInput ? "Enter a product URL above to see real results" : "Enter a product URL above to get started",
+                 hasUserInput ? "No results available yet" : "Get instant AI-powered insights"
                ]}
                isLoading={isAnalyzing}
              />

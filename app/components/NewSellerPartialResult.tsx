@@ -17,6 +17,19 @@ interface NewSellerPartialResultProps {
 }
 
 export default function NewSellerPartialResult({ productUrl, manualData, onUnlock, score, highlights, isLoading }: NewSellerPartialResultProps) {
+  // Debug logging
+  console.log('NewSellerPartialResult props:', { productUrl, manualData, score, highlights, isLoading });
+  console.log('Highlights check:', { 
+    highlights, 
+    hasHighlights: !!highlights, 
+    highlightsLength: highlights?.length, 
+    condition: highlights && highlights.length > 0 
+  });
+  
+  // Extract detailed analysis from highlights if available
+  const hasDetailedAnalysis = highlights && highlights.length > 0 && 
+    !highlights.some(h => h.includes('AI analysis in progress') || h.includes('Ready to analyze'));
+  
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,19 +40,19 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <h2 className="text-xl sm:text-2xl font-bold text-white break-words">
-                  Amazon Listing Creation Preview
+                  {hasDetailedAnalysis ? "Your Amazon Listing Analysis" : "Amazon Listing Creator"}
                 </h2>
                 {productUrl ? (
                   <p className="text-orange-100 mt-1 text-sm break-all">
-                    Generated from: {productUrl}
+                    Analyzing: {productUrl}
                   </p>
                 ) : manualData ? (
                   <p className="text-orange-100 mt-1 text-sm">
-                    Generated from: {manualData.category} - {manualData.description.substring(0, 50)}...
+                    Product: {manualData.category} - {manualData.description.substring(0, 50)}...
                   </p>
                 ) : (
                   <p className="text-orange-100 mt-1 text-sm">
-                    Ready to create your Amazon listing
+                    Enter a product URL to get started
                   </p>
                 )}
               </div>
@@ -47,17 +60,17 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                 {isLoading ? (
                   <>
                     <div className="text-2xl sm:text-3xl font-bold text-white">Analyzing...</div>
-                    <div className="text-orange-100 text-sm">AI processing</div>
+                    <div className="text-orange-100 text-sm">Scraping & AI processing</div>
                   </>
-                ) : highlights && highlights.length > 0 ? (
+                ) : hasDetailedAnalysis ? (
                   <>
-                    <div className="text-2xl sm:text-3xl font-bold text-white">IDQ Ready</div>
-                    <div className="text-orange-100 text-sm">Optimized for Amazon</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white">Analysis Complete</div>
+                    <div className="text-orange-100 text-sm">Ready for Amazon</div>
                   </>
                 ) : (
                   <>
-                    <div className="text-2xl sm:text-3xl font-bold text-white">6 Images</div>
-                    <div className="text-orange-100 text-sm">Ready to Create</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white">Ready</div>
+                    <div className="text-orange-100 text-sm">Enter URL above</div>
                   </>
                 )}
               </div>
@@ -66,142 +79,188 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
 
           {/* Content */}
           <div className="p-4 sm:p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              
-              {/* Left Column - Image Preview */}
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Generated Images Preview
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="text-2xl flex-shrink-0">📸</span>
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium text-gray-900 block">Main Product Image</span>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product on white background, 85% frame coverage</p>
-                      </div>
+            {isLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Analyzing Your Product</h3>
+                <p className="text-gray-600">Scraping product data and generating Amazon listing recommendations...</p>
+              </div>
+            ) : hasDetailedAnalysis ? (
+              <div className="space-y-6">
+                {/* Product Analysis Summary */}
+                <div className="bg-gradient-to-r from-blue-50 to-orange-50 rounded-lg p-6 border border-blue-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">🎯 Your Amazon Listing Analysis</h3>
+                  <p className="text-gray-700 mb-4">
+                    Based on your product page analysis, here&apos;s what we found and how to optimize it for Amazon&apos;s IDQ requirements:
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <h4 className="font-medium text-gray-900 mb-2">📊 Current Status</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Product data scraped successfully</li>
+                        <li>• IDQ requirements analyzed</li>
+                        <li>• Amazon listing recommendations ready</li>
+                      </ul>
                     </div>
-                  </div>
-                  
-                  <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="text-2xl flex-shrink-0">🎯</span>
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium text-gray-900 block">Lifestyle Image</span>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product in use, showing real-world application</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="text-2xl flex-shrink-0">📊</span>
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium text-gray-900 block">Benefits Infographic</span>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Key product benefits and features visualization</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="text-2xl flex-shrink-0">📏</span>
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium text-gray-900 block">Measurements Image</span>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product dimensions and sizing information</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="text-2xl flex-shrink-0">🔍</span>
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium text-gray-900 block">Cross-Section View</span>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Product anatomy showing quality construction</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="text-2xl flex-shrink-0">⚔️</span>
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium text-gray-900 block">Competitive Comparison</span>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">Your product vs competitors (optional)</p>
-                      </div>
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <h4 className="font-medium text-gray-900 mb-2">🚀 Next Steps</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Review optimized title & bullets</li>
+                        <li>• Get complete listing strategy</li>
+                        <li>• Receive keyword recommendations</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Right Column - Listing Preview */}
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Your Complete Amazon Listing
-                </h3>
-                
-                <div className="space-y-4">
-                  {/* AI Analysis Highlights */}
-                  {isLoading ? (
-                    <div className="bg-gray-100 rounded-lg p-4">
-                      <div className="animate-pulse">
-                        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-300 rounded w-1/2 mb-1"></div>
-                        <div className="h-3 bg-gray-300 rounded w-2/3 mb-1"></div>
-                        <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+
+                {/* Generated Amazon Listing Content */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📝 Your Generated Amazon Listing</h3>
+                  
+                  {/* Title Section */}
+                  <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-orange-50 rounded-lg border border-blue-200">
+                    <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                      <span className="text-orange-500">📝</span> Your Amazon Title
+                    </h4>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <p className="text-gray-800 font-medium text-lg leading-relaxed">
+                        {highlights && highlights.length > 0 ? highlights[0] : "Loading title..."}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-2">✅ IDQ-compliant • ✅ Brand included • ✅ Keywords optimized</p>
+                    </div>
+                  </div>
+
+                  {/* Bullet Points Section */}
+                  <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-blue-50 rounded-lg border border-orange-200">
+                    <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                      <span className="text-orange-500">🎯</span> Your Bullet Points
+                    </h4>
+                    <div className="space-y-3">
+                      {highlights && highlights.length > 1 ? highlights.slice(1, 6).map((bullet, index) => (
+                        <div key={index} className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                          <div className="flex items-start gap-3">
+                            <span className="text-orange-500 font-bold text-lg mt-0.5">{index + 1}</span>
+                            <p className="text-gray-800 text-sm leading-relaxed font-medium">{bullet}</p>
+                          </div>
+                        </div>
+                      )) : (
+                        <div className="bg-white p-4 rounded border border-gray-200">
+                          <p className="text-gray-600 text-sm">Loading bullet points...</p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3">✅ 5 bullets • ✅ Benefits-focused • ✅ Conversion-optimized</p>
+                  </div>
+
+                  {/* Product Description Section */}
+                  {highlights && highlights.length > 6 && (
+                    <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-orange-50 rounded-lg border border-blue-200">
+                      <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                        <span className="text-orange-500">📄</span> Your Product Description
+                      </h4>
+                      <div className="bg-white p-4 rounded border border-gray-200">
+                        <p className="text-gray-800 text-sm leading-relaxed">
+                          {highlights[6]} {/* Assuming description is at index 6 */}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-2">✅ SEO-optimized • ✅ Trust-building • ✅ Conversion-focused</p>
                       </div>
                     </div>
-                  ) : highlights && highlights.length > 0 ? (
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">IDQ Analysis Highlights:</h4>
-                      <ul className="text-sm text-gray-700 space-y-1">
-                        {highlights.map((highlight, index) => (
-                          <li key={index}>• {highlight}</li>
+                  )}
+
+                  {/* Additional Recommendations */}
+                  {highlights && highlights.length > 7 && (
+                    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-medium text-gray-900 mb-3">📋 Additional Recommendations</h4>
+                      <div className="space-y-2">
+                        {highlights.slice(7).map((recommendation, index) => (
+                          <div key={index} className="flex items-start gap-3 p-2 bg-white rounded border border-gray-200">
+                            <span className="text-gray-500 font-bold text-xs mt-1">•</span>
+                            <p className="text-gray-700 text-sm leading-relaxed">{recommendation}</p>
+                          </div>
                         ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">IDQ Optimization Guide:</h4>
-                      <ul className="text-sm text-gray-700 space-y-1">
-                        <li>• Field-by-field IDQ analysis</li>
-                        <li>• Optimized title for highest IDQ score</li>
-                        <li>• IDQ-compliant bullet points</li>
-                        <li>• SEO-optimized product description</li>
-                        <li>• Complete keyword strategy</li>
-                        <li>• 6-image requirements for IDQ</li>
-                      </ul>
+                      </div>
                     </div>
                   )}
                 </div>
+
+                {/* What You'll Get */}
+                <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-lg p-6 border border-orange-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📋 Complete Amazon Listing Pack</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <span className="text-orange-500">📝</span> Optimized Title
+                      </h4>
+                      <p className="text-sm text-gray-600">IDQ-compliant title with brand and key features</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <span className="text-orange-500">🎯</span> Bullet Points
+                      </h4>
+                      <p className="text-sm text-gray-600">5 conversion-focused bullet points</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <span className="text-orange-500">📄</span> Description
+                      </h4>
+                      <p className="text-sm text-gray-600">SEO-optimized product description</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-gray-400 text-6xl mb-4">📋</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Ready to Create Your Amazon Listing</h3>
+                <p className="text-gray-600 mb-6">
+                  Enter a product URL above to get your complete Amazon listing optimization analysis and recommendations.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-900 mb-2">🎯 Title Optimization</h4>
+                    <p className="text-sm text-gray-600">IDQ-compliant titles that rank and convert</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-900 mb-2">📝 Bullet Points</h4>
+                    <p className="text-sm text-gray-600">Conversion-focused product features</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-900 mb-2">🔍 Keywords</h4>
+                    <p className="text-sm text-gray-600">Strategic keyword placement</p>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* CTA Section */}
             <div className="mt-8 pt-8 border-t border-gray-200">
               <div className="text-center">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Ready to Create Your Amazon Listing?
+                  {hasDetailedAnalysis ? "Ready to Get Your Complete Amazon Listing?" : "Ready to Launch on Amazon?"}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Get your complete Amazon listing optimization checklist and conversion-focused copy delivered to your email.
+                  {hasDetailedAnalysis 
+                    ? "Get your complete Amazon listing with optimized title, bullet points, description, and keyword strategy delivered to your email."
+                    : "Enter a product URL above to get your complete Amazon listing optimization analysis and recommendations."
+                  }
                 </p>
                 
-                                 <CTAButton
-                   variant="primary"
-                   size="lg"
-                   text={isLoading ? "analyzing..." : "get my complete listing now"}
-                   onClick={onUnlock}
-                   className="px-8"
-                   disabled={isLoading}
-                 />
-                
-                <p className="text-sm text-gray-500 mt-3">
-                  No credit card required • Instant delivery • 100% free
-                </p>
+                {hasDetailedAnalysis && (
+                  <>
+                    <CTAButton
+                      variant="primary"
+                      size="lg"
+                      text="get my complete amazon listing"
+                      onClick={onUnlock}
+                      className="px-8"
+                      disabled={isLoading}
+                    />
+                    
+                    <p className="text-sm text-gray-500 mt-3">
+                      No credit card required • Instant delivery • 100% free
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>

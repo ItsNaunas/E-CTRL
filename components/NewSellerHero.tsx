@@ -13,9 +13,10 @@ interface NewSellerHeroProps {
     keywords: string[];
     fulfilmentIntent: 'FBA' | 'FBM' | 'Unsure';
   }) => void;
+  isAnalyzing?: boolean;
 }
 
-export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSellerHeroProps) {
+export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing = false }: NewSellerHeroProps) {
   const [productUrl, setProductUrl] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -153,10 +154,15 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
                         setProductUrl(e.target.value);
                         if (error) setError('');
                       }}
-                      placeholder="https://yourwebsite.com/product-page"
+                      placeholder={(isAnalyzing || isSubmitting) ? "Analyzing your product..." : "https://yourwebsite.com/product-page"}
+                      disabled={isAnalyzing || isSubmitting}
                       className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
                         error 
                           ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                          : ''
+                      } ${
+                        (isAnalyzing || isSubmitting) 
+                          ? 'opacity-60 cursor-not-allowed' 
                           : ''
                       }`}
                       required
@@ -262,13 +268,13 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
                 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isAnalyzing || isSubmitting}
                   className="relative inline-flex w-full h-[60px] rounded-[45px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
                   data-testid="new-seller-cta"
                 >
                   {/* Inner fill (pure black) */}
                   <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none">
-                    create my amazon listing now
+                    {(isAnalyzing || isSubmitting) ? 'analyzing...' : 'create my amazon listing now'}
                     {/* Optional glossy overlay from your Figma fill @ ~38% */}
                     <span className="pointer-events-none absolute inset-0 rounded-[43.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
                   </span>
