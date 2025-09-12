@@ -297,6 +297,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit }: NewSeller
                 className="block h-auto w-[1012px] max-w-[95vw]"
                 draggable={false}
                 priority
+                loading="eager"
               />
             </div>
         </div>

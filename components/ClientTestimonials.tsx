@@ -126,7 +126,7 @@ export default function ClientTestimonials({
                   width={48}
                   height={48}
                   className="w-full h-full object-cover pointer-events-none"
-                  loading="lazy"
+                  loading="eager"
                 />
               </div>
               
