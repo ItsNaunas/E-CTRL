@@ -130,7 +130,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
             }
           }
 
-          // URL is valid, proceed with analysis
+          // URL is valid, proceed with analysis and scroll immediately
           // Track the event
           if (typeof window !== 'undefined' && window.gtag) {
             window.gtag('event', 'listing_creation_start', {
@@ -138,6 +138,18 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
               event_label: 'new_seller_url_form'
             });
           }
+          
+          // Scroll to preview area immediately since URL is valid
+          setTimeout(() => {
+            const element = document.getElementById('partial-result');
+            if (element) {
+              const elementPosition = element.offsetTop - 80;
+              window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+              });
+            }
+          }, 100);
           
           onUrlSubmit(productUrl);
         } catch (fetchError) {
@@ -584,22 +596,9 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
                 )}
 
                 {error && (
-                  <div className="space-y-3">
-                    <p className="text-sm text-red-400" role="alert">
-                      {error}
-                    </p>
-                    {error.includes('cannot be accessed') && (
-                      <div className="flex items-center justify-center">
-                        <button
-                          type="button"
-                          onClick={() => setInputMode('manual')}
-                          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-                        >
-                          Switch to Manual Input
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <p className="text-sm text-red-400" role="alert">
+                    {error}
+                  </p>
                 )}
                 
                 <button
