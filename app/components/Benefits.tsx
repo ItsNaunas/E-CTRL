@@ -1,6 +1,6 @@
 'use client';
 
-import { TrendingUp, Search, Image, Zap, User } from 'lucide-react';
+import { TrendingUp, Search, Image as ImageIcon, Zap, User } from 'lucide-react';
 
 export default function Benefits() {
   const benefits = [
@@ -19,7 +19,7 @@ export default function Benefits() {
       size: 'small' as const,
     },
     {
-      icon: <Image className="size-6" />,
+      icon: <ImageIcon className="size-6" />,
       title: "Optimize Images",
       description: "Ensure compliance and visual appeal",
       expertNote: "$10M+ enterprise accounts",

@@ -55,7 +55,7 @@ export interface IdqResult {
 export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, extractedData?: any): Promise<IdqResult> {
   try {
     // Use provided extracted data for IDQ analysis
-    let dataToAnalyze = extractedData;
+    const dataToAnalyze = extractedData;
     
     if (!dataToAnalyze) {
       console.log('No extracted data provided, falling back to regex extraction');
