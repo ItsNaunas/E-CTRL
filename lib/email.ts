@@ -135,9 +135,8 @@ export async function sendWelcomeEmail(data: EmailData) {
       });
     }
     
-    // Use your verified domain once email service is set up
-    // TODO: After setting up GoDaddy email hosting, change to: noreply@e-ctrl.co.uk
-    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default domain for now
+    // Use your verified domain with Cloudflare Email Routing
+    const fromEmail = 'contact@e-ctrl.co.uk'; // Your professional domain email
     console.log('Using sender email:', fromEmail);
     console.log('Using verified domain with SPF/DKIM alignment');
     
@@ -238,8 +237,8 @@ export async function sendWelcomeEmail(data: EmailData) {
 
 export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
   try {
-    // Use Resend's default domain for now (emails work immediately)
-    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default domain
+    // Use your verified domain with Cloudflare Email Routing
+    const fromEmail = 'contact@e-ctrl.co.uk'; // Your professional domain email
     
     const resend = getResendClient();
     const { data: result, error } = await resend.emails.send({
