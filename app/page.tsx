@@ -137,14 +137,27 @@ export default function HomePage() {
         setLeadId(null);
       } else {
         // Get error details from response
-        const errorText = await response.text();
+        const errorData = await response.json();
         console.error('Preview API request failed:', {
           status: response.status,
           statusText: response.statusText,
-          error: errorText
+          error: errorData
         });
-        // Fallback to error state if API fails
-        setAiResult(null);
+        
+        // Show specific error message to user
+        if (errorData.error) {
+          setAiResult({
+            score: 0,
+            highlights: [],
+            recommendations: [],
+            detailedAnalysis: {
+              error: errorData.error,
+              errorCode: errorData.code
+            }
+          });
+        } else {
+          setAiResult(null);
+        }
       }
     } catch (error) {
       console.error('Preview analysis failed:', error);
@@ -652,6 +665,7 @@ export default function HomePage() {
                ]}
                onUnlock={handleUnlock}
                isLoading={isAnalyzing}
+               detailedAnalysis={aiResult?.detailedAnalysis}
              />
           ) : (
                          <NewSellerPartialResult

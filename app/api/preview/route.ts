@@ -43,6 +43,25 @@ export async function POST(request: NextRequest) {
       
       if ('error' in scrapedData) {
         console.warn('Amazon scraping failed for preview:', scrapedData.error);
+        
+        // Return specific error for invalid ASINs instead of continuing
+        if (scrapedData.code === 'INVALID_INPUT' || scrapedData.code === 'INVALID_ASIN') {
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Invalid ASIN provided. Please enter a valid 10-character ASIN or Amazon product URL.',
+            code: scrapedData.code
+          }, { status: 400 });
+        }
+        
+        if (scrapedData.code === 'PRODUCT_NOT_FOUND') {
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Product not found. Please check the ASIN and try again.',
+            code: scrapedData.code
+          }, { status: 404 });
+        }
+        
+        // For other scraping errors, continue with limited data
       } else {
         console.log('Successfully scraped Amazon product data for preview');
         productData = scrapedData;

@@ -8,9 +8,10 @@ interface PartialResultProps {
   highlights: string[];
   onUnlock: () => void;
   isLoading?: boolean;
+  detailedAnalysis?: any;
 }
 
-export default function PartialResult({ score, highlights, onUnlock, isLoading = false }: PartialResultProps) {
+export default function PartialResult({ score, highlights, onUnlock, isLoading = false, detailedAnalysis }: PartialResultProps) {
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
@@ -90,14 +91,45 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
             </div>
           </div>
 
+          {/* Error State */}
+          {detailedAnalysis?.error && (
+            <div className="p-8">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <div className="flex-shrink-0">
+                    <svg className="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-lg font-medium text-red-800">
+                      {detailedAnalysis.errorCode === 'INVALID_INPUT' || detailedAnalysis.errorCode === 'INVALID_ASIN' 
+                        ? 'Invalid ASIN' 
+                        : detailedAnalysis.errorCode === 'PRODUCT_NOT_FOUND'
+                        ? 'Product Not Found'
+                        : 'Analysis Error'}
+                    </h3>
+                  </div>
+                </div>
+                <div className="text-red-700">
+                  <p>{detailedAnalysis.error}</p>
+                  <p className="mt-2 text-sm">
+                    Please check your ASIN and try again. Make sure you&apos;re using a valid 10-character ASIN or Amazon product URL.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Key Findings */}
-          <div className="p-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
-              Key Findings:
-            </h3>
-            
-            <div className="space-y-4 mb-8">
-              {isLoading ? (
+          {!detailedAnalysis?.error && (
+            <div className="p-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">
+                Key Findings:
+              </h3>
+              
+              <div className="space-y-4 mb-8">
+                {isLoading ? (
                 // Loading skeleton for highlights
                 Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className="flex items-start gap-3">
@@ -148,7 +180,8 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
                 Free forever • No credit card required • Secure & private
               </p>
             </div>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
