@@ -3,7 +3,6 @@ import type { ExistingSellerData, NewSellerData } from './validation';
 import type { AmazonProductData } from './amazon-scraper';
 import type { GenericProductData } from './product-scraper';
 import { evaluateIdq, evaluateIdqWithAI, type IdqConfig, type IdqResult } from './idq-evaluator';
-import { analyzeProductWithAI, type AIIDQResult } from './ai-idq-analyzer';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
