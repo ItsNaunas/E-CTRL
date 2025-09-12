@@ -2,7 +2,8 @@ import OpenAI from 'openai';
 import type { ExistingSellerData, NewSellerData } from './validation';
 import type { AmazonProductData } from './amazon-scraper';
 import type { GenericProductData } from './product-scraper';
-import { evaluateIdq, type IdqConfig, type IdqResult } from './idq-evaluator';
+import { evaluateIdq, evaluateIdqWithAI, type IdqConfig, type IdqResult } from './idq-evaluator';
+import { analyzeProductWithAI, type AIIDQResult } from './ai-idq-analyzer';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -10,10 +11,11 @@ const openai = new OpenAI({
 
 // AI-powered audit analysis for existing sellers with real Amazon data
 export async function analyzeExistingSeller(data: ExistingSellerData, productData?: AmazonProductData) {
-  // First, run binary IDQ evaluation if we have HTML content
+  // Use regex extraction as primary method (it works reliably)
   let binaryIdqResult: IdqResult | null = null;
   if (productData?.htmlContent) {
     try {
+      console.log('Running IDQ evaluation with extracted data...');
       const idqConfig: IdqConfig = {
         keywords: data.keywords || [],
         maxTitleLength: 200,
@@ -21,7 +23,8 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
         minDescriptionChars: 200,
         minImageCount: 6
       };
-      binaryIdqResult = evaluateIdq(productData.htmlContent, idqConfig);
+      // Use the extracted data directly for IDQ evaluation
+      binaryIdqResult = await evaluateIdqWithAI(productData.htmlContent, idqConfig, productData);
       console.log('IDQ evaluation completed:', binaryIdqResult);
     } catch (error) {
       console.error('IDQ evaluation failed:', error);
@@ -29,6 +32,12 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
     }
   } else {
     console.log('No HTML content available for IDQ evaluation');
+  }
+
+  function getGrade(percentage: number): string {
+    if (percentage >= 80) return 'A';
+    if (percentage >= 60) return 'B';
+    return 'C';
   }
   const prompt = `You are an expert Amazon FBA consultant analyzing an EXISTING SELLER'S product listing for UK/EU markets using Amazon's IDQ (Item Data Quality) criteria.
 
@@ -61,21 +70,20 @@ BINARY IDQ EVALUATION RESULTS:
 - Title Length OK: ${binaryIdqResult.checks.title_correct_length ? 'Yes' : 'No'}
 - Bullets Count: ${binaryIdqResult.checks.has_bullets_5plus ? '≥5' : '<5'}
 - Description Length: ${binaryIdqResult.checks.has_description_200plus ? '≥200 chars' : '<200 chars'}
-- A+ Content: ${binaryIdqResult.checks.has_aplus ? 'Yes' : 'No'}
-- Premium A+: ${binaryIdqResult.checks.has_premium_aplus ? 'Yes' : 'No'}
 - Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
 - Image Count: ${binaryIdqResult.checks.images_6plus ? '≥6' : '<6'}
-- Keywords Found: ${binaryIdqResult.checks.has_keywords ? 'Yes' : 'No'}
 - Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
 - Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
 - Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
+
+Note: A+ content, premium A+ content, and backend keyword optimization are not included in this analysis as they cannot be reliably detected from visible page content.
 ` : ''}
 
-Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that focuses on IMPROVEMENTS and OPTIMIZATION:
+Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that focuses on IMPROVEMENTS and OPTIMIZATION based on what we can actually measure from the visible listing content:
 
 1. **IDQ Score (0-100)**: Use the binary score as foundation, then adjust based on content quality analysis:
    - Base Score: ${binaryIdqResult ? binaryIdqResult.qualityPercent : 'Calculate from data'}
-   - Content Quality Adjustments: ±10 points based on keyword optimization, benefit focus, and conversion potential
+   - Content Quality Adjustments: ±10 points based on benefit focus and conversion potential
    - Final Score: Weighted combination of binary compliance and content quality
 
 2. **Key Issues to Fix (3-5 points)**: Focus on the biggest problems that are hurting their sales and conversions
@@ -88,7 +96,6 @@ Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that fo
    - Product Images: What's wrong with their images and how to fix them
    - Product Description: What's missing from their description and how to improve it
    - Product Information: What details are missing and how to add them
-   - Keywords: What keywords they're missing and how to optimize for search
 
 Format your response as JSON:
 {
@@ -100,8 +107,7 @@ Format your response as JSON:
     "bulletPoints": string,
     "productImages": string,
     "productDescription": string,
-    "productInformation": string,
-    "keywords": string
+    "productInformation": string
   },
   "productData": {
     "currentTitle": string,
@@ -115,8 +121,7 @@ Format your response as JSON:
     "bulletsScore": number,
     "imagesScore": number,
     "descriptionScore": number,
-    "informationScore": number,
-    "keywordsScore": number
+    "informationScore": number
   },
   "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
@@ -169,7 +174,7 @@ export async function analyzeNewSeller(data: NewSellerData, productData?: Generi
         minDescriptionChars: 200,
         minImageCount: 6
       };
-      binaryIdqResult = evaluateIdq(productData.rawContent, idqConfig);
+      binaryIdqResult = await evaluateIdqWithAI(productData.rawContent, idqConfig);
       console.log('IDQ evaluation completed for new seller:', binaryIdqResult);
     } catch (error) {
       console.error('IDQ evaluation failed for new seller:', error);
