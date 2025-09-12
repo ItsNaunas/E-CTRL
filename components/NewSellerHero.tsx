@@ -12,6 +12,15 @@ interface NewSellerHeroProps {
     description: string;
     keywords: string[];
     fulfilmentIntent: 'FBA' | 'FBM' | 'Unsure';
+    productName: string;
+    brand: string;
+    price: string;
+    targetAudience: string;
+    keyFeatures: string;
+    benefits: string;
+    dimensions: string;
+    materials: string;
+    useCase: string;
   }) => void;
   isAnalyzing?: boolean;
 }
@@ -27,6 +36,48 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
   const [fulfilmentIntent, setFulfilmentIntent] = useState('FBA');
+  
+  // Enhanced fields for better AI generation
+  const [productName, setProductName] = useState('');
+  const [brand, setBrand] = useState('');
+  const [price, setPrice] = useState('');
+  const [targetAudience, setTargetAudience] = useState('');
+  const [keyFeatures, setKeyFeatures] = useState('');
+  const [benefits, setBenefits] = useState('');
+  const [dimensions, setDimensions] = useState('');
+  const [materials, setMaterials] = useState('');
+  const [useCase, setUseCase] = useState('');
+  
+  // Wizard state
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 3;
+
+  // Wizard navigation
+  const nextStep = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Step validation
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return !!(productName.trim() && category.trim());
+      case 2:
+        return !!(description.trim() && keywords.trim());
+      case 3:
+        return true; // Optional fields
+      default:
+        return false;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,9 +101,9 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
         
         onUrlSubmit(productUrl);
       } else {
-        // Manual input validation
-        if (!category.trim() || !description.trim() || !keywords.trim()) {
-          setError('Please fill in all required fields');
+        // Enhanced manual input validation
+        if (!productName.trim() || !category.trim() || !description.trim() || !keywords.trim()) {
+          setError('Please fill in all required fields (Product Name, Category, Description, Keywords)');
           return;
         }
         
@@ -74,7 +125,16 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
           category: category.trim(),
           description: description.trim(),
           keywords: keywordsArray,
-          fulfilmentIntent: fulfilmentIntent as 'FBA' | 'FBM' | 'Unsure'
+          fulfilmentIntent: fulfilmentIntent as 'FBA' | 'FBM' | 'Unsure',
+          productName: productName.trim(),
+          brand: brand.trim(),
+          price: price.trim(),
+          targetAudience: targetAudience.trim(),
+          keyFeatures: keyFeatures.trim(),
+          benefits: benefits.trim(),
+          dimensions: dimensions.trim(),
+          materials: materials.trim(),
+          useCase: useCase.trim()
         });
       }
     } catch (err) {
@@ -171,91 +231,308 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
                     />
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="category" className="block text-sm font-medium text-white mb-2">
-                        Product Category *
-                      </label>
-                      <input
-                        id="category"
-                        name="category"
-                        type="text"
-                        value={category}
-                        onChange={(e) => {
-                          setCategory(e.target.value);
-                          if (error) setError('');
-                        }}
-                        placeholder="e.g., Home & Garden, Electronics, Beauty"
-                        className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
-                          error 
-                            ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                            : ''
-                        }`}
-                        required
-                      />
+                  <div className="space-y-6">
+                    {/* Wizard Progress */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center space-x-2">
+                        {Array.from({ length: totalSteps }, (_, i) => (
+                          <div
+                            key={i + 1}
+                            className={`w-3 h-3 rounded-full transition-colors ${
+                              i + 1 <= currentStep 
+                                ? 'bg-gradient-to-r from-[#296AFF] to-[#FF7D2B]' 
+                                : 'bg-white/20'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-white/60">
+                        Step {currentStep} of {totalSteps}
+                      </span>
                     </div>
 
-                    <div>
-                      <label htmlFor="description" className="block text-sm font-medium text-white mb-2">
-                        Product Description *
-                      </label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        value={description}
-                        onChange={(e) => {
-                          setDescription(e.target.value);
-                          if (error) setError('');
-                        }}
-                        placeholder="Describe your product, its features, and benefits..."
-                        rows={3}
-                        className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
-                          error 
-                            ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                            : ''
-                        }`}
-                        required
-                      />
-                    </div>
+                    {/* Step 1: Basic Information */}
+                    {currentStep === 1 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-white mb-4">Basic Product Information</h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="productName" className="block text-sm font-medium text-white mb-2">
+                              Product Name *
+                            </label>
+                            <input
+                              id="productName"
+                              name="productName"
+                              type="text"
+                              value={productName}
+                              onChange={(e) => {
+                                setProductName(e.target.value);
+                                if (error) setError('');
+                              }}
+                              placeholder="e.g., Premium Wireless Headphones"
+                              className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                                error 
+                                  ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                                  : ''
+                              }`}
+                              required
+                            />
+                          </div>
 
-                    <div>
-                      <label htmlFor="keywords" className="block text-sm font-medium text-white mb-2">
-                        Keywords (comma-separated) *
-                      </label>
-                      <input
-                        id="keywords"
-                        name="keywords"
-                        type="text"
-                        value={keywords}
-                        onChange={(e) => {
-                          setKeywords(e.target.value);
-                          if (error) setError('');
-                        }}
-                        placeholder="eco-friendly, sustainable, organic, natural"
-                        className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
-                          error 
-                            ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
-                            : ''
-                        }`}
-                        required
-                      />
-                    </div>
+                          <div>
+                            <label htmlFor="brand" className="block text-sm font-medium text-white mb-2">
+                              Brand Name
+                            </label>
+                            <input
+                              id="brand"
+                              name="brand"
+                              type="text"
+                              value={brand}
+                              onChange={(e) => {
+                                setBrand(e.target.value);
+                                if (error) setError('');
+                              }}
+                              placeholder="e.g., TechBrand, EcoLife"
+                              className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            />
+                          </div>
+                        </div>
 
-                    <div>
-                      <label htmlFor="fulfilment" className="block text-sm font-medium text-white mb-2">
-                        Fulfilment Method
-                      </label>
-                      <select
-                        id="fulfilment"
-                        name="fulfilment"
-                        value={fulfilmentIntent}
-                        onChange={(e) => setFulfilmentIntent(e.target.value)}
-                        className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="category" className="block text-sm font-medium text-white mb-2">
+                              Product Category *
+                            </label>
+                            <input
+                              id="category"
+                              name="category"
+                              type="text"
+                              value={category}
+                              onChange={(e) => {
+                                setCategory(e.target.value);
+                                if (error) setError('');
+                              }}
+                              placeholder="e.g., Electronics, Home & Garden"
+                              className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                                error 
+                                  ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                                  : ''
+                              }`}
+                              required
+                            />
+                          </div>
+
+                          <div>
+                            <label htmlFor="price" className="block text-sm font-medium text-white mb-2">
+                              Target Price Range
+                            </label>
+                            <input
+                              id="price"
+                              name="price"
+                              type="text"
+                              value={price}
+                              onChange={(e) => {
+                                setPrice(e.target.value);
+                                if (error) setError('');
+                              }}
+                              placeholder="e.g., $29.99, $50-100"
+                              className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 2: Product Details */}
+                    {currentStep === 2 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-white mb-4">Product Details</h3>
+                        
+                        <div>
+                          <label htmlFor="description" className="block text-sm font-medium text-white mb-2">
+                            Product Description *
+                          </label>
+                          <textarea
+                            id="description"
+                            name="description"
+                            value={description}
+                            onChange={(e) => {
+                              setDescription(e.target.value);
+                              if (error) setError('');
+                            }}
+                            placeholder="Describe your product, its features, and benefits..."
+                            rows={4}
+                            className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                              error 
+                                ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                                : ''
+                            }`}
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="keywords" className="block text-sm font-medium text-white mb-2">
+                            Keywords (comma-separated) *
+                          </label>
+                          <input
+                            id="keywords"
+                            name="keywords"
+                            type="text"
+                            value={keywords}
+                            onChange={(e) => {
+                              setKeywords(e.target.value);
+                              if (error) setError('');
+                            }}
+                            placeholder="wireless, bluetooth, noise-canceling, premium"
+                            className={`block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none ${
+                              error 
+                                ? 'border-red-400 focus:border-red-400 focus:ring-red-400/30' 
+                                : ''
+                            }`}
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="keyFeatures" className="block text-sm font-medium text-white mb-2">
+                            Key Features & Benefits
+                          </label>
+                          <textarea
+                            id="keyFeatures"
+                            name="keyFeatures"
+                            value={keyFeatures}
+                            onChange={(e) => setKeyFeatures(e.target.value)}
+                            placeholder="List key features and customer benefits..."
+                            rows={3}
+                            className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 3: Additional Details */}
+                    {currentStep === 3 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-white mb-4">Additional Details</h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="targetAudience" className="block text-sm font-medium text-white mb-2">
+                              Target Audience
+                            </label>
+                            <input
+                              id="targetAudience"
+                              name="targetAudience"
+                              type="text"
+                              value={targetAudience}
+                              onChange={(e) => setTargetAudience(e.target.value)}
+                              placeholder="e.g., Professionals, Students"
+                              className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label htmlFor="useCase" className="block text-sm font-medium text-white mb-2">
+                              Primary Use Case
+                            </label>
+                            <input
+                              id="useCase"
+                              name="useCase"
+                              type="text"
+                              value={useCase}
+                              onChange={(e) => setUseCase(e.target.value)}
+                              placeholder="e.g., Daily commuting, Home office"
+                              className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="dimensions" className="block text-sm font-medium text-white mb-2">
+                              Dimensions & Size
+                            </label>
+                            <input
+                              id="dimensions"
+                              name="dimensions"
+                              type="text"
+                              value={dimensions}
+                              onChange={(e) => setDimensions(e.target.value)}
+                              placeholder="e.g., 10x8x3 inches, 2.5 lbs"
+                              className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label htmlFor="materials" className="block text-sm font-medium text-white mb-2">
+                              Materials & Construction
+                            </label>
+                            <input
+                              id="materials"
+                              name="materials"
+                              type="text"
+                              value={materials}
+                              onChange={(e) => setMaterials(e.target.value)}
+                              placeholder="e.g., Premium aluminum, Eco-friendly"
+                              className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white placeholder-white/40 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label htmlFor="fulfilment" className="block text-sm font-medium text-white mb-2">
+                            Fulfilment Method
+                          </label>
+                          <select
+                            id="fulfilment"
+                            name="fulfilment"
+                            value={fulfilmentIntent}
+                            onChange={(e) => setFulfilmentIntent(e.target.value)}
+                            className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                          >
+                            <option value="FBA">FBA (Fulfilled by Amazon)</option>
+                            <option value="FBM">FBM (Fulfilled by Merchant)</option>
+                            <option value="Unsure">Not sure yet</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Wizard Navigation */}
+                    <div className="flex items-center justify-between pt-4">
+                      <button
+                        type="button"
+                        onClick={prevStep}
+                        disabled={currentStep === 1}
+                        className={`px-6 py-3 rounded-[45px] text-sm font-medium transition-all ${
+                          currentStep === 1
+                            ? 'text-white/40 cursor-not-allowed'
+                            : 'text-white hover:text-white/80'
+                        }`}
                       >
-                        <option value="FBA">FBA (Fulfilled by Amazon)</option>
-                        <option value="FBM">FBM (Fulfilled by Merchant)</option>
-                        <option value="Unsure">Not sure yet</option>
-                      </select>
+                        Previous
+                      </button>
+
+                      {currentStep < totalSteps ? (
+                        <button
+                          type="button"
+                          onClick={nextStep}
+                          disabled={!validateStep(currentStep)}
+                          className={`px-8 py-3 rounded-[45px] text-sm font-medium transition-all ${
+                            validateStep(currentStep)
+                              ? 'bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white hover:opacity-90'
+                              : 'bg-white/20 text-white/40 cursor-not-allowed'
+                          }`}
+                        >
+                          Next
+                        </button>
+                      ) : (
+                        <div className="text-sm text-white/60">
+                          Ready to create your listing
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

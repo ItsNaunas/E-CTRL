@@ -82,10 +82,20 @@ export const newSellerSchema = z.object({
   name,
   email,
   phone,
+  // Enhanced fields for better AI generation
+  productName: z.string().min(1, "Product name is required.").optional(),
+  brand: z.string().optional(),
+  price: z.string().optional(),
+  targetAudience: z.string().optional(),
+  keyFeatures: z.string().optional(),
+  benefits: z.string().optional(),
+  dimensions: z.string().optional(),
+  materials: z.string().optional(),
+  useCase: z.string().optional(),
 }).refine(
-  (data) => !!data.websiteUrl || !!data.noWebsiteDesc,
+  (data) => !!data.websiteUrl || !!data.noWebsiteDesc || !!data.productName,
   { 
-    message: "Provide a website URL or a short description.",
+    message: "Provide a website URL, product name, or a short description.",
     path: ["websiteUrl"] // This will show the error on the websiteUrl field
   }
 );

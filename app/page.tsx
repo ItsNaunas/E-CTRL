@@ -289,6 +289,15 @@ export default function HomePage() {
     description: string;
     keywords: string[];
     fulfilmentIntent: string;
+    productName: string;
+    brand: string;
+    price: string;
+    targetAudience: string;
+    keyFeatures: string;
+    benefits: string;
+    dimensions: string;
+    materials: string;
+    useCase: string;
   }) => {
     console.log('Manual product data submitted:', data);
     // Store the manual data for later use
@@ -316,7 +325,17 @@ export default function HomePage() {
             name: "placeholder.jpg",
             size: 1024,
             type: "image/jpeg"
-          }
+          },
+          // Enhanced fields for better AI generation
+          productName: data.productName,
+          brand: data.brand,
+          price: data.price,
+          targetAudience: data.targetAudience,
+          keyFeatures: data.keyFeatures,
+          benefits: data.benefits,
+          dimensions: data.dimensions,
+          materials: data.materials,
+          useCase: data.useCase
         }
       };
 
