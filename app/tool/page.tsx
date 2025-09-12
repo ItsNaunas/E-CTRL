@@ -12,7 +12,7 @@ import Tabs from '@/components/Tabs';
 import ChipsInput from '@/components/ChipsInput';
 import FileDropzone from '@/components/FileDropzone';
 import SummaryCard from '@/components/SummaryCard';
-import EmailGate from '@/components/EmailGate';
+import EmailGate from '../components/EmailGate';
 import ListingPackCard from '@/components/ListingPackCard';
 import { copy } from '@/lib/copy';
 import { 
@@ -187,7 +187,7 @@ export default function ToolPage() {
     }
   };
 
-  const handleEmailSubmit = async (email: string, name: string) => {
+  const handleEmailSubmit = async (email: string) => {
     setIsEmailSubmitting(true);
     try {
       if (!currentLeadId) {
@@ -200,7 +200,7 @@ export default function ToolPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          name,
+          name: '', // Name not available in this EmailGate component
           leadId: currentLeadId
         }),
       });
@@ -527,9 +527,9 @@ export default function ToolPage() {
           <div className="mt-12 max-w-4xl mx-auto">
             {showEmailGate ? (
               <EmailGate 
-                result={summary} 
                 onEmailSubmit={handleEmailSubmit}
-                isSubmitting={isEmailSubmitting}
+                isLoading={isEmailSubmitting}
+                mode={activeTab === 'new' ? 'create' : 'audit'}
               />
             ) : activeTab === 'new' && summary.listingPack ? (
               <ListingPackCard result={summary} />
