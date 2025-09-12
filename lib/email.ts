@@ -135,9 +135,9 @@ export async function sendWelcomeEmail(data: EmailData) {
       });
     }
     
-    // Use a verified sender domain or the default Resend domain
+    // Use Resend's default domain for now (free tier)
     // TODO: Replace with your own domain once you upgrade to paid Resend plan
-    const fromEmail = 'noreply@send.e-ctrl.co.uk'; // Use your verified subdomain
+    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default domain
     console.log('Using sender email:', fromEmail);
     console.log('Using verified domain with SPF/DKIM alignment');
     
@@ -238,8 +238,8 @@ export async function sendWelcomeEmail(data: EmailData) {
 
 export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
   try {
-    // Use a verified sender domain or the default Resend domain
-    const fromEmail = 'noreply@send.e-ctrl.co.uk'; // Use your verified subdomain
+    // Use Resend's default domain for now (free tier)
+    const fromEmail = 'onboarding@resend.dev'; // Use Resend's default domain
     
     const resend = getResendClient();
     const { data: result, error } = await resend.emails.send({
