@@ -80,26 +80,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} h-full flex flex-col bg-[#0D0D0D] text-white`}>
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'GA_MEASUREMENT_ID');
-          `}
-        </Script>
-        
         <main className="flex-1">
           {children}
         </main>
         
-        {/* Vercel Analytics */}
-        <Analytics />
+        {/* Vercel Analytics - Only load in production */}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   );

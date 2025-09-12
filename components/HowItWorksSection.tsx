@@ -85,6 +85,7 @@ export default function HowItWorksSection() {
                       width={200} 
                       height={200}
                       className="h-40 md:h-48 w-auto mx-auto"
+                      loading="lazy"
                     />
                   </div>
                 </div>

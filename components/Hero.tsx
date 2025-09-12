@@ -135,6 +135,7 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
               height={600}
               className="block h-auto w-[1012px] max-w-[95vw]"
               draggable={false}
+              priority
             />
           </div>
         </div>
