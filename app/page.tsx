@@ -94,6 +94,25 @@ export default function HomePage() {
     });
   }, [showPartial, hasUserInput, isAnalyzing, aiResult]);
 
+  // Listen for manual input switch event
+  useEffect(() => {
+    const handleSwitchToManualInput = () => {
+      console.log('Switching to manual input due to URL scraping failure');
+      // Reset the form state
+      setAiResult(null);
+      setShowPartial(false);
+      setHasUserInput(false);
+      setIsAnalyzing(false);
+      // Trigger the manual input tab switch
+      // This will be handled by the NewSellerHero component
+    };
+
+    window.addEventListener('switchToManualInput', handleSwitchToManualInput);
+    return () => {
+      window.removeEventListener('switchToManualInput', handleSwitchToManualInput);
+    };
+  }, []);
+
   // Handle ASIN submission from Hero
   const handleAsinSubmit = async (asin: string) => {
     console.log('ASIN submitted:', asin);
@@ -250,30 +269,47 @@ export default function HomePage() {
         console.error('No AI result received from successful response');
         setAiResult(null);
       }
-    } else {
-      // Get error details from response - same pattern as existing seller
-      const errorData = await response.json();
-      console.error('New seller preview API request failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorData
-      });
-      
-      // Show specific error message to user - same pattern as existing seller
-      if (errorData.error) {
-        setAiResult({
-          score: 0,
-          highlights: [],
-          recommendations: [],
-          detailedAnalysis: {
-            error: errorData.error,
-            errorCode: errorData.code
-          }
-        });
       } else {
-        setAiResult(null);
+        // Get error details from response - same pattern as existing seller
+        const errorData = await response.json();
+        console.error('New seller preview API request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
+        
+        // Handle URL scraping failure by redirecting to manual input
+        if (errorData.code === 'URL_SCRAPING_FAILED') {
+          console.log('URL scraping failed, redirecting to manual input');
+          // Set a special error state that will trigger manual input redirect
+          setAiResult({
+            score: 0,
+            highlights: [],
+            recommendations: [],
+            detailedAnalysis: {
+              error: errorData.error,
+              errorCode: errorData.code,
+              message: errorData.message,
+              suggestion: errorData.suggestion
+            }
+          });
+        } else {
+          // Show specific error message to user - same pattern as existing seller
+          if (errorData.error) {
+            setAiResult({
+              score: 0,
+              highlights: [],
+              recommendations: [],
+              detailedAnalysis: {
+                error: errorData.error,
+                errorCode: errorData.code
+              }
+            });
+          } else {
+            setAiResult(null);
+          }
+        }
       }
-    }
   } catch (error) {
     console.error('New seller preview analysis failed:', error);
     // Fallback to error state - same pattern as existing seller

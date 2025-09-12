@@ -33,6 +33,14 @@ export async function POST(request: NextRequest) {
       
       if ('error' in scrapedData) {
         console.warn('Product scraping failed for preview:', scrapedData.error);
+        // Return specific error for URL scraping failure to redirect to manual input
+        return NextResponse.json({ 
+          success: false, 
+          error: 'Unable to scrape product data from this URL',
+          code: 'URL_SCRAPING_FAILED',
+          message: 'Please use the manual input form instead to create your Amazon listing.',
+          suggestion: 'manual_input'
+        }, { status: 400 });
       } else {
         console.log('Successfully scraped product data for preview');
         productData = scrapedData;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 import ClientTestimonials from '@/components/ClientTestimonials';
@@ -51,6 +51,20 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
   // Wizard state
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
+
+  // Listen for manual input switch event
+  useEffect(() => {
+    const handleSwitchToManualInput = () => {
+      console.log('Switching to manual input mode');
+      setInputMode('manual');
+      setError(''); // Clear any existing errors
+    };
+
+    window.addEventListener('switchToManualInput', handleSwitchToManualInput);
+    return () => {
+      window.removeEventListener('switchToManualInput', handleSwitchToManualInput);
+    };
+  }, []);
 
   // Wizard navigation
   const nextStep = () => {

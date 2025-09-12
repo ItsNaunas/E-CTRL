@@ -85,6 +85,37 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Analyzing Your Product</h3>
                 <p className="text-gray-600">Scraping product data and generating Amazon listing recommendations...</p>
               </div>
+            ) : highlights && highlights.length > 0 && highlights[0]?.includes('Unable to scrape product data') ? (
+              // URL scraping failed - redirect to manual input
+              <div className="text-center py-8">
+                <div className="text-orange-500 text-6xl mb-4">⚠️</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">URL Not Accessible</h3>
+                <p className="text-gray-600 mb-6">
+                  We couldn&apos;t extract product data from the provided URL. This could be due to:
+                </p>
+                <ul className="text-sm text-gray-600 text-left max-w-md mx-auto mb-6 space-y-2">
+                  <li>• Website blocking automated requests</li>
+                  <li>• Invalid or broken URL</li>
+                  <li>• Page requiring login or special access</li>
+                  <li>• Network connectivity issues</li>
+                </ul>
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                  <h4 className="font-medium text-orange-800 mb-2">No Problem! Use Manual Input Instead</h4>
+                  <p className="text-sm text-orange-700">
+                    You can still create your Amazon listing by providing the product details manually. 
+                    Our AI will generate the same high-quality listing content.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    // This will be handled by the parent component to switch to manual input
+                    window.dispatchEvent(new CustomEvent('switchToManualInput'));
+                  }}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
+                >
+                  Switch to Manual Input
+                </button>
+              </div>
             ) : hasDetailedAnalysis ? (
               <div className="space-y-6">
                 {/* Product Analysis Summary */}
