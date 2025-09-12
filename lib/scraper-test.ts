@@ -20,8 +20,8 @@ export async function testScraper(asin: string) {
     console.log(`- Rating: ${result.rating}/5 (${result.reviewCount} reviews)`);
     console.log(`- Bullets: ${result.bullets.length} bullet points`);
     console.log(`- Images: ${result.images.length} images`);
-    console.log(`- Extraction Method: ${result.extractionMethod || 'regex'}`);
-    console.log(`- Confidence: ${result.confidence || 'N/A'}%`);
+    console.log(`- Extraction Method: regex`);
+    console.log(`- Availability: ${result.availability}`);
     
     // Show first few bullet points
     if (result.bullets.length > 0) {
