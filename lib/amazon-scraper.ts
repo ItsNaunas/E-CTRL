@@ -127,6 +127,13 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     });
 
     if (!response.ok) {
+      // 404 specifically means product not found
+      if (response.status === 404) {
+        return {
+          error: 'Product not found - invalid ASIN',
+          code: 'PRODUCT_NOT_FOUND'
+        };
+      }
       return {
         error: 'Failed to fetch product page',
         code: 'FETCH_FAILED',
@@ -468,6 +475,22 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     });
     
     console.log(`📊 Final image count: ${productData.images.length}`);
+
+    // Check for Amazon error pages
+    const errorPageIndicators = [
+      'Looking for something?',
+      'We\'re sorry. The Web address you entered is not a functioning page',
+      'Sorry, we just need to make sure you\'re not a robot',
+      'Page Not Found',
+      'The page you requested cannot be found'
+    ];
+    
+    if (errorPageIndicators.some(indicator => html.includes(indicator))) {
+      return {
+        error: 'Product not found - invalid ASIN',
+        code: 'PRODUCT_NOT_FOUND'
+      };
+    }
 
     // Validate essential data
     if (!productData.title) {
