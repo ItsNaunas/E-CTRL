@@ -57,6 +57,51 @@ export async function scrapeAmazonProduct(asin: string): Promise<AmazonProductDa
 }
 
 
+// Helper function to validate product images - balanced filtering for actual product images
+function isValidProductImage(src: string, existingImages: string[]): boolean {
+  // Must be Amazon image
+  if (!src || !src.includes('amazon')) return false;
+  
+  // Exclude obvious navigation and UI elements (focused list)
+  const excludePatterns = [
+    'nav', 'icon', 'sprite', 'logo', 'arrow', 'badge', 'social',
+    'gno', 'fashion', 'megamenu', 'prime', 'header', 'menu',
+    'search', 'cart', 'account', 'signin', 'signout', 'help',
+    'advertisement', 'ads', 'promo', 'banner', 'widget', 'sidebar',
+    'footer', 'notification', 'alert', 'warning', 'error', 'success',
+    'loading', 'spinner', 'placeholder', 'default', 'empty'
+  ];
+  
+  const shouldExclude = excludePatterns.some(pattern => 
+    src.toLowerCase().includes(pattern.toLowerCase())
+  );
+  
+  if (shouldExclude) return false;
+  
+  // Must contain media or images path
+  const hasProductImagePath = src.includes('media') || 
+                             src.includes('images') || 
+                             src.includes('ssl-images');
+  
+  if (!hasProductImagePath) return false;
+  
+  // Avoid duplicates
+  if (existingImages.includes(src)) return false;
+  
+  // Must be reasonable size (not tiny icons) - look for size indicators
+  const hasSizeIndicator = /[0-9]{3,4}x[0-9]{3,4}|[0-9]{2,3}_[0-9]{2,3}/.test(src);
+  
+  // Accept images with size indicators (likely product images)
+  if (hasSizeIndicator) return true;
+  
+  // Also accept images without size indicators if they're in product-specific paths
+  const hasProductSpecificPath = src.includes('product') || 
+                               src.includes('gallery') ||
+                               src.includes('media');
+  
+  return hasProductSpecificPath;
+}
+
 // Simplified scraping method using fetch (Next.js compatible)
 export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonProductData | ScrapingError> {
   if (!asin || asin.length !== 10) {
@@ -324,51 +369,6 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     // Extract product images - focus on actual product images only
     console.log('🔍 Extracting product images...');
     
-    // Helper function to validate product images - balanced filtering for actual product images
-    function isValidProductImage(src: string): boolean {
-      // Must be Amazon image
-      if (!src || !src.includes('amazon')) return false;
-      
-      // Exclude obvious navigation and UI elements (focused list)
-      const excludePatterns = [
-        'nav', 'icon', 'sprite', 'logo', 'arrow', 'badge', 'social',
-        'gno', 'fashion', 'megamenu', 'prime', 'header', 'menu',
-        'search', 'cart', 'account', 'signin', 'signout', 'help',
-        'advertisement', 'ads', 'promo', 'banner', 'widget', 'sidebar',
-        'footer', 'notification', 'alert', 'warning', 'error', 'success',
-        'loading', 'spinner', 'placeholder', 'default', 'empty'
-      ];
-      
-      const shouldExclude = excludePatterns.some(pattern => 
-        src.toLowerCase().includes(pattern.toLowerCase())
-      );
-      
-      if (shouldExclude) return false;
-      
-      // Must contain media or images path
-      const hasProductImagePath = src.includes('media') || 
-                                 src.includes('images') || 
-                                 src.includes('ssl-images');
-      
-      if (!hasProductImagePath) return false;
-      
-      // Avoid duplicates
-      if (productData.images.includes(src)) return false;
-      
-      // Must be reasonable size (not tiny icons) - look for size indicators
-      const hasSizeIndicator = /[0-9]{3,4}x[0-9]{3,4}|[0-9]{2,3}_[0-9]{2,3}/.test(src);
-      
-      // Accept images with size indicators (likely product images)
-      if (hasSizeIndicator) return true;
-      
-      // Also accept images without size indicators if they're in product-specific paths
-      const hasProductSpecificPath = src.includes('product') || 
-                                   src.includes('gallery') ||
-                                   src.includes('media');
-      
-      return hasProductSpecificPath;
-    }
-    
     // Extract images from specific product image containers only
     const productImagePatterns = [
       // Main product image container
@@ -392,7 +392,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
       let match;
       while ((match = pattern.exec(html)) !== null) {
         const src = match[1];
-        if (src && isValidProductImage(src)) {
+        if (src && isValidProductImage(src, productData.images)) {
           productData.images.push(src);
         }
       }
@@ -412,7 +412,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
           const srcMatch = match.match(/src="([^"]*)"/);
           if (srcMatch) {
             const src = srcMatch[1];
-            if (isValidProductImage(src)) {
+            if (isValidProductImage(src, productData.images)) {
               productData.images.push(src);
             }
           }
@@ -429,7 +429,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
           const srcMatch = match.match(/src="([^"]*)"/);
           if (srcMatch) {
             const src = srcMatch[1];
-            if (isValidProductImage(src)) {
+            if (isValidProductImage(src, productData.images)) {
               productData.images.push(src);
             }
           }
