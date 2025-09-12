@@ -84,8 +84,8 @@ export default function RootLayout({
           {children}
         </main>
         
-        {/* Vercel Analytics - Only load in production */}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        {/* Vercel Analytics - Only load in production on Vercel */}
+        {process.env.NODE_ENV === 'production' && process.env.VERCEL && <Analytics />}
       </body>
     </html>
   );
