@@ -139,9 +139,27 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     // Extract product data using regex patterns
     console.log('Extracting product data using regex patterns');
 
+    // Extract ASIN from HTML to validate it matches the requested ASIN
+    const asinPatterns = [
+      /data-asin="([A-Z0-9]{10})"/,
+      /"asin":"([A-Z0-9]{10})"/,
+      /asin=([A-Z0-9]{10})/,
+      /\/dp\/([A-Z0-9]{10})/
+    ];
+    
+    let extractedAsin = asin; // Default to input ASIN
+    for (const pattern of asinPatterns) {
+      const asinMatch = html.match(pattern);
+      if (asinMatch) {
+        extractedAsin = asinMatch[1];
+        console.log(`✅ ASIN extracted from HTML: ${extractedAsin}`);
+        break;
+      }
+    }
+
     // Simple regex-based extraction (more reliable than DOM parsing for serverless)
     const productData: AmazonProductData = {
-      asin,
+      asin: extractedAsin,
       title: '',
       bullets: [],
       description: '',
@@ -455,6 +473,15 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     if (!productData.title) {
       return {
         error: 'Product not found or page structure changed',
+        code: 'PRODUCT_NOT_FOUND'
+      };
+    }
+
+    // Validate that the scraped ASIN matches the requested ASIN
+    if (productData.asin !== asin) {
+      console.log(`ASIN mismatch: requested ${asin}, got ${productData.asin}`);
+      return {
+        error: 'Product not found - ASIN mismatch detected',
         code: 'PRODUCT_NOT_FOUND'
       };
     }
