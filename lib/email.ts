@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { generatePDF, getPDFBlob, type PDFData } from './pdf';
+import { generateAuditReportPDF, generateListingPackPDF, getPDFBlob, type PDFData } from './pdf';
 
 // Initialize Resend client lazily to ensure environment variables are loaded
 function getResendClient() {
@@ -24,6 +24,36 @@ export interface EmailData {
   highlights?: string[];
   recommendations?: string[];
   detailedAnalysis?: any;
+  // New seller specific data
+  idqAnalysis?: {
+    title?: { current?: string; issues?: string[]; optimized?: string };
+    bullets?: { current?: string[]; issues?: string[]; optimized?: string[] };
+    description?: { current?: string; issues?: string[]; optimized?: string };
+    keywords?: { current?: string[]; issues?: string[]; optimized?: { primary?: string[]; secondary?: string[]; longTail?: string[] } };
+    images?: { current?: string[]; issues?: string[]; required?: { mainImage?: string; lifestyleImage?: string; benefitsInfographic?: string; howToUse?: string; measurements?: string; comparison?: string } };
+    compliance?: { current?: string; issues?: string[]; requirements?: string[] };
+  };
+  summary?: {
+    overallReadiness?: string;
+    keyImprovements?: string[];
+    nextSteps?: string[];
+  };
+  // Existing seller specific data
+  productData?: {
+    currentTitle?: string;
+    currentBullets?: string[];
+    currentImages?: number;
+    currentDescription?: string;
+    missingElements?: string[];
+  };
+  contentQuality?: {
+    titleScore?: number;
+    bulletsScore?: number;
+    imagesScore?: number;
+    descriptionScore?: number;
+    informationScore?: number;
+  };
+  binaryIdqResult?: any;
   asin?: string;
   productUrl?: string;
   keywords?: string[];
@@ -64,22 +94,45 @@ export async function sendWelcomeEmail(data: EmailData) {
           email: data.to
         });
         
-        console.log('Calling generatePDF function...');
-        const pdfDoc = generatePDF({
-          name: data.name,
-          email: data.to,
-          mode: data.mode,
-          score: data.score,
-          highlights: data.highlights,
-          recommendations: data.recommendations,
-          detailedAnalysis: data.detailedAnalysis,
-          asin: data.asin,
-          productUrl: data.productUrl,
-          keywords: data.keywords,
-          fulfilment: data.fulfilment,
-          category: data.category,
-          productDesc: data.productDesc
-        });
+        console.log('Calling PDF generation function for mode:', data.mode);
+        
+        // Use the appropriate PDF generation function based on mode
+        const pdfDoc = data.mode === 'audit' 
+          ? generateAuditReportPDF({
+              name: data.name,
+              email: data.to,
+              mode: data.mode,
+              score: data.score,
+              highlights: data.highlights,
+              recommendations: data.recommendations,
+              detailedAnalysis: data.detailedAnalysis,
+              productData: data.productData,
+              contentQuality: data.contentQuality,
+              binaryIdqResult: data.binaryIdqResult,
+              asin: data.asin,
+              productUrl: data.productUrl,
+              keywords: data.keywords,
+              fulfilment: data.fulfilment,
+              category: data.category,
+              productDesc: data.productDesc
+            })
+          : generateListingPackPDF({
+              name: data.name,
+              email: data.to,
+              mode: data.mode,
+              score: data.score,
+              highlights: data.highlights,
+              recommendations: data.recommendations,
+              detailedAnalysis: data.detailedAnalysis,
+              idqAnalysis: data.idqAnalysis,
+              summary: data.summary,
+              asin: data.asin,
+              productUrl: data.productUrl,
+              keywords: data.keywords,
+              fulfilment: data.fulfilment,
+              category: data.category,
+              productDesc: data.productDesc
+            });
         
         console.log('PDF document created successfully');
         

@@ -42,12 +42,21 @@ export async function POST(request: NextRequest) {
       const latestReport: ReportWithLead = reports[0];
       console.log('Found latest report:', latestReport.id);
       
-      // Extract analysis data for PDF generation
+      // Extract analysis data for PDF generation - include full AI analysis data
       pdfData = {
+        name: latestReport.leads?.name || 'User',
+        email: email,
+        mode: latestReport.leads?.audit_type === 'existing_seller' ? 'audit' : 'create',
         score: latestReport.score,
         highlights: latestReport.highlights || [],
         recommendations: latestReport.recommendations || [],
         detailedAnalysis: latestReport.detailed_analysis || {},
+        // Pass through the complete AI analysis data structure
+        idqAnalysis: latestReport.detailed_analysis?.idqAnalysis,
+        summary: latestReport.detailed_analysis?.summary,
+        productData: latestReport.detailed_analysis?.productData,
+        contentQuality: latestReport.detailed_analysis?.contentQuality,
+        binaryIdqResult: latestReport.detailed_analysis?.binaryIdqResult,
         asin: latestReport.leads?.asin || undefined,
         productUrl: latestReport.leads?.website_url || undefined,
         keywords: latestReport.leads?.keywords || [],
@@ -71,12 +80,21 @@ export async function POST(request: NextRequest) {
       if (latestReport) {
         console.log('Found latest report as fallback:', latestReport.id);
         
-        // Extract analysis data for PDF generation
+        // Extract analysis data for PDF generation - include full AI analysis data
         pdfData = {
+          name: latestReport.leads?.name || 'User',
+          email: email,
+          mode: latestReport.leads?.audit_type === 'existing_seller' ? 'audit' : 'create',
           score: latestReport.score,
           highlights: latestReport.highlights || [],
           recommendations: latestReport.recommendations || [],
           detailedAnalysis: latestReport.detailed_analysis || {},
+          // Pass through the complete AI analysis data structure
+          idqAnalysis: latestReport.detailed_analysis?.idqAnalysis,
+          summary: latestReport.detailed_analysis?.summary,
+          productData: latestReport.detailed_analysis?.productData,
+          contentQuality: latestReport.detailed_analysis?.contentQuality,
+          binaryIdqResult: latestReport.detailed_analysis?.binaryIdqResult,
           asin: latestReport.leads?.asin || undefined,
           productUrl: latestReport.leads?.website_url || undefined,
           keywords: latestReport.leads?.keywords || [],

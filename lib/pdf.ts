@@ -8,6 +8,36 @@ export interface PDFData {
   highlights?: string[];
   recommendations?: string[];
   detailedAnalysis?: any;
+  // New seller specific data
+  idqAnalysis?: {
+    title?: { current?: string; issues?: string[]; optimized?: string };
+    bullets?: { current?: string[]; issues?: string[]; optimized?: string[] };
+    description?: { current?: string; issues?: string[]; optimized?: string };
+    keywords?: { current?: string[]; issues?: string[]; optimized?: { primary?: string[]; secondary?: string[]; longTail?: string[] } };
+    images?: { current?: string[]; issues?: string[]; required?: { mainImage?: string; lifestyleImage?: string; benefitsInfographic?: string; howToUse?: string; measurements?: string; comparison?: string } };
+    compliance?: { current?: string; issues?: string[]; requirements?: string[] };
+  };
+  summary?: {
+    overallReadiness?: string;
+    keyImprovements?: string[];
+    nextSteps?: string[];
+  };
+  // Existing seller specific data
+  productData?: {
+    currentTitle?: string;
+    currentBullets?: string[];
+    currentImages?: number;
+    currentDescription?: string;
+    missingElements?: string[];
+  };
+  contentQuality?: {
+    titleScore?: number;
+    bulletsScore?: number;
+    imagesScore?: number;
+    descriptionScore?: number;
+    informationScore?: number;
+  };
+  binaryIdqResult?: any;
   asin?: string;
   productUrl?: string;
   keywords?: string[];
@@ -182,8 +212,8 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     yPosition += 10;
   }
   
-  // Detailed analysis section
-  if (data.detailedAnalysis) {
+  // Detailed analysis section - use actual AI analysis data
+  if (data.detailedAnalysis || data.productData || data.contentQuality) {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
@@ -194,49 +224,281 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     doc.text('Detailed Analysis', 20, yPosition);
     yPosition += 8;
     
-    doc.setFontSize(12);
-    doc.setTextColor(75, 85, 99);
-    
-    // Handle different types of detailed analysis
-    if (typeof data.detailedAnalysis === 'object') {
-      Object.entries(data.detailedAnalysis).forEach(([key, value]) => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        
-        const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        doc.setFontSize(12);
-        doc.setTextColor(31, 41, 55);
-        doc.text(`${label}:`, 20, yPosition);
-        yPosition += 6;
-        
-        doc.setFontSize(10);
-        doc.setTextColor(75, 85, 99);
-        const text = String(value);
-        if (text.length > 80) {
-          // Split long text into multiple lines
-          const words = text.split(' ');
-          let line = '';
-          words.forEach(word => {
-            if ((line + word).length > 80) {
-              doc.text(line, 25, yPosition);
-              yPosition += 5;
-              line = word + ' ';
-            } else {
-              line += word + ' ';
-            }
-          });
-          if (line) {
+    // Title Quality Analysis
+    if (data.detailedAnalysis?.titleQuality) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55);
+      doc.text('Title Quality:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      const titleText = String(data.detailedAnalysis.titleQuality);
+      if (titleText.length > 80) {
+        const words = titleText.split(' ');
+        let line = '';
+        words.forEach(word => {
+          if ((line + word).length > 80) {
             doc.text(line, 25, yPosition);
             yPosition += 5;
+            line = word + ' ';
+          } else {
+            line += word + ' ';
           }
-        } else {
-          doc.text(text, 25, yPosition);
+        });
+        if (line) {
+          doc.text(line, 25, yPosition);
           yPosition += 5;
         }
+      } else {
+        doc.text(titleText, 25, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 5;
+    }
+    
+    // Bullet Points Analysis
+    if (data.detailedAnalysis?.bulletPoints) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55);
+      doc.text('Bullet Points Analysis:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      const bulletText = String(data.detailedAnalysis.bulletPoints);
+      if (bulletText.length > 80) {
+        const words = bulletText.split(' ');
+        let line = '';
+        words.forEach(word => {
+          if ((line + word).length > 80) {
+            doc.text(line, 25, yPosition);
+            yPosition += 5;
+            line = word + ' ';
+          } else {
+            line += word + ' ';
+          }
+        });
+        if (line) {
+          doc.text(line, 25, yPosition);
+          yPosition += 5;
+        }
+      } else {
+        doc.text(bulletText, 25, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 5;
+    }
+    
+    // Product Images Analysis
+    if (data.detailedAnalysis?.productImages) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55);
+      doc.text('Product Images Analysis:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      const imageText = String(data.detailedAnalysis.productImages);
+      if (imageText.length > 80) {
+        const words = imageText.split(' ');
+        let line = '';
+        words.forEach(word => {
+          if ((line + word).length > 80) {
+            doc.text(line, 25, yPosition);
+            yPosition += 5;
+            line = word + ' ';
+          } else {
+            line += word + ' ';
+          }
+        });
+        if (line) {
+          doc.text(line, 25, yPosition);
+          yPosition += 5;
+        }
+      } else {
+        doc.text(imageText, 25, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 5;
+    }
+    
+    // Product Description Analysis
+    if (data.detailedAnalysis?.productDescription) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55);
+      doc.text('Product Description Analysis:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      const descText = String(data.detailedAnalysis.productDescription);
+      if (descText.length > 80) {
+        const words = descText.split(' ');
+        let line = '';
+        words.forEach(word => {
+          if ((line + word).length > 80) {
+            doc.text(line, 25, yPosition);
+            yPosition += 5;
+            line = word + ' ';
+          } else {
+            line += word + ' ';
+          }
+        });
+        if (line) {
+          doc.text(line, 25, yPosition);
+          yPosition += 5;
+        }
+      } else {
+        doc.text(descText, 25, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 5;
+    }
+    
+    // Product Information Analysis
+    if (data.detailedAnalysis?.productInformation) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55);
+      doc.text('Product Information Analysis:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      const infoText = String(data.detailedAnalysis.productInformation);
+      if (infoText.length > 80) {
+        const words = infoText.split(' ');
+        let line = '';
+        words.forEach(word => {
+          if ((line + word).length > 80) {
+            doc.text(line, 25, yPosition);
+            yPosition += 5;
+            line = word + ' ';
+          } else {
+            line += word + ' ';
+          }
+        });
+        if (line) {
+          doc.text(line, 25, yPosition);
+          yPosition += 5;
+        }
+      } else {
+        doc.text(infoText, 25, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 5;
+    }
+    
+    // Current Product Data (if available)
+    if (data.productData) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(37, 99, 235);
+      doc.text('Current Listing Data', 20, yPosition);
+      yPosition += 8;
+      
+      if (data.productData.currentTitle) {
+        doc.setFontSize(10);
+        doc.setTextColor(75, 85, 99);
+        doc.text(`Current Title: ${data.productData.currentTitle}`, 20, yPosition);
+        yPosition += 6;
+      }
+      
+      if (data.productData.currentBullets && data.productData.currentBullets.length > 0) {
+        doc.setFontSize(10);
+        doc.setTextColor(75, 85, 99);
+        doc.text('Current Bullet Points:', 20, yPosition);
+        yPosition += 5;
+        data.productData.currentBullets.forEach((bullet, index) => {
+          if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          doc.text(`${index + 1}. ${bullet}`, 25, yPosition);
+          yPosition += 5;
+        });
         yPosition += 3;
-      });
+      }
+      
+      if (data.productData.currentImages) {
+        doc.setFontSize(10);
+        doc.setTextColor(75, 85, 99);
+        doc.text(`Current Images: ${data.productData.currentImages}`, 20, yPosition);
+        yPosition += 6;
+      }
+      
+      if (data.productData.currentDescription) {
+        doc.setFontSize(10);
+        doc.setTextColor(75, 85, 99);
+        doc.text(`Current Description: ${data.productData.currentDescription}`, 20, yPosition);
+        yPosition += 6;
+      }
+    }
+    
+    // Content Quality Scores (if available)
+    if (data.contentQuality) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(37, 99, 235);
+      doc.text('Content Quality Scores', 20, yPosition);
+      yPosition += 8;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(75, 85, 99);
+      
+      if (data.contentQuality.titleScore !== undefined) {
+        doc.text(`Title Quality: ${data.contentQuality.titleScore}/100`, 20, yPosition);
+        yPosition += 6;
+      }
+      if (data.contentQuality.bulletsScore !== undefined) {
+        doc.text(`Bullet Points: ${data.contentQuality.bulletsScore}/100`, 20, yPosition);
+        yPosition += 6;
+      }
+      if (data.contentQuality.imagesScore !== undefined) {
+        doc.text(`Images: ${data.contentQuality.imagesScore}/100`, 20, yPosition);
+        yPosition += 6;
+      }
+      if (data.contentQuality.descriptionScore !== undefined) {
+        doc.text(`Description: ${data.contentQuality.descriptionScore}/100`, 20, yPosition);
+        yPosition += 6;
+      }
+      if (data.contentQuality.informationScore !== undefined) {
+        doc.text(`Information: ${data.contentQuality.informationScore}/100`, 20, yPosition);
+        yPosition += 6;
+      }
     }
   }
   
