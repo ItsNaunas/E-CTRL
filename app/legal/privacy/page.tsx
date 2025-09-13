@@ -32,7 +32,6 @@ export default function PrivacyPage() {
                   <ul className="list-disc pl-6 space-y-2">
                     <li><strong>Personal Information:</strong> Name, email address, and optionally your phone number</li>
                     <li><strong>Product Information:</strong> ASIN/product URLs, keywords, product descriptions, categories, and fulfilment preferences</li>
-                    <li><strong>Images:</strong> Product images you upload for analysis (new sellers only)</li>
                     <li><strong>Usage Data:</strong> How you interact with our tool and website</li>
                   </ul>
                 </div>
@@ -45,7 +44,6 @@ export default function PrivacyPage() {
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Generate your personalized Amazon audit report</li>
                     <li>Deliver your full report via email</li>
-                    <li>Process uploaded images to generate Amazon-ready variants (future feature)</li>
                     <li>Improve our tool and services</li>
                     <li>Communicate with you about your audit results</li>
                   </ul>

@@ -20,7 +20,7 @@ export const copy = {
   usageNote: "1 free report per email per day.",
   footer: "© e-ctrl. All rights reserved.",
   contactMailto: "hello@e-ctrl.ai",
-  consentLine: "By continuing you agree to our Terms and acknowledge our Privacy Policy. We'll email your report. Uploaded images are processed to generate variants.",
+  consentLine: "By continuing you agree to our Terms and acknowledge our Privacy Policy. We'll email your report.",
   
   // Navigation
   nav: {
@@ -166,12 +166,6 @@ export const copy = {
       placeholder: "Type and press Enter...",
       help: "Add 2-5 keywords that describe your product"
     },
-    image: {
-      label: "Product image",
-      help: "Upload 1 image (JPG/PNG, max 8MB). We recommend at least 1500×1500px.",
-      dropText: "Drop image here or click to browse",
-      supportedTypes: "JPG, PNG up to 8MB"
-    },
     
     // Buttons
     submit: "Get My Free Audit",
@@ -183,8 +177,6 @@ export const copy = {
       email: "Enter a valid email address",
       asin: "Enter a valid 10-character ASIN or Amazon URL",
       keywords: "Maximum 8 keywords allowed",
-      imageSize: "Image must be under 8MB",
-      imageType: "Please upload a JPG or PNG image",
       minKeywords: "Add at least 2 keywords",
       maxKeywords: "Maximum 5 keywords allowed"
     }

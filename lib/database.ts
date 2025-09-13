@@ -70,7 +70,6 @@ export async function createLead(
       leadData.category = newData.category;
       leadData.product_desc = newData.desc;
       leadData.fulfilment_intent = newData.fulfilmentIntent;
-      // Note: image_url will be set after file upload
     }
 
     const { data, error } = await supabaseAdmin
@@ -296,25 +295,6 @@ export async function trackEvent(
   }
 }
 
-// Update lead with image URL (for new sellers)
-export async function updateLeadImage(leadId: string, imageUrl: string): Promise<boolean> {
-  try {
-    const { error } = await supabaseAdmin
-      .from(TABLES.LEADS)
-      .update({ image_url: imageUrl })
-      .eq('id', leadId);
-
-    if (error) {
-      console.error('Update lead image error:', error);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Update lead image failed:', error);
-    return false;
-  }
-}
 
 // Mark report as email sent
 export async function markReportEmailSent(reportId: string): Promise<boolean> {

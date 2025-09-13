@@ -47,7 +47,6 @@ CREATE TABLE leads (
     category VARCHAR(100),
     product_desc TEXT,
     fulfilment_intent fulfilment_type,
-    image_url TEXT, -- URL to stored image
     
     -- Metadata
     ip_address INET,

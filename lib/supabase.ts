@@ -62,7 +62,6 @@ export interface Lead {
   category?: string;
   product_desc?: string;
   fulfilment_intent?: FulfilmentType;
-  image_url?: string;
   
   // Metadata
   ip_address?: string;

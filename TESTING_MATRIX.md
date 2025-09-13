@@ -76,14 +76,6 @@ This comprehensive testing table covers all features and functionality of the e-
 | **AI Suggestions** | Loading State | Monitor suggestion generation | Loading indicator shown | Medium | UI |
 | **AI Suggestions** | Error Handling | Test API failure during suggestions | Error message shown, form still functional | Medium | API |
 
-### 3.3 Image Upload
-| Feature Category | Test Case | Description | Expected Outcome | Priority | Test Type |
-|------------------|-----------|-------------|------------------|----------|-----------|
-| **File Upload** | Valid Image | Upload JPG/PNG file < 8MB | File accepted, preview shown | High | Form |
-| **File Upload** | File Size Limit | Upload file > 8MB | Validation error shown | High | Form |
-| **File Upload** | Invalid Format | Upload non-image file | Validation error shown | High | Form |
-| **File Upload** | Drag & Drop | Test drag and drop functionality | File dropped and accepted | Medium | UI |
-| **File Upload** | File Preview | Check image preview after upload | Preview displayed correctly | Medium | UI |
 
 ---
 
@@ -176,8 +168,6 @@ This comprehensive testing table covers all features and functionality of the e-
 | **Select Component** | Required Fields | Test required field validation | Visual indicators shown | High | UI |
 | **ChipsInput Component** | Keyword Input | Add/remove keyword chips | Chips added/removed correctly | High | UI |
 | **ChipsInput Component** | Limit Enforcement | Test max chips limit | Limit enforced correctly | Medium | UI |
-| **FileDropzone Component** | File Upload | Upload files via dropzone | Files uploaded correctly | High | UI |
-| **FileDropzone Component** | Drag & Drop | Test drag and drop | Files accepted via drag/drop | Medium | UI |
 
 ### 6.2 Navigation Components
 | Feature Category | Test Case | Description | Expected Outcome | Priority | Test Type |
@@ -355,7 +345,7 @@ This comprehensive testing table covers all features and functionality of the e-
 - Valid Amazon ASINs for existing seller testing
 - Real product website URLs for new seller testing
 - Test email addresses for email delivery testing
-- Sample product images for upload testing
 - Various invalid inputs for error handling testing
 
 This comprehensive testing matrix covers all aspects of your e-ctrl application and should be used as a guide for thorough testing before deployment.
+ 

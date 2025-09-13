@@ -49,17 +49,6 @@ export const requiredKeywords = z
   .min(2, "Add at least 2 keywords.")
   .max(5, "Maximum 5 keywords allowed.");
 
-// Image file validation
-export const imageFile = z
-  .object({
-    name: z.string(),
-    size: z.number().max(8 * 1024 * 1024, "Max 8MB."),
-    type: z.string(),
-  })
-  .refine(
-    (f) => ["image/jpeg", "image/png"].includes(f.type), 
-    "JPG or PNG only."
-  );
 
 // Complete form schemas
 export const existingSellerSchema = z.object({
@@ -78,7 +67,6 @@ export const newSellerSchema = z.object({
   desc: shortDesc,
   keywords: requiredKeywords,
   fulfilmentIntent,
-  image: imageFile,
   name,
   email,
   phone,
@@ -103,4 +91,3 @@ export const newSellerSchema = z.object({
 // Type exports for TypeScript
 export type ExistingSellerData = z.infer<typeof existingSellerSchema>;
 export type NewSellerData = z.infer<typeof newSellerSchema>;
-export type ImageFile = z.infer<typeof imageFile>;

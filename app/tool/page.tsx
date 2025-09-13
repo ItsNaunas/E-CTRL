@@ -10,7 +10,6 @@ import Input from '@/components/Input';
 import Select from '@/components/Select';
 import Tabs from '@/components/Tabs';
 import ChipsInput from '@/components/ChipsInput';
-import FileDropzone from '@/components/FileDropzone';
 import SummaryCard from '@/components/SummaryCard';
 import EmailGate from '../components/EmailGate';
 import ListingPackCard from '@/components/ListingPackCard';
@@ -21,8 +20,7 @@ import {
   existingSellerSchema, 
   newSellerSchema,
   type ExistingSellerData,
-  type NewSellerData,
-  type ImageFile
+  type NewSellerData
 } from '@/lib/validation';
 import type { SummaryResult } from '@/types/ai';
 
@@ -52,7 +50,6 @@ export default function ToolPage() {
     desc: '',
     keywords: [],
     fulfilmentIntent: undefined,
-    image: undefined,
     name: '',
     email: '',
     phone: '',
@@ -421,13 +418,6 @@ export default function ToolPage() {
             required
           />
           
-          <FileDropzone
-            label={copy.form.image.label}
-            help={copy.form.image.help}
-            value={newForm.image || null}
-            onChange={(image: ImageFile | null) => setNewForm(prev => ({ ...prev, image: image || undefined }))}
-            error={errors.image}
-          />
           
           <div className="grid gap-6 md:grid-cols-2">
             <Input
