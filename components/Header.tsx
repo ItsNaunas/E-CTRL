@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import CTAButton from './CTAButton';
 import { copy } from '@/lib/copy';
 
@@ -12,9 +13,16 @@ export default function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-semibold text-foreground transition-colors hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+            className="flex items-center transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
           >
-            {copy.brand}
+            <Image
+              src="/logos/logo.png"
+              alt="e-ctrl"
+              width={120}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
 
           {/* CTA Button - No navigation distractions */}

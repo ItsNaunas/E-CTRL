@@ -1,6 +1,8 @@
  'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface StickyTabsProps {
   activeTab: 'audit' | 'create';
@@ -36,8 +38,21 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
     <>
       {/* Desktop Top Tabs - Only visible on desktop */}
       <div className="fixed top-4 left-0 right-0 z-40 md:block hidden">
-        {/* Tab Toggle - Centered */}
-        <div className="flex justify-center">
+        <div className="flex items-center justify-between px-4">
+          {/* Logo - Top Left */}
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logos/logo.png"
+              alt="e-ctrl"
+              width={120}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
+          </Link>
+          
+          {/* Tab Toggle - Centered */}
+          <div className="flex justify-center">
           <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
             <button
               type="button"
@@ -64,10 +79,10 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
               Create New Amazon Listing
             </button>
           </div>
-        </div>
-
-        {/* CTA Button - Positioned in the red circle area - Hidden on mobile */}
-        <div className="absolute top-0 right-[15%] hidden md:block">
+          </div>
+          
+          {/* CTA Button - Top Right */}
+          <div className="flex items-center">
           <button
             type="button"
             onClick={handleCtaClick}
@@ -81,6 +96,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
               <span className="pointer-events-none absolute inset-0 rounded-[22.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
             </span>
           </button>
+          </div>
         </div>
       </div>
 
