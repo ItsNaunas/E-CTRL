@@ -37,22 +37,22 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
   return (
     <>
       {/* Desktop Top Tabs - Only visible on desktop */}
-      <div className="fixed top-4 left-0 right-0 z-40 md:block hidden">
-        <div className="flex items-center justify-between px-4">
-          {/* Logo - Top Left */}
-          <Link href="/" className="flex items-center">
+      <div className="fixed top-8 left-0 right-0 z-40 md:block hidden">
+        <div className="flex items-center px-8 relative">
+          {/* Logo - Halfway between left edge and tabs */}
+          <Link href="/" className="flex items-center absolute left-1/4 transform -translate-x-1/2">
             <Image
               src="/logos/logo.png"
               alt="e-ctrl"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
+              width={1020}
+              height={306}
+              className="h-36 w-auto"
               priority
             />
           </Link>
           
-          {/* Tab Toggle - Centered */}
-          <div className="flex justify-center">
+          {/* Tab Toggle - Absolutely centered */}
+          <div className="absolute left-1/2 transform -translate-x-1/2">
           <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
             <button
               type="button"
@@ -81,8 +81,8 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
           </div>
           </div>
           
-          {/* CTA Button - Top Right */}
-          <div className="flex items-center">
+          {/* CTA Button - Halfway between tabs and right edge */}
+          <div className="flex items-center absolute right-1/4 transform translate-x-1/2">
           <button
             type="button"
             onClick={handleCtaClick}

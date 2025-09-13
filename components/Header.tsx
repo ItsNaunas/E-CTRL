@@ -18,9 +18,9 @@ export default function Header() {
             <Image
               src="/logos/logo.png"
               alt="e-ctrl"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
+              width={1020}
+              height={306}
+              className="h-36 w-auto"
               priority
             />
           </Link>
