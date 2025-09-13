@@ -84,6 +84,16 @@ export default function Footer() {
                     Contact Us
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/fesal-saleh/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                  >
+                    LinkedIn
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

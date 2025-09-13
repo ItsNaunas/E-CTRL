@@ -35,13 +35,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'e-ctrl — Free Amazon Growth Audit Tool (UK/EU)',
-    description: 'Free AI-powered Amazon listing audit tool for UK/EU sellers. Get instant insights to boost sales. No credit card required.',
-    images: ['/og-image.png'],
-    creator: '@e_ctrl', // TODO: Replace with actual Twitter handle
-  },
   robots: {
     index: true,
     follow: true,
