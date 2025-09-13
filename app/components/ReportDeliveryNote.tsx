@@ -21,7 +21,7 @@ export default function ReportDeliveryNote({ email }: { email: string }) {
             <span className="text-sm font-medium">PDF Report Sent</span>
           </div>
           <p className="text-sm text-muted-foreground mb-8">
-            Didn&apos;t receive it? Check your spam folder or contact us at hello@e-ctrl.ai
+            Didn&apos;t receive it? Check your spam folder or contact us at contact@e-ctrl.co.uk
           </p>
           
           <div className="bg-background rounded-lg border border-border p-6">

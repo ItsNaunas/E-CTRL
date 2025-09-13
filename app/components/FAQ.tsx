@@ -115,7 +115,7 @@ export default function FAQ() {
 
         <div className="text-center mt-8">
           <p className="text-sm text-white/60">
-            Still have questions? Contact us at support@e-ctrl.ai
+            Still have questions? Contact us at contact@e-ctrl.co.uk
           </p>
         </div>
       </div>

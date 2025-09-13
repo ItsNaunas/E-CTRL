@@ -155,7 +155,7 @@ export default function TermsPage() {
                     If you have any questions about these Terms, please contact us at:
                   </p>
                   <div className="mt-4">
-                    <p>Email: <a href="mailto:legal@e-ctrl.ai" className="text-accent hover:underline">legal@e-ctrl.ai</a></p>
+                    <p>Email: <a href="mailto:contact@e-ctrl.co.uk" className="text-accent hover:underline">contact@e-ctrl.co.uk</a></p>
                     {/* Contact information provided above */}
                   </div>
                 </div>
