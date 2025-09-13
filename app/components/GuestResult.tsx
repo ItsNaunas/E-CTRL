@@ -11,34 +11,20 @@ interface GuestResultProps {
 export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps) {
   const isAuditMode = mode === 'audit';
   
-  // Dynamic guest data based on mode
-  const guestData = isAuditMode ? {
+  // Generic guest result content
+  const guestData = {
     quickWins: [
-      "AI analysis completed successfully",
+      "Analysis completed successfully",
       "Detailed insights available in full report",
-      "Recommendations tailored to your product"
+      "Personalized recommendations ready"
     ],
     blurredImages: [
-      { type: "Main Image", description: "Analysis complete" },
-      { type: "Lifestyle Shot", description: "Recommendations ready" }
+      { type: "Analysis Results", description: "Detailed insights available" },
+      { type: "Recommendations", description: "Actionable advice ready" }
     ],
     checklistPreview: [
-      { item: "Title optimization", status: "analyzed" },
-      { item: "Image quality", status: "reviewed" }
-    ]
-  } : {
-    quickWins: [
-      "Your product has strong market potential",
-      "Key benefits identified for listing optimization",
-      "Competitive analysis shows opportunity for differentiation"
-    ],
-    blurredImages: [
-      { type: "Main Product Image", description: "ready to create" },
-      { type: "Lifestyle Image", description: "concept ready" }
-    ],
-    checklistPreview: [
-      { item: "Product positioning", status: "optimized" },
-      { item: "Target audience", status: "identified" }
+      { item: "Comprehensive analysis", status: "completed" },
+      { item: "Detailed report", status: "ready" }
     ]
   };
 

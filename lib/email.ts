@@ -7,9 +7,7 @@ function getResendClient() {
   try {
     validateRequiredEnv('api');
     const apiKey = env.resend();
-    console.log('RESEND_API_KEY exists:', !!apiKey);
-    console.log('RESEND_API_KEY length:', apiKey?.length);
-    console.log('RESEND_API_KEY starts with:', apiKey?.substring(0, 10) + '...');
+    // API key validation completed
     
     return new Resend(apiKey);
   } catch (error) {

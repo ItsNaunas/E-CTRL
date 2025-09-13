@@ -15,15 +15,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Email submission received:', { email, name, mode, leadId, hasPreviewData: !!previewData });
-    console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-    console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
-    console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
+    console.log('Email submission received:', { email, mode, leadId, hasPreviewData: !!previewData });
 
     // If leadId is provided, update the existing lead with the user's email
     if (leadId) {
       console.log('Updating lead with user email:', leadId, email);
-      const updatedLead = await updateLeadEmail(leadId, email, name || 'Demo User');
+      const updatedLead = await updateLeadEmail(leadId, email, name || 'User');
       if (updatedLead) {
         console.log('Lead updated successfully:', updatedLead.id);
       } else {

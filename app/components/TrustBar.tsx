@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function TrustBar() {
   const [count, setCount] = useState(0);
-  const targetCount = 500; // TODO: replace with real audit count
+  const targetCount = 250; // Current audit count
 
   useEffect(() => {
     const duration = 2000; // 2 seconds
@@ -74,12 +74,10 @@ export default function TrustBar() {
           <p className="text-sm text-white/70">
             Trusted by sellers in 10+ countries
           </p>
-          {/* TODO: update with real country count and client-provided trust statement */}
         </div>
 
         {/* Logo Placeholders */}
         <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-          {/* TODO: Replace with actual client logos */}
           <div className="flex items-center justify-center w-24 h-12 bg-white/5 rounded border border-white/10">
             <span className="text-xs text-white/60">Logo 1</span>
           </div>

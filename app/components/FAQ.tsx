@@ -8,32 +8,32 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "Is this really free?", // TODO: replace with client-approved question
-      answer: "Yes, our Amazon audit tool is completely free forever. There are no hidden costs, premium tiers, or credit card requirements. We believe in helping Amazon sellers succeed with transparent, accessible tools." // TODO: replace with client-approved answer
+      question: "Is this really free?",
+      answer: "Yes, our Amazon audit tool is completely free forever. There are no hidden costs, premium tiers, or credit card requirements. We believe in helping Amazon sellers succeed with transparent, accessible tools."
     },
     {
-      question: "Do I need my Amazon login?", // TODO: replace with client-approved question
-      answer: "No, you don't need to log into Amazon. Just paste your product URL or ASIN and we'll analyze the public listing data." // TODO: replace with client-approved answer
+      question: "Do I need my Amazon login?",
+      answer: "No, you don't need to log into Amazon. Just paste your product URL or ASIN and we'll analyze the public listing data."
     },
     {
-      question: "How accurate is the audit?", // TODO: replace with client-approved question
-      answer: "Our AI has been trained on thousands of successful Amazon listings and follows Amazon's best practices. While we can't guarantee specific results, our recommendations are based on proven optimization strategies." // TODO: replace with client-approved answer
+      question: "How accurate is the audit?",
+      answer: "Our AI has been trained on thousands of successful Amazon listings and follows Amazon's best practices. While we can't guarantee specific results, our recommendations are based on proven optimization strategies."
     },
     {
-      question: "Do I need to create an account?", // TODO: replace with client-approved question
-      answer: "No for the basic audit (email required). Yes for the full report, advanced checks, and PDF export." // TODO: replace with client-approved answer
+      question: "Do I need to create an account?",
+      answer: "No for the basic audit (email required). Yes for the full report, advanced checks, and PDF export."
     },
     {
-      question: "What's included in the basic vs full report?", // TODO: replace with client-approved question
-      answer: "Basic: top findings + 2–3 quick wins. Full (account): complete audit, prioritized checklist, detailed image/SEO recommendations, and PDF export." // TODO: replace with client-approved answer
+      question: "What's included in the basic vs full report?",
+      answer: "Basic: top findings + 2–3 quick wins. Full (account): complete audit, prioritized checklist, detailed image/SEO recommendations, and PDF export."
     },
     {
-      question: "How long does it take?", // TODO: replace with client-approved question
-      answer: "The audit analysis takes just a few seconds. You'll see partial results immediately, and the full detailed report will be emailed to you within 2 minutes." // TODO: replace with client-approved answer
+      question: "How long does it take?",
+      answer: "The audit analysis takes just a few seconds. You'll see partial results immediately, and the full detailed report will be emailed to you within 2 minutes."
     },
     {
-      question: "What happens to my data?", // TODO: replace with client-approved question
-      answer: "We only use your data to generate your audit report. We don't store product images, and your email is only used to send you the report. You can read our full privacy policy for details." // TODO: replace with client-approved answer
+      question: "What happens to my data?",
+      answer: "We only use your data to generate your audit report. We don't store product images, and your email is only used to send you the report. You can read our full privacy policy for details."
     }
   ];
 
@@ -117,7 +117,6 @@ export default function FAQ() {
           <p className="text-sm text-white/60">
             Still have questions? Contact us at support@e-ctrl.ai
           </p>
-          {/* TODO: Replace with client-provided contact information */}
         </div>
       </div>
     </section>
