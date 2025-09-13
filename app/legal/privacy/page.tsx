@@ -91,7 +91,7 @@ export default function PrivacyPage() {
                     <li>Object to processing</li>
                   </ul>
                   <p className="mt-4">
-                    To exercise these rights, contact us at: <a href="mailto:privacy@e-ctrl.example" className="text-accent hover:underline">privacy@e-ctrl.example</a>
+                    To exercise these rights, contact us at: <a href="mailto:privacy@e-ctrl.ai" className="text-accent hover:underline">privacy@e-ctrl.ai</a>
                   </p>
                 </div>
               </section>
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
                     If you have questions about this Privacy Policy, please contact us at:
                   </p>
                   <div className="mt-4">
-                    <p>Email: <a href="mailto:privacy@e-ctrl.example" className="text-accent hover:underline">privacy@e-ctrl.example</a></p>
+                    <p>Email: <a href="mailto:privacy@e-ctrl.ai" className="text-accent hover:underline">privacy@e-ctrl.ai</a></p>
                     {/* TODO: Add actual contact information */}
                   </div>
                 </div>

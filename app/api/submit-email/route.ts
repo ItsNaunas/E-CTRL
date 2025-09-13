@@ -5,7 +5,7 @@ import type { ReportWithLead } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, name, mode, leadId } = await request.json();
+    const { email, name, mode, leadId, previewData } = await request.json();
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Email submission received:', { email, name, mode, leadId });
+    console.log('Email submission received:', { email, name, mode, leadId, hasPreviewData: !!previewData });
     console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
     console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
     console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
@@ -34,49 +34,85 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the latest report data for this email to include PDF
-    console.log('Retrieving latest report data for email:', email);
-    const reports = await getReportsByEmail(email);
-    
     let pdfData = null;
-    if (reports && reports.length > 0) {
-      const latestReport: ReportWithLead = reports[0];
-      console.log('Found latest report:', latestReport.id);
-      
-      // Extract analysis data for PDF generation - include full AI analysis data
+    
+    // If we have preview data (from homepage preview flow), use that
+    if (previewData) {
+      console.log('Using preview data for PDF generation');
       pdfData = {
-        name: latestReport.leads?.name || 'User',
+        name: name || 'User',
         email: email,
-        mode: latestReport.leads?.audit_type === 'existing_seller' ? 'audit' : 'create',
-        score: latestReport.score,
-        highlights: latestReport.highlights || [],
-        recommendations: latestReport.recommendations || [],
-        detailedAnalysis: latestReport.detailed_analysis || {},
+        mode: mode || 'audit',
+        score: previewData.score || 0,
+        highlights: previewData.highlights || [],
+        recommendations: previewData.recommendations || [],
+        detailedAnalysis: previewData.detailedAnalysis || {},
         // Pass through the complete AI analysis data structure
-        idqAnalysis: latestReport.detailed_analysis?.idqAnalysis,
-        summary: latestReport.detailed_analysis?.summary,
-        productData: latestReport.detailed_analysis?.productData,
-        contentQuality: latestReport.detailed_analysis?.contentQuality,
-        binaryIdqResult: latestReport.detailed_analysis?.binaryIdqResult,
-        asin: latestReport.leads?.asin || undefined,
-        productUrl: latestReport.leads?.website_url || undefined,
-        keywords: latestReport.leads?.keywords || [],
-        fulfilment: latestReport.leads?.fulfilment || undefined,
-        category: latestReport.leads?.category || undefined,
-        productDesc: latestReport.leads?.product_desc || undefined
+        idqAnalysis: previewData.detailedAnalysis?.idqAnalysis,
+        summary: previewData.detailedAnalysis?.summary,
+        productData: previewData.detailedAnalysis?.productData,
+        contentQuality: previewData.detailedAnalysis?.contentQuality,
+        binaryIdqResult: previewData.detailedAnalysis?.binaryIdqResult,
+        asin: previewData.asin || undefined,
+        productUrl: previewData.productUrl || undefined,
+        keywords: previewData.keywords || [],
+        fulfilment: previewData.fulfilment || undefined,
+        category: previewData.category || undefined,
+        productDesc: previewData.productDesc || undefined
       };
       
-      console.log('PDF data extracted:', {
+      console.log('Preview PDF data extracted:', {
         hasScore: pdfData.score !== null,
         hasHighlights: pdfData.highlights.length > 0,
         hasRecommendations: pdfData.recommendations.length > 0,
-        hasDetailedAnalysis: !!pdfData.detailedAnalysis
+        hasDetailedAnalysis: !!pdfData.detailedAnalysis,
+        asin: pdfData.asin,
+        productUrl: pdfData.productUrl
       });
     } else {
-      console.log('No reports found for email:', email);
-      console.log('Trying to get latest report as fallback...');
+      // Fallback to database lookup for tool page submissions
+      console.log('Retrieving latest report data for email:', email);
+      const reports = await getReportsByEmail(email);
       
-      // Fallback: get the latest report regardless of email (for testing purposes)
-      const latestReport = await getLatestReport();
+      if (reports && reports.length > 0) {
+        const latestReport: ReportWithLead = reports[0];
+        console.log('Found latest report:', latestReport.id);
+        
+        // Extract analysis data for PDF generation - include full AI analysis data
+        pdfData = {
+          name: latestReport.leads?.name || name || 'User',
+          email: email,
+          mode: latestReport.leads?.audit_type === 'existing_seller' ? 'audit' : 'create',
+          score: latestReport.score,
+          highlights: latestReport.highlights || [],
+          recommendations: latestReport.recommendations || [],
+          detailedAnalysis: latestReport.detailed_analysis || {},
+          // Pass through the complete AI analysis data structure
+          idqAnalysis: latestReport.detailed_analysis?.idqAnalysis,
+          summary: latestReport.detailed_analysis?.summary,
+          productData: latestReport.detailed_analysis?.productData,
+          contentQuality: latestReport.detailed_analysis?.contentQuality,
+          binaryIdqResult: latestReport.detailed_analysis?.binaryIdqResult,
+          asin: latestReport.leads?.asin || undefined,
+          productUrl: latestReport.leads?.website_url || undefined,
+          keywords: latestReport.leads?.keywords || [],
+          fulfilment: latestReport.leads?.fulfilment || undefined,
+          category: latestReport.leads?.category || undefined,
+          productDesc: latestReport.leads?.product_desc || undefined
+        };
+        
+        console.log('Database PDF data extracted:', {
+          hasScore: pdfData.score !== null,
+          hasHighlights: pdfData.highlights.length > 0,
+          hasRecommendations: pdfData.recommendations.length > 0,
+          hasDetailedAnalysis: !!pdfData.detailedAnalysis
+        });
+      } else {
+        console.log('No reports found for email:', email);
+        console.log('Trying to get latest report as fallback...');
+        
+        // Fallback: get the latest report regardless of email (for testing purposes)
+        const latestReport = await getLatestReport();
       if (latestReport) {
         console.log('Found latest report as fallback:', latestReport.id);
         
@@ -111,6 +147,7 @@ export async function POST(request: NextRequest) {
         });
       } else {
         console.log('No reports found at all - user will receive welcome email without PDF');
+      }
       }
     }
 

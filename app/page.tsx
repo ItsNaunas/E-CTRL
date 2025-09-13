@@ -83,6 +83,30 @@ export default function HomePage() {
       }
     }, 100);
   };
+
+  // Enhanced CTA scroll function that always scrolls to hero form
+  const scrollToHeroForm = () => {
+    setTimeout(() => {
+      // Try to find the hero input field first
+      const heroInput = document.querySelector('[data-testid="hero-input"]') || 
+                       document.querySelector('input[placeholder*="ASIN"]') ||
+                       document.querySelector('input[placeholder*="URL"]');
+      
+      if (heroInput) {
+        const heroPosition = heroInput.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({
+          top: heroPosition,
+          behavior: 'smooth'
+        });
+      } else {
+        // Fallback: scroll to top of page
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
   
   // Debug logging for state
   useEffect(() => {
@@ -597,93 +621,58 @@ export default function HomePage() {
     setEmailSubmitted(true);
     setSubmittedEmail(email);
     
-    // Generate report with the user's actual email
-    console.log('Generating report with user email:', email);
+    // Send email with preview data to maintain consistency
+    console.log('Sending email with preview data for:', email);
     setIsAnalyzing(true);
     
     try {
-      console.log('Creating report and sending email for:', email);
+      console.log('Submitting email with preview data for:', email);
       
-      // Create the actual report with user's email based on mode
-      let requestBody;
+      // Prepare preview data to send with email
+      const previewData = {
+        score: aiResult?.score || 0,
+        highlights: aiResult?.highlights || [],
+        recommendations: aiResult?.recommendations || [],
+        detailedAnalysis: aiResult?.detailedAnalysis || {},
+        asin: mode === 'audit' ? asinOrUrl : undefined,
+        productUrl: mode === 'create' ? productUrl : undefined,
+        keywords: manualProductData?.keywords || sampleData.keywords,
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || "FBA"),
+        category: mode === 'create' ? (manualProductData?.category || "Home & Garden") : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || "Eco-friendly product for sustainable living") : undefined
+      };
       
-      if (mode === 'audit' && asinOrUrl) {
-        // Existing seller flow - create actual report with user's email
-        requestBody = {
-          type: 'existing_seller',
-          data: {
-            ...sampleData,
-            asin: asinOrUrl,
-            email: email, // Use the actual user email
-            name: email.split('@')[0] // Use email prefix as name
-          }
-        };
-      } else if (mode === 'create' && (productUrl || manualProductData)) {
-        // New seller flow - create actual report with user's email
-        requestBody = {
-          type: 'new_seller',
-          data: {
-            name: email.split('@')[0], // Use email prefix as name
-            email: email, // Use the actual user email
-            keywords: manualProductData?.keywords || ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl || undefined,
-            category: manualProductData?.category || "Home & Garden",
-            desc: manualProductData?.description || "Eco-friendly product for sustainable living",
-            fulfilmentIntent: (manualProductData?.fulfilmentIntent || "FBA") as "FBA" | "FBM" | "Unsure",
-            image: { // Required field - placeholder
-              name: "placeholder.jpg",
-              size: 1024,
-              type: "image/jpeg"
-            }
-          }
-        };
-      } else {
-        console.error('Invalid mode or missing data for report generation');
-        return;
-      }
+      console.log('Preview data being sent:', previewData);
       
-      console.log('Creating report with user email:', requestBody);
-      
-      const response = await fetch('/api/report', {
+      // Use submit-email API to send email with preview data
+      const response = await fetch('/api/submit-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          email: email,
+          name: email.split('@')[0], // Use email prefix as name
+          mode: mode,
+          previewData: previewData
+        })
       });
       
       if (response.ok) {
         const result = await response.json();
-        console.log('Report created and email sent:', result);
+        console.log('Email sent successfully:', result);
         
-        // Update the AI result with the real data
-        if (result.aiResult) {
-          // Convert new IDQ structure to old structure for compatibility
-          const idqAnalysis = result.aiResult.idqAnalysis;
-          const summary = result.aiResult.summary;
-          
-          setAiResult({
-            score: 0, // No score in new format
-            highlights: summary?.keyImprovements || [],
-            recommendations: summary?.nextSteps || [],
-            detailedAnalysis: {
-              idqAnalysis: idqAnalysis,
-              summary: summary
-            }
-          });
-        }
-        
-        // Show delivery note (using existing emailSubmitted state)
-        // The delivery note is already shown when emailSubmitted is true
+        // Scroll to delivery note
+        scrollToElement('delivery-note', 80);
       } else {
-        console.error('Failed to create report and send email');
+        const errorData = await response.json();
+        console.error('Email submission failed:', errorData);
+        setAiResult(null);
       }
     } catch (error) {
-      console.error('Error creating report with user email:', error);
+      console.error('Email submission failed:', error);
+      setAiResult(null);
     } finally {
       setIsAnalyzing(false);
     }
-    
-    // Scroll to delivery note
-    scrollToElement('delivery-note', 80);
   };
 
   // Handle upgrade from guest to account
@@ -704,24 +693,17 @@ export default function HomePage() {
 
   // Handle CTA clicks (sticky and repeat CTAs)
   const handleCtaClick = () => {
-    // Scroll to hero for new users, or to appropriate section for existing users
-    if (!showPartial) {
+    // Always scroll to hero form first, then focus the appropriate input
+    scrollToHeroForm();
+    
+    // Focus the appropriate input field after scrolling
+    setTimeout(() => {
       if (mode === 'audit') {
         document.getElementById('hero-input')?.focus();
       } else {
         document.getElementById('new-seller-input')?.focus();
       }
-         } else if (!showAccessControl) {
-       scrollToElement('access-control', 80);
-     } else if (!showGuestResult && !showEmailGate) {
-       scrollToElement('access-control', 80);
-     } else if (showGuestResult) {
-       scrollToElement('guest-result', 80);
-     } else if (showEmailGate) {
-       scrollToElement('email-gate', 80);
-     } else {
-       scrollToElement('delivery-note', 80);
-     }
+    }, 300); // Wait for scroll to complete
   };
 
   return (

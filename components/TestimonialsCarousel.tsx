@@ -119,6 +119,15 @@ export default function TestimonialsCarousel({
     align: 'center',
     containScroll: 'trimSnaps',
     dragFree: true,
+    // Enhanced mobile swipe settings
+    slidesToScroll: 1,
+    skipSnaps: false,
+    inViewThreshold: 0.7,
+    // Better touch handling for mobile
+    watchDrag: true,
+    watchResize: true,
+    // Smooth momentum scrolling
+    duration: 25,
   });
 
   useEffect(() => {
@@ -132,6 +141,9 @@ export default function TestimonialsCarousel({
       clearInterval(autoplay);
     };
   }, [emblaApi, autoplaySpeed]);
+
+  // Enhanced touch handling for better mobile experience
+  // Embla carousel already handles touch interactions well with the configured options
 
   const allTestimonials = [...testimonials, ...testimonials];
 
@@ -171,19 +183,22 @@ export default function TestimonialsCarousel({
         </motion.div>
 
         {/* Testimonials carousel */}
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex">
+        <div 
+          className="embla overflow-hidden touch-pan-y" 
+          ref={emblaRef}
+        >
+          <div className="flex touch-pan-y">
             {allTestimonials.map((testimonial, index) => (
               <div
                 key={`${testimonial.name}-${index}`}
-                className="flex justify-center px-4"
+                className="flex justify-center px-4 flex-shrink-0 w-full sm:w-auto"
               >
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="relative h-full w-fit rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-md backdrop-blur-sm"
+                  className="relative h-full w-full max-w-sm sm:w-fit rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-md backdrop-blur-sm touch-manipulation"
                 >
                   {/* Enhanced decorative gradients with brand colors */}
                   <div className="absolute -top-5 -left-5 -z-10 h-40 w-40 rounded-full bg-gradient-to-b from-[#296AFF]/15 to-transparent blur-md" />

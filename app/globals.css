@@ -35,6 +35,33 @@ body {
     }
   }
 
+  /* Enhanced mobile touch interactions */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  /* Smooth momentum scrolling for iOS */
+  .embla {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent overscroll on mobile */
+  body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* Typography scale following e-ctrl dark theme */
   h1 {
     @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white;

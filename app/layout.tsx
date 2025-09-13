@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   keywords: ['Amazon', 'marketplace', 'audit', 'UK', 'EU', 'seller', 'listing optimization', 'free tool', 'ASIN analysis'],
   authors: [{ name: 'e-ctrl' }],
   creator: 'e-ctrl',
-  metadataBase: new URL('https://e-ctrl.com'), // TODO: Replace with actual domain
+  metadataBase: new URL('https://e-ctrl.ai'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_GB',
-    url: 'https://e-ctrl.com', // TODO: Replace with actual domain
+    url: 'https://e-ctrl.ai',
     title: 'e-ctrl — Free Amazon Growth Audit Tool (UK/EU)',
     description: 'Free AI-powered Amazon listing audit tool for UK/EU sellers. Get instant insights to boost sales. No credit card required.',
     siteName: 'e-ctrl',

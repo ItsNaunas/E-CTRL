@@ -10,6 +10,17 @@ interface StickyTabsProps {
 
 export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: StickyTabsProps) {
 
+  const handleTabChange = (tab: 'audit' | 'create') => {
+    // Scroll to top when switching tabs
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
+    // Change tab after scroll starts
+    onTabChange(tab);
+  };
+
   const handleCtaClick = () => {
     // Track sticky CTA click
     if (typeof window !== 'undefined' && window.gtag) {
@@ -30,7 +41,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
           <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
             <button
               type="button"
-              onClick={() => onTabChange('audit')}
+              onClick={() => handleTabChange('audit')}
               className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeTab === 'audit'
                   ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
@@ -42,7 +53,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
             </button>
             <button
               type="button"
-              onClick={() => onTabChange('create')}
+              onClick={() => handleTabChange('create')}
               className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeTab === 'create'
                   ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
@@ -78,7 +89,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
         <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
           <button
             type="button"
-            onClick={() => onTabChange('audit')}
+            onClick={() => handleTabChange('audit')}
             className={`flex-1 px-4 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
               activeTab === 'audit'
                 ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
@@ -90,7 +101,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
           </button>
           <button
             type="button"
-            onClick={() => onTabChange('create')}
+            onClick={() => handleTabChange('create')}
             className={`flex-1 px-4 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
               activeTab === 'create'
                 ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
