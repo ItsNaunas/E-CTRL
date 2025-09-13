@@ -3,10 +3,25 @@ import type { ExistingSellerData, NewSellerData } from './validation';
 import type { AmazonProductData } from './amazon-scraper';
 import type { GenericProductData } from './product-scraper';
 import { evaluateIdq, evaluateIdqWithAI, type IdqConfig, type IdqResult } from './idq-evaluator';
+import { env, validateRequiredEnv } from './env';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI with validated environment
+let openai: OpenAI;
+
+function getOpenAIClient(): OpenAI {
+  if (!openai) {
+    try {
+      validateRequiredEnv('api');
+      openai = new OpenAI({
+        apiKey: env.openai(),
+      });
+    } catch (error) {
+      console.error('Failed to initialize OpenAI client:', error);
+      throw error;
+    }
+  }
+  return openai;
+}
 
 // AI-powered audit analysis for existing sellers with real Amazon data
 export async function analyzeExistingSeller(data: ExistingSellerData, productData?: AmazonProductData, accessType: 'guest' | 'account' = 'guest') {
@@ -142,7 +157,7 @@ Format your response as JSON:
 Focus on HELPING THIS EXISTING SELLER FIX THEIR CURRENT LISTING. Use the binary evaluation to identify problems and provide specific fixes that will improve their sales and conversions.`;
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
@@ -359,7 +374,7 @@ Format your response as JSON:
 Focus on HELPING THIS NEW SELLER CREATE A HIGH-CONVERTING AMAZON LISTING FROM SCRATCH. Use the binary evaluation results to guide them on what Amazon requires for high IDQ scores and provide them with a complete listing creation strategy.`;
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
@@ -412,7 +427,7 @@ Focus on:
 Return as JSON array: ["keyword1", "keyword2", ...]`;
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.5,
@@ -452,7 +467,7 @@ Requirements:
 Return as JSON array: ["Title 1", "Title 2", "Title 3"]`;
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,

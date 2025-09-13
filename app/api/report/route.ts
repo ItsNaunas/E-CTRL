@@ -16,6 +16,7 @@ import { analyzeExistingSeller, analyzeNewSeller } from '@/lib/ai';
 import { sendWelcomeEmail } from '@/lib/email';
 import { scrapeProduct } from '@/lib/amazon-scraper';
 import { scrapeProductPage, type GenericProductData } from '@/lib/product-scraper';
+import { AUDIT_TYPES } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,9 +43,9 @@ export async function POST(request: NextRequest) {
     // Validate form data based on type
     let validatedData: ExistingSellerData | NewSellerData;
     
-    if (type === 'existing_seller') {
+    if (type === AUDIT_TYPES.EXISTING_SELLER) {
       validatedData = existingSellerSchema.parse(data);
-    } else if (type === 'new_seller') {
+    } else if (type === AUDIT_TYPES.NEW_SELLER) {
       validatedData = newSellerSchema.parse(data);
     } else {
       return NextResponse.json(
@@ -70,13 +71,13 @@ export async function POST(request: NextRequest) {
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
     
     let aiResult;
-    if (type === 'existing_seller') {
+    if (type === AUDIT_TYPES.EXISTING_SELLER) {
       // Scrape Amazon product data first
       console.log('Scraping Amazon product data for ASIN:', (validatedData as ExistingSellerData).asin);
       const productData = await scrapeProduct((validatedData as ExistingSellerData).asin);
       
       // Determine access type from lead data
-      const accessType = lead.audit_type === 'existing_seller' ? 'guest' : 'guest'; // Default to guest, will be enhanced later
+      const accessType = lead.audit_type === AUDIT_TYPES.EXISTING_SELLER ? 'guest' : 'guest'; // Default to guest, will be enhanced later
       
       if ('error' in productData) {
         console.warn('Scraping failed, proceeding with limited data:', productData.error);
@@ -148,7 +149,7 @@ export async function POST(request: NextRequest) {
           emailData = {
             to: validatedData.email,
             name: validatedData.name || 'there',
-            mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
+            mode: (type === AUDIT_TYPES.EXISTING_SELLER ? 'audit' : 'create') as 'audit' | 'create',
             // PDF generation data - convert IDQ structure
             score: aiResult.binaryIdqResult?.qualityPercent || 0, // Use binary IDQ score
             highlights: aiResult.summary?.keyImprovements || [],
@@ -159,19 +160,19 @@ export async function POST(request: NextRequest) {
               binaryIdqResult: aiResult.binaryIdqResult // Include binary results in PDF
             },
           // Type-safe property access
-          asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
-          productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
+          asin: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).asin : undefined,
+          productUrl: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).websiteUrl : undefined,
           keywords: validatedData.keywords,
-          fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
-          category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
-          productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
+          fulfilment: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).fulfilment : undefined,
+          category: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).category : undefined,
+          productDesc: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).desc : undefined
         };
         } else {
           // Old structure (for existing sellers)
           emailData = {
             to: validatedData.email,
             name: validatedData.name || 'there',
-            mode: (type === 'existing_seller' ? 'audit' : 'create') as 'audit' | 'create',
+            mode: (type === AUDIT_TYPES.EXISTING_SELLER ? 'audit' : 'create') as 'audit' | 'create',
             // PDF generation data
             score: aiResult.binaryIdqResult?.qualityPercent || aiResult.score, // Use binary IDQ score if available
             highlights: aiResult.highlights,
@@ -181,12 +182,12 @@ export async function POST(request: NextRequest) {
               binaryIdqResult: aiResult.binaryIdqResult // Include binary results in PDF
             },
           // Type-safe property access
-          asin: type === 'existing_seller' ? (validatedData as ExistingSellerData).asin : undefined,
-          productUrl: type === 'new_seller' ? (validatedData as NewSellerData).websiteUrl : undefined,
+          asin: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).asin : undefined,
+          productUrl: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).websiteUrl : undefined,
           keywords: validatedData.keywords,
-          fulfilment: type === 'existing_seller' ? (validatedData as ExistingSellerData).fulfilment : undefined,
-          category: type === 'new_seller' ? (validatedData as NewSellerData).category : undefined,
-          productDesc: type === 'new_seller' ? (validatedData as NewSellerData).desc : undefined
+          fulfilment: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).fulfilment : undefined,
+          category: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).category : undefined,
+          productDesc: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).desc : undefined
         };
       }
 

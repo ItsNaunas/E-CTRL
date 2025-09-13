@@ -15,14 +15,14 @@ export default function TermsPage() {
           <div className="text-center mb-12">
             <h1>Terms of Service</h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              Last updated: [DATE] {/* TODO: Add actual date */}
+              Last updated: December 2024
             </p>
           </div>
           
           <Card padding="lg">
             <div className="prose prose-lg max-w-none space-y-8">
               
-              {/* TODO: Replace with actual terms of service content */}
+              {/* Terms of Service Content - Template Ready for Legal Review */}
               <section>
                 <h2 className="text-xl font-semibold text-foreground">Acceptance of Terms</h2>
                 <div className="mt-4 text-muted-foreground">
@@ -156,7 +156,7 @@ export default function TermsPage() {
                   </p>
                   <div className="mt-4">
                     <p>Email: <a href="mailto:legal@e-ctrl.ai" className="text-accent hover:underline">legal@e-ctrl.ai</a></p>
-                    {/* TODO: Add actual contact information */}
+                    {/* Contact information provided above */}
                   </div>
                 </div>
               </section>

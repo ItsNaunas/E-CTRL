@@ -29,9 +29,9 @@ export const keywords = z
   .max(8, "Max 8 keywords.")
   .optional();
 
-// Fulfilment options
-export const fulfilment = z.enum(["FBA", "FBM"]).optional();
-export const fulfilmentIntent = z.enum(["FBA", "FBM", "Unsure"]);
+// Fulfilment options - standardized for all seller types
+export const fulfilment = z.enum(["FBA", "FBM", "Unsure"]).optional();
+export const fulfilmentIntent = z.enum(["FBA", "FBM", "Unsure"]); // Keep for backward compatibility, will migrate to fulfilment
 
 // New seller fields
 export const productUrl = z.string().url("Enter a valid website/store URL.");

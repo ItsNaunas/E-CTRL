@@ -1,17 +1,21 @@
 import { Resend } from 'resend';
 import { generateAuditReportPDF, generateListingPackPDF, getPDFBlob, type PDFData } from './pdf';
+import { env, validateRequiredEnv, EnvironmentError } from './env';
 
-// Initialize Resend client lazily to ensure environment variables are loaded
+// Initialize Resend client lazily with proper validation
 function getResendClient() {
-  const apiKey = process.env.RESEND_API_KEY;
-  console.log('RESEND_API_KEY exists:', !!apiKey);
-  console.log('RESEND_API_KEY length:', apiKey?.length);
-  console.log('RESEND_API_KEY starts with:', apiKey?.substring(0, 10) + '...');
-  
-  if (!apiKey) {
-    throw new Error('RESEND_API_KEY is not configured');
+  try {
+    validateRequiredEnv('api');
+    const apiKey = env.resend();
+    console.log('RESEND_API_KEY exists:', !!apiKey);
+    console.log('RESEND_API_KEY length:', apiKey?.length);
+    console.log('RESEND_API_KEY starts with:', apiKey?.substring(0, 10) + '...');
+    
+    return new Resend(apiKey);
+  } catch (error) {
+    console.error('Failed to initialize Resend client:', error);
+    throw new EnvironmentError('Email service not configured properly');
   }
-  return new Resend(apiKey);
 }
 
 export interface EmailData {
@@ -66,15 +70,7 @@ export async function sendWelcomeEmail(data: EmailData) {
   try {
     console.log('=== sendWelcomeEmail START ===');
     
-    // Check if Resend API key is available
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY is not configured');
-      return { success: false, error: 'Email service not configured' };
-    }
-
-    console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-    console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length);
-    console.log('RESEND_API_KEY starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
+    // Environment validation is now handled in getResendClient()
     console.log('Attempting to send email to:', data.to);
     console.log('Email data received:', data);
     

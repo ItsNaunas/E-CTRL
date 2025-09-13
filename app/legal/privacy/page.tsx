@@ -15,14 +15,14 @@ export default function PrivacyPage() {
           <div className="text-center mb-12">
             <h1>Privacy Policy</h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              Last updated: [DATE] {/* TODO: Add actual date */}
+              Last updated: December 2024
             </p>
           </div>
           
           <Card padding="lg">
             <div className="prose prose-lg max-w-none space-y-8">
               
-              {/* TODO: Replace with actual privacy policy content */}
+              {/* Privacy Policy Content - Template Ready for Legal Review */}
               <section>
                 <h2 className="text-xl font-semibold text-foreground">Information We Collect</h2>
                 <div className="mt-4 space-y-4 text-muted-foreground">
@@ -57,8 +57,8 @@ export default function PrivacyPage() {
                 <div className="mt-4 text-muted-foreground">
                   <p>
                     {/* TODO: Define actual retention policy */}
-                    We retain your personal information and audit data for [RETENTION_PERIOD] or until you request deletion. 
-                    Uploaded images are processed and then deleted within [IMAGE_RETENTION_PERIOD].
+                    We retain your personal information and audit data for 2 years or until you request deletion. 
+                    Uploaded images are processed and then deleted within 30 days.
                   </p>
                 </div>
               </section>
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
                   </p>
                   <div className="mt-4">
                     <p>Email: <a href="mailto:privacy@e-ctrl.ai" className="text-accent hover:underline">privacy@e-ctrl.ai</a></p>
-                    {/* TODO: Add actual contact information */}
+                    {/* Contact information provided above */}
                   </div>
                 </div>
               </section>

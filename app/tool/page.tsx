@@ -15,6 +15,8 @@ import SummaryCard from '@/components/SummaryCard';
 import EmailGate from '../components/EmailGate';
 import ListingPackCard from '@/components/ListingPackCard';
 import { copy } from '@/lib/copy';
+import { AUDIT_TYPES, FULFILMENT_TYPES } from '@/lib/constants';
+import type { FulfilmentType } from '@/lib/supabase';
 import { 
   existingSellerSchema, 
   newSellerSchema,
@@ -70,7 +72,7 @@ export default function ToolPage() {
       const response = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'existing_seller', data: validatedData }),
+        body: JSON.stringify({ type: AUDIT_TYPES.EXISTING_SELLER, data: validatedData }),
       });
       
       if (!response.ok) {
@@ -116,7 +118,7 @@ export default function ToolPage() {
       const response = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'new_seller', data: validatedData }),
+        body: JSON.stringify({ type: AUDIT_TYPES.NEW_SELLER, data: validatedData }),
       });
       
       if (!response.ok) {
@@ -246,12 +248,13 @@ export default function ToolPage() {
             <Select
               label={copy.form.fulfilment.label}
               placeholder={copy.form.fulfilment.placeholder}
-              options={[
-                { value: 'FBA', label: copy.form.fulfilment.options.fba },
-                { value: 'FBM', label: copy.form.fulfilment.options.fbm },
-              ]}
+            options={[
+              { value: 'FBA', label: copy.form.fulfilment.options.fba },
+              { value: 'FBM', label: copy.form.fulfilment.options.fbm },
+              { value: 'Unsure', label: copy.form.fulfilment.options.unsure },
+            ]}
               value={existingForm.fulfilment || ''}
-              onChange={(e) => setExistingForm(prev => ({ ...prev, fulfilment: e.target.value as 'FBA' | 'FBM' || undefined }))}
+              onChange={(e) => setExistingForm(prev => ({ ...prev, fulfilment: e.target.value as FulfilmentType || undefined }))}
               error={errors.fulfilment}
             />
           </div>
@@ -413,7 +416,7 @@ export default function ToolPage() {
               { value: 'Unsure', label: copy.form.fulfilmentIntent.options.unsure },
             ]}
             value={newForm.fulfilmentIntent || ''}
-            onChange={(e) => setNewForm(prev => ({ ...prev, fulfilmentIntent: e.target.value as 'FBA' | 'FBM' | 'Unsure' || undefined }))}
+            onChange={(e) => setNewForm(prev => ({ ...prev, fulfilmentIntent: e.target.value as FulfilmentType || undefined }))}
             error={errors.fulfilmentIntent}
             required
           />

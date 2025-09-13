@@ -102,7 +102,8 @@ export const copy = {
       placeholder: "Select method...",
       options: {
         fba: "FBA (Fulfillment by Amazon)",
-        fbm: "FBM (Fulfillment by Merchant)"
+        fbm: "FBM (Fulfillment by Merchant)",
+        unsure: "Not sure yet"
       }
     },
     fulfilmentIntent: {

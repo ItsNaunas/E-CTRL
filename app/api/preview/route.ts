@@ -3,13 +3,14 @@ import { analyzeNewSeller, analyzeExistingSeller } from '@/lib/ai';
 import { scrapeProductPage } from '@/lib/product-scraper';
 import { scrapeProduct } from '@/lib/amazon-scraper';
 import { newSellerSchema, existingSellerSchema } from '@/lib/validation';
+import { AUDIT_TYPES } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { type, data } = body;
 
-    if (type !== 'new_seller' && type !== 'existing_seller') {
+    if (type !== AUDIT_TYPES.NEW_SELLER && type !== AUDIT_TYPES.EXISTING_SELLER) {
       return NextResponse.json({ 
         success: false, 
         error: 'Invalid request type' 
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Validate the data based on type
     let validatedData;
-    if (type === 'new_seller') {
+    if (type === AUDIT_TYPES.NEW_SELLER) {
       validatedData = newSellerSchema.parse(data);
     } else {
       validatedData = existingSellerSchema.parse(data);
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     // Scrape product data based on type
     let productData = undefined;
     
-    if (type === 'new_seller' && 'websiteUrl' in validatedData && validatedData.websiteUrl) {
+    if (type === AUDIT_TYPES.NEW_SELLER && 'websiteUrl' in validatedData && validatedData.websiteUrl) {
       console.log('Scraping product data for new seller preview:', validatedData.websiteUrl);
       const scrapedData = await scrapeProductPage(validatedData.websiteUrl);
       
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
         console.log('Successfully scraped product data for preview');
         productData = scrapedData;
       }
-    } else if (type === 'existing_seller' && 'asin' in validatedData && validatedData.asin) {
+    } else if (type === AUDIT_TYPES.EXISTING_SELLER && 'asin' in validatedData && validatedData.asin) {
       console.log('Scraping Amazon product data for existing seller preview:', validatedData.asin);
       const scrapedData = await scrapeProduct(validatedData.asin);
       
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
     
     // Generate AI analysis WITHOUT creating database entries
     let aiResult;
-    if (type === 'new_seller') {
+    if (type === AUDIT_TYPES.NEW_SELLER) {
       aiResult = await analyzeNewSeller(validatedData as any, productData as any);
     } else {
       aiResult = await analyzeExistingSeller(validatedData as any, productData as any);

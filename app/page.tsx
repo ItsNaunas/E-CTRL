@@ -23,6 +23,7 @@ import NewSellerDeliveryNote from './components/NewSellerDeliveryNote';
 import AccessControl from './components/AccessControl';
 import GuestResult from './components/GuestResult';
 import FooterGlow from '@/components/FooterGlow';
+import { AUDIT_TYPES, FULFILMENT_TYPES, SAMPLE_DATA, FILE_CONSTANTS, EMAIL_CONSTANTS } from '@/lib/constants';
 
 export default function HomePage() {
   // CRO audit hook (development only)
@@ -63,8 +64,8 @@ export default function HomePage() {
   // Real data for AI analysis
   const sampleData = useMemo(() => ({
     asin: "", // Will be filled by user input
-    keywords: ["eco friendly", "sustainable", "organic"],
-    fulfilment: "FBA"
+    keywords: SAMPLE_DATA.KEYWORDS,
+    fulfilment: SAMPLE_DATA.DEFAULT_FULFILMENT
   }), []);
 
   // Don't load initial AI analysis - wait for user input
@@ -133,11 +134,11 @@ export default function HomePage() {
     try {
       // Call preview API for analysis without creating database entry
       const requestBody = {
-        type: 'existing_seller',
+        type: AUDIT_TYPES.EXISTING_SELLER,
         data: {
           ...sampleData,
           asin: asin,
-          email: 'preview@example.com', // Temporary email for preview only
+          email: EMAIL_CONSTANTS.PREVIEW_EMAIL, // Temporary email for preview only
           name: 'Preview User'
         }
       };
@@ -207,20 +208,16 @@ export default function HomePage() {
     try {
       // Generate REAL preview WITHOUT creating database entry
       const requestBody = {
-        type: 'new_seller',
+        type: AUDIT_TYPES.NEW_SELLER,
         data: {
           name: 'Preview User',
-          email: 'preview@example.com', // Temporary email for preview only
-          keywords: ["eco friendly", "sustainable", "organic"],
+          email: EMAIL_CONSTANTS.PREVIEW_EMAIL, // Temporary email for preview only
+          keywords: SAMPLE_DATA.KEYWORDS,
           websiteUrl: url,
-          category: "Home & Garden", // Required field
-          desc: "Eco-friendly product for sustainable living", // Required field
-          fulfilmentIntent: "FBA" as const, // Required field
-          image: { // Required field - placeholder
-            name: "placeholder.jpg",
-            size: 1024,
-            type: "image/jpeg"
-          }
+          category: SAMPLE_DATA.DEFAULT_CATEGORY, // Required field
+          desc: SAMPLE_DATA.DEFAULT_DESCRIPTION, // Required field
+          fulfilmentIntent: SAMPLE_DATA.DEFAULT_FULFILMENT, // Required field
+          image: FILE_CONSTANTS.PLACEHOLDER_IMAGE // Required field - placeholder
         }
       };
 
@@ -486,13 +483,9 @@ export default function HomePage() {
             keywords: ["eco friendly", "sustainable", "organic"],
             websiteUrl: productUrl,
             category: "Home & Garden", // Required field
-            desc: "Eco-friendly product for sustainable living", // Required field
-            fulfilmentIntent: "FBA" as const, // Required field
-            image: { // Required field - placeholder
-              name: "placeholder.jpg",
-              size: 1024,
-              type: "image/jpeg"
-            }
+            desc: SAMPLE_DATA.DEFAULT_DESCRIPTION, // Required field
+            fulfilmentIntent: SAMPLE_DATA.DEFAULT_FULFILMENT, // Required field
+            image: FILE_CONSTANTS.PLACEHOLDER_IMAGE
           }
         };
         
@@ -561,13 +554,9 @@ export default function HomePage() {
             keywords: ["eco friendly", "sustainable", "organic"],
             websiteUrl: productUrl,
             category: "Home & Garden", // Required field
-            desc: "Eco-friendly product for sustainable living", // Required field
-            fulfilmentIntent: "FBA" as const, // Required field
-            image: { // Required field - placeholder
-              name: "placeholder.jpg",
-              size: 1024,
-              type: "image/jpeg"
-            }
+            desc: SAMPLE_DATA.DEFAULT_DESCRIPTION, // Required field
+            fulfilmentIntent: SAMPLE_DATA.DEFAULT_FULFILMENT, // Required field
+            image: FILE_CONSTANTS.PLACEHOLDER_IMAGE
           }
         };
         
@@ -637,9 +626,9 @@ export default function HomePage() {
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: manualProductData?.keywords || sampleData.keywords,
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || "FBA"),
-        category: mode === 'create' ? (manualProductData?.category || "Home & Garden") : undefined,
-        productDesc: mode === 'create' ? (manualProductData?.description || "Eco-friendly product for sustainable living") : undefined
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || SAMPLE_DATA.DEFAULT_FULFILMENT),
+        category: mode === 'create' ? (manualProductData?.category || SAMPLE_DATA.DEFAULT_CATEGORY) : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || SAMPLE_DATA.DEFAULT_DESCRIPTION) : undefined
       };
       
       console.log('Preview data being sent:', previewData);
