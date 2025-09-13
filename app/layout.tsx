@@ -30,8 +30,8 @@ export const metadata: Metadata = {
       {
         url: '/og-image.png',
         width: 1200,
-        height: 630,
-        alt: 'e-ctrl - Free Amazon Growth Audit Tool',
+        height: 627, // LinkedIn-optimized dimensions
+        alt: 'e-ctrl - Free Amazon Growth Audit Tool for UK/EU Sellers',
       },
     ],
   },
