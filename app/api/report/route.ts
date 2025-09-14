@@ -71,32 +71,32 @@ export async function POST(request: NextRequest) {
     console.log('Starting AI analysis for type:', type);
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
     
+    // Determine access type by checking if user already has an account
+    let accessType: 'guest' | 'account' = 'guest';
+    try {
+      const { data: existingUser } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', validatedData.email)
+        .single();
+      
+      if (existingUser) {
+        accessType = 'account';
+        // Update the lead to link it to the existing user
+        await supabaseAdmin
+          .from('leads')
+          .update({ user_id: existingUser.id })
+          .eq('id', lead.id);
+      }
+    } catch (error) {
+      console.log('No existing user found for email:', validatedData.email);
+    }
+    
     let aiResult;
     if (type === AUDIT_TYPES.EXISTING_SELLER) {
       // Scrape Amazon product data first
       console.log('Scraping Amazon product data for ASIN:', (validatedData as ExistingSellerData).asin);
       const productData = await scrapeProduct((validatedData as ExistingSellerData).asin);
-      
-      // Determine access type by checking if user already has an account
-      let accessType: 'guest' | 'account' = 'guest';
-      try {
-        const { data: existingUser } = await supabaseAdmin
-          .from('users')
-          .select('id')
-          .eq('email', validatedData.email)
-          .single();
-        
-        if (existingUser) {
-          accessType = 'account';
-          // Update the lead to link it to the existing user
-          await supabaseAdmin
-            .from('leads')
-            .update({ user_id: existingUser.id })
-            .eq('id', lead.id);
-        }
-      } catch (error) {
-        console.log('No existing user found for email:', validatedData.email);
-      }
       
       if ('error' in productData) {
         console.warn('Scraping failed, proceeding with limited data:', productData.error);
@@ -122,27 +122,6 @@ export async function POST(request: NextRequest) {
         }
       } else {
         console.log('No website URL provided, using user-provided data only');
-      }
-      
-      // Determine access type by checking if user already has an account
-      let accessType: 'guest' | 'account' = 'guest';
-      try {
-        const { data: existingUser } = await supabaseAdmin
-          .from('users')
-          .select('id')
-          .eq('email', validatedData.email)
-          .single();
-        
-        if (existingUser) {
-          accessType = 'account';
-          // Update the lead to link it to the existing user
-          await supabaseAdmin
-            .from('leads')
-            .update({ user_id: existingUser.id })
-            .eq('id', lead.id);
-        }
-      } catch (error) {
-        console.log('No existing user found for email:', validatedData.email);
       }
       
       aiResult = await analyzeNewSeller(newSellerData, productData, accessType);
