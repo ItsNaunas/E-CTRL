@@ -90,10 +90,6 @@ export default function Benefits() {
                     </span>
                   </div>
                 </div>
-                <div className="text-[#FF7D2B] mt-4 flex items-center text-sm">
-                  <span className="mr-1">Learn more</span>
-                  <span className="transition-all duration-500 group-hover:translate-x-2">→</span>
-                </div>
               </div>
               
               {/* Bottom gradient line */}
@@ -144,10 +140,6 @@ export default function Benefits() {
                     <span className="text-white/80 text-sm">Proven results</span>
                   </div>
                 </div>
-              </div>
-              <div className="text-[#FF7D2B] mt-4 flex items-center text-sm">
-                <span className="mr-1">Learn more</span>
-                <span className="transition-all duration-500 group-hover:translate-x-2">→</span>
               </div>
             </div>
             
