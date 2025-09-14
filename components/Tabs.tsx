@@ -27,7 +27,7 @@ export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
   return (
     <div className="w-full">
       {/* Tab buttons */}
-      <div className="border-b border-border">
+      <div className="border-b border-white/10">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -35,10 +35,10 @@ export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
+                className={`py-3 px-4 md:py-4 md:px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 rounded-t-lg ${
                   isActive
-                    ? 'border-accent text-accent'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                    ? 'border-[#296AFF] text-white bg-[#0B0B0C]'
+                    : 'border-transparent text-white/70 hover:text-white hover:border-white/20 hover:bg-white/5'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
