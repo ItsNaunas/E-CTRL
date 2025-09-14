@@ -37,15 +37,15 @@ export default function CTAButton({
   const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation';
   
   const sizeClasses = {
-    sm: 'h-11 px-4 text-sm py-3',
-    md: 'h-12 px-6 text-base py-3 md:py-4 md:px-8',
-    lg: 'h-14 px-8 text-lg py-3 md:py-4 md:px-8'
+    sm: 'h-12 px-5 text-sm py-3',
+    md: 'h-14 px-7 text-base py-4 md:py-5 md:px-10',
+    lg: 'h-16 px-9 text-lg py-4 md:py-5 md:px-12'
   };
 
   const variantClasses = {
-    primary: 'relative rounded-full focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white md:p-[1.5px] md:bg-gradient-to-r md:from-[#296AFF] md:to-[#FF7D2B]',
-    secondary: 'border border-white/10 text-white/90 hover:border-white/20 hover:bg-white/5 transition focus:ring-white/20 rounded-full bg-[#0B0B0C]',
-    sticky: 'relative rounded-full focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white md:p-[1.5px] md:bg-gradient-to-r md:from-[#296AFF] md:to-[#FF7D2B]'
+    primary: 'relative overflow-hidden focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#0B0B0C] hover:shadow-[0_0_40px_rgba(41,106,255,0.6)] hover:shadow-[0_0_60px_rgba(255,125,43,0.4)] hover:-translate-y-1 active:translate-y-0 disabled:hover:translate-y-0 disabled:hover:shadow-none bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white transition-all duration-300 ease-out group shadow-lg shadow-[#296AFF]/30',
+    secondary: 'border-2 border-white/20 text-white/90 hover:border-[#FF7D2B] hover:bg-[#FF7D2B]/10 transition-all duration-300 focus:ring-2 focus:ring-[#FF7D2B]/50 focus:ring-offset-2 focus:ring-offset-[#0B0B0C] bg-[#0B0B0C] backdrop-blur-sm hover:shadow-lg hover:shadow-[#FF7D2B]/20',
+    sticky: 'relative overflow-hidden focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#0B0B0C] hover:shadow-[0_0_40px_rgba(41,106,255,0.6)] hover:shadow-[0_0_60px_rgba(255,125,43,0.4)] hover:-translate-y-1 active:translate-y-0 disabled:hover:translate-y-0 disabled:hover:shadow-none bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white transition-all duration-300 ease-out group shadow-lg shadow-[#296AFF]/30'
   };
 
   const widthClasses = fullWidth ? 'w-full' : '';
@@ -61,22 +61,23 @@ export default function CTAButton({
       type={type}
       disabled={disabled}
     >
-      {(variant === 'primary' || variant === 'sticky') ? (
-        <>
-          {/* Mobile: Simple gradient background */}
-          <span className="relative flex-1 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white font-semibold leading-tight inline-flex items-center justify-center select-none h-full md:hidden">
-            {buttonContent}
-          </span>
-          {/* Desktop: Layered black-on-gradient */}
-          <span className="relative flex-1 rounded-full bg-black text-white font-semibold leading-tight inline-flex items-center justify-center select-none h-full hidden md:inline-flex">
-            {buttonContent}
-            {/* Subtle glossy overlay for desktop */}
-            <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/20 via-white/5 to-transparent opacity-30" />
-          </span>
-        </>
-      ) : (
-        buttonContent
-      )}
+      {/* Content */}
+      <span className="relative z-10 flex-1 text-white font-bold leading-tight inline-flex items-center justify-center select-none h-full tracking-wide">
+        {buttonContent}
+        
+        {/* Arrow icon */}
+        <svg 
+          className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </span>
+      
+      {/* Subtle inner highlight for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-transparent opacity-50" />
     </button>
   );
 
