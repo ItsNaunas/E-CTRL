@@ -131,7 +131,16 @@ export async function upgradeGuestToAccount(
       .eq('email', email)
       .single();
 
-    if (existingUser) {
+    if (userCheckError) {
+      // If error is "not found", that's expected for new users
+      if (userCheckError.code === 'PGRST116') {
+        console.log('No existing user found for email:', email);
+        // Continue with account creation
+      } else {
+        console.error('Error checking existing user:', userCheckError);
+        return { success: false, message: 'Database error checking user' };
+      }
+    } else if (existingUser) {
       // User already exists, return their ID
       return { 
         success: true, 
