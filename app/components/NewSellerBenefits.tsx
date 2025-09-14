@@ -13,7 +13,7 @@ export default function NewSellerBenefits() {
     {
       icon: <Target className="size-6" />,
       title: "Optimized for Conversion",
-      description: "Every image and word is crafted to maximize sales and visibility on Amazon.",
+      description: "Every word is crafted to maximize sales and visibility on Amazon.",
       size: 'small' as const,
     },
     {
@@ -25,7 +25,7 @@ export default function NewSellerBenefits() {
     {
       icon: <TrendingUp className="size-6" />,
       title: "Proven Structure",
-      description: "Follows Amazon's best practices for titles, images, and descriptions that convert.",
+      description: "Follows Amazon's best practices for titles, descriptions, and listing structure that convert.",
       size: 'medium' as const,
     },
     {

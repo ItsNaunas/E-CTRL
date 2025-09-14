@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import NewCTAButton from '@/components/NewCTAButton';
+import UnifiedCTA from '@/components/UnifiedCTA';
 import ClientTestimonials from '@/components/ClientTestimonials';
 import { parseAsinOrUrl } from '@/app/utils/validators';
 
@@ -89,19 +89,16 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
                 data-testid="hero-input"
               />
               
-              <button
+              <UnifiedCTA
                 type="submit"
+                variant="primary"
+                size="md"
+                text="run free audit"
                 disabled={isSubmitting}
-                className="relative inline-flex w-full h-[52px] sm:h-[56px] rounded-[26px] sm:rounded-[28px] p-[1px] sm:p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
+                loading={isSubmitting}
+                className="w-full"
                 data-testid="hero-cta"
-              >
-                {/* Inner fill (pure black) */}
-                <span className="relative flex-1 rounded-[25px] sm:rounded-[26.5px] bg-black text-white font-medium text-sm sm:text-base leading-none inline-flex items-center justify-center select-none">
-                  run free audit
-                  {/* Enhanced glossy overlay for better mobile appearance */}
-                  <span className="pointer-events-none absolute inset-0 rounded-[25px] sm:rounded-[26.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.08)_40%,rgba(255,255,255,0)_70%)] opacity-60" />
-                </span>
-              </button>
+              />
             </form>
 
             {error && (

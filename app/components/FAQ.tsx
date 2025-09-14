@@ -25,7 +25,7 @@ export default function FAQ() {
     },
     {
       question: "What's included in the basic vs full report?",
-      answer: "Basic: top findings + 2–3 quick wins. Full (account): complete audit, prioritized checklist, detailed image/SEO recommendations, and PDF export."
+      answer: "Basic: top findings + 2–3 quick wins. Full (account): complete audit, prioritized checklist, detailed listing optimization recommendations, and PDF export."
     },
     {
       question: "How long does it take?",

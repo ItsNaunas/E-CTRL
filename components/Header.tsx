@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import NewCTAButton from './NewCTAButton';
+import UnifiedCTA from './UnifiedCTA';
 import { copy } from '@/lib/copy';
 
 export default function Header() {
@@ -26,10 +26,10 @@ export default function Header() {
           </Link>
 
           {/* CTA Button - No navigation distractions */}
-          <NewCTAButton
+          <UnifiedCTA
             variant="primary"
             size="sm"
-            text="audit"
+            text="Get Free Audit"
             href="/tool"
             className="hidden sm:block"
           />

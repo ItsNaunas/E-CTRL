@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import NewCTAButton from '@/components/NewCTAButton';
+import UnifiedCTA from '@/components/UnifiedCTA';
 import ClientTestimonials from '@/components/ClientTestimonials';
 
 interface NewSellerHeroProps {
@@ -226,7 +226,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
               </h1>
               
               <p className="mt-6 max-w-2xl text-white/70 text-base lg:text-lg leading-relaxed">
-                Enter your product landing page URL to generate an optimized Amazon listing with images, title, and description.
+                Enter your product landing page URL to get a comprehensive Amazon listing readiness assessment with optimization recommendations.
               </p>
 
               <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -601,19 +601,16 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
                   </p>
                 )}
                 
-                <button
+                <UnifiedCTA
                   type="submit"
+                  variant="primary"
+                  size="lg"
+                  text={(isAnalyzing || isSubmitting) ? 'analyzing...' : 'create my amazon listing now'}
                   disabled={isAnalyzing || isSubmitting}
-                  className="relative inline-flex w-full h-[60px] rounded-[45px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
+                  loading={isAnalyzing || isSubmitting}
+                  className="w-full"
                   data-testid="new-seller-cta"
-                >
-                  {/* Inner fill (pure black) */}
-                  <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none">
-                    {(isAnalyzing || isSubmitting) ? 'analyzing...' : 'create my amazon listing now'}
-                    {/* Optional glossy overlay from your Figma fill @ ~38% */}
-                    <span className="pointer-events-none absolute inset-0 rounded-[43.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
-                  </span>
-                </button>
+                />
                 
               </form>
 

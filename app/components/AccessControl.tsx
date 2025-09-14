@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import NewCTAButton from '@/components/NewCTAButton';
+import UnifiedCTA from '@/components/UnifiedCTA';
 
 interface AccessControlProps {
   mode: 'audit' | 'create';
@@ -277,7 +277,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 </div>
               )}
 
-              <NewCTAButton
+              <UnifiedCTA
                 type="submit"
                 variant="primary"
                 size="lg"
@@ -322,7 +322,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#296AFF] mt-1">✓</span>
-                      <span>Blurred image recommendations</span>
+                      <span>Basic listing optimization insights</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#296AFF] mt-1">✓</span>
@@ -356,7 +356,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#FF7D2B] mt-1">✓</span>
-                      <span>Sharp, detailed image recommendations</span>
+                      <span>Detailed listing optimization recommendations</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#FF7D2B] mt-1">✓</span>

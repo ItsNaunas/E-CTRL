@@ -41,7 +41,7 @@ export const copy = {
         "Listing readiness assessment for new sellers",
         "Keyword strategy and optimization guidance", 
         "Fulfilment method recommendations",
-        "Image compliance and optimization advice"
+        "Listing compliance and optimization advice"
       ]
     },
     

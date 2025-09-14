@@ -64,11 +64,11 @@ test.describe('Homepage and Navigation', () => {
     await expect(page.locator('[data-testid="audit-mode"], [data-testid="create-mode"]')).toBeVisible()
     
     // Check other CTA buttons
-    const ctaButtons = page.locator('[data-testid*="cta"]')
-    const count = await ctaButtons.count()
+    const UnifiedCTAs = page.locator('[data-testid*="cta"]')
+    const count = await UnifiedCTAs.count()
     
     for (let i = 0; i < count; i++) {
-      const button = ctaButtons.nth(i)
+      const button = UnifiedCTAs.nth(i)
       await expect(button).toBeVisible()
       await expect(button).toBeEnabled()
     }

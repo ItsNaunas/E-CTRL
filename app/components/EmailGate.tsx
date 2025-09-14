@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import NewCTAButton from '@/components/NewCTAButton';
+import UnifiedCTA from '@/components/UnifiedCTA';
 import { isValidEmail } from '@/app/utils/validators';
 
 interface EmailGateProps {
@@ -125,7 +125,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
                   )}
                 </div>
 
-                <NewCTAButton
+                <UnifiedCTA
                   type="submit"
                   variant="primary"
                   size="lg"
@@ -225,7 +225,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
 
         <div className="mt-8 text-center">
           <p className="text-sm text-white/70">
-            💡 <strong>What&apos;s included in your full report:</strong> Complete keyword analysis, image optimization tips, conversion rate improvements, competitor insights, and a downloadable PDF with actionable steps.
+            💡 <strong>What&apos;s included in your full report:</strong> Complete keyword analysis, listing optimization tips, conversion rate improvements, competitor insights, and a downloadable PDF with actionable steps.
           </p>
         </div>
       </div>

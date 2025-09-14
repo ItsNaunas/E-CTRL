@@ -217,7 +217,7 @@ export async function sendWelcomeEmail(data: EmailData) {
               <li>Optimized product title</li>
               <li>Compelling bullet points</li>
               <li>Keyword strategy</li>
-            <li>Image gallery recommendations</li>
+            <li>Listing optimization recommendations</li>
             </ul>
           `}
           
@@ -325,7 +325,7 @@ export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
                 <li>Optimized product title</li>
                 <li>Compelling bullet points</li>
                 <li>Keyword strategy and research</li>
-                <li>Image gallery recommendations</li>
+                <li>Listing optimization recommendations</li>
                 <li>Launch checklist and timeline</li>
               </ul>
             `}

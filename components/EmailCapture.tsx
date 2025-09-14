@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import UnifiedCTA from './UnifiedCTA';
 
 interface EmailCaptureProps {
   onEmailSubmit: (email: string) => void;
@@ -86,13 +87,15 @@ export default function EmailCapture({ onEmailSubmit, isLoading = false }: Email
                   disabled={isLoading}
                 />
               </div>
-              <button
+              <UnifiedCTA
                 type="submit"
+                variant="primary"
+                size="sm"
+                text={isLoading ? 'Sending...' : 'Send Me My Free Report'}
                 disabled={isLoading || !email.trim()}
-                className="rounded-lg bg-accent px-6 py-3 font-semibold text-accent-foreground transition-colors hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-              >
-                {isLoading ? 'Sending...' : 'Send Me My Free Report'}
-              </button>
+                loading={isLoading}
+                className="whitespace-nowrap"
+              />
             </div>
             <p id="email-help" className="mt-3 text-sm text-muted-foreground text-center">
               No credit card required. Cancel anytime.

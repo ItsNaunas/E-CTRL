@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import NewCTAButton from './NewCTAButton';
+import UnifiedCTA from './UnifiedCTA';
 
 interface StickyTabsProps {
   activeTab: 'audit' | 'create';
@@ -117,7 +117,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
           
           {/* CTA Button - Responsive positioning */}
           <div className="flex items-center absolute right-[15%] lg:right-1/4 transform translate-x-1/2">
-            <NewCTAButton
+            <UnifiedCTA
               variant="primary"
               size="sm"
               text={activeTab === 'audit' ? 'run free audit' : 'create listing now'}

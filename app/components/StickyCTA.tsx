@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import NewCTAButton from '@/components/NewCTAButton';
+import UnifiedCTA from '@/components/UnifiedCTA';
 
 interface StickyCTAProps {
   onCtaClick: () => void;
@@ -51,7 +51,7 @@ export default function StickyCTA({ onCtaClick, mode = 'audit' }: StickyCTAProps
             </span>
           </div>
           
-          <NewCTAButton
+          <UnifiedCTA
             variant="primary"
             size="sm"
             text={mode === 'audit' ? 'audit my listing' : 'create listing now'}
