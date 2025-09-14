@@ -27,7 +27,7 @@ export default function Header() {
 
           {/* CTA Button - No navigation distractions */}
           <NewCTAButton
-            variant="sticky"
+            variant="primary"
             size="sm"
             text="audit"
             href="/tool"
