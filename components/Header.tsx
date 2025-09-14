@@ -7,7 +7,7 @@ import { copy } from '@/lib/copy';
 
 export default function Header() {
   return (
-    <header className="border-b border-border bg-background">
+    <header className="border-b border-white/10 bg-[#0B0B0C]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
