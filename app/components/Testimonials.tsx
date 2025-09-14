@@ -49,7 +49,7 @@ export default function Testimonials() {
           {testimonials.map((testimonial) => (
             <div key={testimonial.id} className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition p-6 md:p-8 hover:-translate-y-[2px] transition-transform" data-testid="testimonial-card">
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-[#007AFF] to-[#FF6B00] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] rounded-full flex items-center justify-center text-white font-semibold text-lg">
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>

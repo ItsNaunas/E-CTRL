@@ -16,8 +16,8 @@ export default function AboutPage() {
       <Section className="pt-24 pb-16 sm:pt-32 sm:pb-24">
         <Container>
           <div className="text-center">
-            <h1>{copy.about.title}</h1>
-            <p className="mt-4 text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">{copy.about.title}</h1>
+            <p className="mt-4 text-xl text-white/70 max-w-2xl mx-auto">
               {copy.about.subtitle}
             </p>
           </div>
@@ -25,12 +25,12 @@ export default function AboutPage() {
       </Section>
 
       {/* About Content */}
-      <Section className="py-16 bg-muted">
+      <Section className="py-16">
         <Container>
           <div className="max-w-3xl mx-auto">
-            <Card padding="lg">
+            <Card padding="lg" className="bg-white/5 backdrop-blur-sm border border-white/10">
               <div className="prose prose-lg max-w-none">
-                <p className="text-lg text-muted-foreground leading-relaxed">
+                <p className="text-lg text-white/70 leading-relaxed">
                   {copy.about.intro}
                 </p>
               </div>
@@ -44,8 +44,8 @@ export default function AboutPage() {
         <Container>
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2>{copy.about.whatWeDo.title}</h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">{copy.about.whatWeDo.title}</h2>
+              <p className="mt-4 text-lg text-white/70">
                 Our expertise covers all aspects of Amazon marketplace success
               </p>
             </div>
@@ -53,8 +53,8 @@ export default function AboutPage() {
             <div className="grid gap-6 md:grid-cols-2">
               {copy.about.whatWeDo.items.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
-                  <CheckCircle className="h-6 w-6 text-accent mt-0.5 flex-shrink-0" />
-                  <p className="text-foreground">{item}</p>
+                  <CheckCircle className="h-6 w-6 text-[#FF7D2B] mt-0.5 flex-shrink-0" />
+                  <p className="text-white/90">{item}</p>
                 </div>
               ))}
             </div>
@@ -63,27 +63,27 @@ export default function AboutPage() {
       </Section>
 
       {/* How It Works */}
-      <Section className="bg-muted">
+      <Section>
         <Container>
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2>{copy.about.howItWorks.title}</h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">{copy.about.howItWorks.title}</h2>
+              <p className="mt-4 text-lg text-white/70">
                 Simple, straightforward process with immediate value
               </p>
             </div>
             
             <div className="grid gap-8 md:grid-cols-3">
               {copy.about.howItWorks.steps.map((step, index) => (
-                <Card key={index}>
+                <Card key={index} className="bg-white/5 backdrop-blur-sm border border-white/10">
                   <div className="text-center">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground text-lg font-semibold">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white text-lg font-semibold">
                       {step.number}
                     </div>
-                    <h3 className="mt-4 text-lg font-semibold">
+                    <h3 className="mt-4 text-lg font-semibold text-white">
                       {step.title}
                     </h3>
-                    <p className="mt-2 text-muted-foreground">
+                    <p className="mt-2 text-white/70">
                       {step.description}
                     </p>
                   </div>
@@ -98,8 +98,8 @@ export default function AboutPage() {
       <Section>
         <Container>
           <div className="max-w-3xl mx-auto text-center">
-            <h2>Experience you can trust</h2>
-            <div className="mt-8 space-y-6 text-lg text-muted-foreground">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-8">Experience you can trust</h2>
+            <div className="mt-8 space-y-6 text-lg text-white/70">
               <p>
                 Fesal brings years of hands-on experience as an Amazon Marketplace Consultant, 
                 having worked with hundreds of UK and EU sellers across diverse product categories.
