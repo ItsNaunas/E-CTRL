@@ -17,6 +17,7 @@ import { sendWelcomeEmail } from '@/lib/email';
 import { scrapeProduct } from '@/lib/amazon-scraper';
 import { scrapeProductPage, type GenericProductData } from '@/lib/product-scraper';
 import { AUDIT_TYPES } from '@/lib/constants';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,8 +77,26 @@ export async function POST(request: NextRequest) {
       console.log('Scraping Amazon product data for ASIN:', (validatedData as ExistingSellerData).asin);
       const productData = await scrapeProduct((validatedData as ExistingSellerData).asin);
       
-      // Determine access type from lead data - check if user has an account
-      const accessType = lead.user_id ? 'account' : 'guest';
+      // Determine access type by checking if user already has an account
+      let accessType: 'guest' | 'account' = 'guest';
+      try {
+        const { data: existingUser } = await supabaseAdmin
+          .from('users')
+          .select('id')
+          .eq('email', validatedData.email)
+          .single();
+        
+        if (existingUser) {
+          accessType = 'account';
+          // Update the lead to link it to the existing user
+          await supabaseAdmin
+            .from('leads')
+            .update({ user_id: existingUser.id })
+            .eq('id', lead.id);
+        }
+      } catch (error) {
+        console.log('No existing user found for email:', validatedData.email);
+      }
       
       if ('error' in productData) {
         console.warn('Scraping failed, proceeding with limited data:', productData.error);
@@ -105,8 +124,26 @@ export async function POST(request: NextRequest) {
         console.log('No website URL provided, using user-provided data only');
       }
       
-      // Determine access type from lead data - check if user has an account
-      const accessType = lead.user_id ? 'account' : 'guest';
+      // Determine access type by checking if user already has an account
+      let accessType: 'guest' | 'account' = 'guest';
+      try {
+        const { data: existingUser } = await supabaseAdmin
+          .from('users')
+          .select('id')
+          .eq('email', validatedData.email)
+          .single();
+        
+        if (existingUser) {
+          accessType = 'account';
+          // Update the lead to link it to the existing user
+          await supabaseAdmin
+            .from('leads')
+            .update({ user_id: existingUser.id })
+            .eq('id', lead.id);
+        }
+      } catch (error) {
+        console.log('No existing user found for email:', validatedData.email);
+      }
       
       aiResult = await analyzeNewSeller(newSellerData, productData, accessType);
     }
@@ -153,7 +190,7 @@ export async function POST(request: NextRequest) {
             to: validatedData.email,
             name: validatedData.name || 'there',
             mode: (type === AUDIT_TYPES.EXISTING_SELLER ? 'audit' : 'create') as 'audit' | 'create',
-            accessType: (lead.user_id ? 'account' : 'guest') as 'guest' | 'account',
+            accessType: accessType,
             // PDF generation data - convert IDQ structure
             score: aiResult.binaryIdqResult?.qualityPercent || 0, // Use binary IDQ score
             highlights: aiResult.summary?.keyImprovements || [],
@@ -177,7 +214,7 @@ export async function POST(request: NextRequest) {
             to: validatedData.email,
             name: validatedData.name || 'there',
             mode: (type === AUDIT_TYPES.EXISTING_SELLER ? 'audit' : 'create') as 'audit' | 'create',
-            accessType: (lead.user_id ? 'account' : 'guest') as 'guest' | 'account',
+            accessType: accessType,
             // PDF generation data
             score: aiResult.binaryIdqResult?.qualityPercent || aiResult.score, // Use binary IDQ score if available
             highlights: aiResult.highlights,
