@@ -190,7 +190,7 @@ Focus on HELPING THIS EXISTING SELLER FIX THEIR CURRENT LISTING. Use the binary 
 }
 
 // AI-powered listing pack generation for new sellers
-export async function analyzeNewSeller(data: NewSellerData, productData?: GenericProductData) {
+export async function analyzeNewSeller(data: NewSellerData, productData?: GenericProductData, accessType: 'guest' | 'account' = 'guest') {
   // First, run binary IDQ evaluation if we have HTML content
   let binaryIdqResult: IdqResult | null = null;
   if (productData?.rawContent) {
@@ -275,6 +275,20 @@ BINARY IDQ EVALUATION RESULTS (from website analysis):
 - Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
 - Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
 ` : ''}
+
+${accessType === 'account' ? `
+ENHANCED ANALYSIS REQUESTED: This user has an account and should receive premium-level analysis including:
+- Advanced competitive analysis and benchmarking
+- Detailed keyword optimization strategies with search volume insights
+- Conversion rate optimization with psychological triggers
+- Seasonal trend considerations and timing recommendations
+- Advanced A/B testing recommendations for experienced sellers
+- Detailed competitor gap analysis
+- ROI projections and impact estimates for each improvement
+- Advanced Amazon algorithm optimization strategies
+` : `
+STANDARD ANALYSIS: This is a guest user - provide comprehensive but focused insights suitable for preview access.
+`}
 
 IMPORTANT: If structured data is missing (like title, description, price), analyze the RAW PAGE CONTENT to extract:
 - Product name/title from headings or content
