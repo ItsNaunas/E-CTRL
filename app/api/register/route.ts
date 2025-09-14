@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
+import { upgradeGuestToAccount } from '@/lib/database';
 
 // Initialize Supabase client only when needed (not during build)
 let supabase: any = null;
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, password, name } = await request.json();
+    const { email, password, name, promotionalConsent = false } = await request.json();
 
     // Validate input
     if (!email || !password || !name) {
@@ -57,66 +58,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already exists
-    const { data: existingUser, error: checkError } = await supabaseClient
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .single();
-
-    if (checkError && checkError.code !== 'PGRST116') {
-      console.error('Error checking existing user:', checkError);
-      return NextResponse.json(
-        { error: 'Failed to check existing user' },
-        { status: 500 }
-      );
-    }
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'User with this email already exists' },
-        { status: 409 }
-      );
-    }
-
     // Hash password
     const saltRounds = 12;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Create user
-    const { data: newUser, error: createError } = await supabaseClient
-      .from('users')
-      .insert({
-        email,
-        password_hash: passwordHash,
-        name,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .select('id, email, name, created_at')
-      .single();
+    // Use the upgrade function to handle guest-to-account conversion
+    const upgradeResult = await upgradeGuestToAccount(
+      email, 
+      name, 
+      passwordHash, 
+      promotionalConsent
+    );
 
-    if (createError) {
-      console.error('Error creating user:', createError);
+    if (!upgradeResult.success) {
       return NextResponse.json(
-        { error: 'Failed to create user account' },
+        { error: upgradeResult.message || 'Failed to create account' },
         { status: 500 }
       );
     }
 
-    console.log('User registered successfully:', { id: newUser.id, email: newUser.email });
+    console.log('User registered/upgraded successfully:', { 
+      userId: upgradeResult.userId, 
+      email: email,
+      message: upgradeResult.message 
+    });
 
-    // Return success response (don't include password hash)
+    // Return success response
     return NextResponse.json(
       { 
         success: true, 
-        message: 'Account created successfully!',
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name,
-          created_at: newUser.created_at
-        }
+        message: upgradeResult.message || 'Account created successfully!',
+        userId: upgradeResult.userId
       },
       { status: 201 }
     );

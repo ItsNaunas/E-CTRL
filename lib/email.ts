@@ -20,6 +20,7 @@ export interface EmailData {
   to: string;
   name: string;
   mode: 'audit' | 'create';
+  accessType?: 'guest' | 'account';
   reportUrl?: string;
   // PDF generation data
   score?: number;
@@ -96,6 +97,7 @@ export async function sendWelcomeEmail(data: EmailData) {
               name: data.name,
               email: data.to,
               mode: data.mode,
+              accessType: data.accessType || 'guest',
               score: data.score,
               highlights: data.highlights,
               recommendations: data.recommendations,
@@ -114,6 +116,7 @@ export async function sendWelcomeEmail(data: EmailData) {
               name: data.name,
               email: data.to,
               mode: data.mode,
+              accessType: data.accessType || 'guest',
               score: data.score,
               highlights: data.highlights,
               recommendations: data.recommendations,

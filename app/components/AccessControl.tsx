@@ -14,6 +14,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [promotionalConsent, setPromotionalConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -58,7 +59,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
         const response = await fetch('/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, name })
+          body: JSON.stringify({ email, password, name, promotionalConsent })
         });
 
         if (response.ok) {
@@ -266,6 +267,22 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                   <p className="text-xs text-white/60 mt-1">
                     Minimum 8 characters, includes letters and numbers
                   </p>
+                </div>
+              )}
+
+              {accessType === 'account' && (
+                <div className="flex items-start gap-3">
+                  <input
+                    id="promotional-consent"
+                    type="checkbox"
+                    checked={promotionalConsent}
+                    onChange={(e) => setPromotionalConsent(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-white/20 bg-[#0B0B0C] text-[#FF7D2B] focus:ring-[#FF7D2B] focus:ring-offset-0"
+                  />
+                  <label htmlFor="promotional-consent" className="text-sm text-white/80 leading-relaxed">
+                    I agree to receive promotional emails about Amazon selling tips, new features, and special offers. 
+                    <span className="text-white/60"> (You can unsubscribe anytime)</span>
+                  </label>
                 </div>
               )}
 

@@ -150,6 +150,7 @@ export async function POST(request: NextRequest) {
             to: validatedData.email,
             name: validatedData.name || 'there',
             mode: (type === AUDIT_TYPES.EXISTING_SELLER ? 'audit' : 'create') as 'audit' | 'create',
+            accessType: (lead.user_id ? 'account' : 'guest') as 'guest' | 'account',
             // PDF generation data - convert IDQ structure
             score: aiResult.binaryIdqResult?.qualityPercent || 0, // Use binary IDQ score
             highlights: aiResult.summary?.keyImprovements || [],
@@ -173,6 +174,7 @@ export async function POST(request: NextRequest) {
             to: validatedData.email,
             name: validatedData.name || 'there',
             mode: (type === AUDIT_TYPES.EXISTING_SELLER ? 'audit' : 'create') as 'audit' | 'create',
+            accessType: (lead.user_id ? 'account' : 'guest') as 'guest' | 'account',
             // PDF generation data
             score: aiResult.binaryIdqResult?.qualityPercent || aiResult.score, // Use binary IDQ score if available
             highlights: aiResult.highlights,

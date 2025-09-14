@@ -4,6 +4,7 @@ export interface PDFData {
   name: string;
   email: string;
   mode: 'audit' | 'create';
+  accessType?: 'guest' | 'account';
   score?: number;
   highlights?: string[];
   recommendations?: string[];
@@ -48,10 +49,11 @@ export interface PDFData {
 
 export function generateAuditReportPDF(data: PDFData): jsPDF {
   const doc = new jsPDF();
+  const isGuest = data.accessType === 'guest';
   
   // Set document properties
   doc.setProperties({
-    title: 'Amazon Audit Report - E-CTRL',
+    title: isGuest ? 'Amazon Audit Preview - E-CTRL' : 'Amazon Audit Report - E-CTRL',
     subject: `Audit Report for ${data.asin || 'Product'}`,
     author: 'E-CTRL',
     creator: 'E-CTRL Amazon Audit Tool'
@@ -64,7 +66,7 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
   
   doc.setFontSize(16);
   doc.setTextColor(31, 41, 55); // Black color
-  doc.text('Amazon Audit Report', 105, 35, { align: 'center' });
+  doc.text(isGuest ? 'Amazon Audit Preview' : 'Amazon Audit Report', 105, 35, { align: 'center' });
   
   // Add brand tagline
   doc.setFontSize(10);
@@ -85,7 +87,40 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
   doc.text(`ASIN: ${data.asin || 'N/A'}`, 20, yPosition);
   yPosition += 8;
   doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, yPosition);
-  yPosition += 15;
+  yPosition += 8;
+  
+  // Add guest access notice
+  if (isGuest) {
+    doc.setFontSize(12);
+    doc.setTextColor(249, 115, 22); // Orange color
+    doc.text('GUEST ACCESS - LIMITED PREVIEW', 20, yPosition);
+    yPosition += 8;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(75, 85, 99);
+    doc.text('This is a preview of your audit results. Create a free account to unlock:', 20, yPosition);
+    yPosition += 5;
+    doc.text('• Complete detailed analysis and recommendations', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Advanced competitive insights and benchmarking', 25, yPosition);
+    yPosition += 4;
+    doc.text('• ROI projections and impact estimates', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Seasonal trends and timing recommendations', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Advanced A/B testing strategies', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Priority support and follow-up assistance', 25, yPosition);
+    yPosition += 10;
+    
+    // Add upgrade CTA
+    doc.setFontSize(11);
+    doc.setTextColor(37, 99, 235); // Blue color
+    doc.text('Create your free account now to unlock the full report!', 20, yPosition);
+    yPosition += 15;
+  } else {
+    yPosition += 7;
+  }
   
   // Score section with improved design
   if (data.score !== undefined) {
@@ -168,7 +203,11 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     
     doc.setFontSize(12);
     doc.setTextColor(31, 41, 55); // Black for content
-    data.highlights.forEach((highlight, index) => {
+    
+    // Limit highlights for guest users
+    const highlightsToShow = isGuest ? data.highlights.slice(0, 3) : data.highlights;
+    
+    highlightsToShow.forEach((highlight, index) => {
       if (yPosition > 250) {
         doc.addPage();
         yPosition = 20;
@@ -180,6 +219,15 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
       doc.text(highlight, 25, yPosition);
       yPosition += 7;
     });
+    
+    // Show limited notice for guest users
+    if (isGuest && data.highlights.length > 3) {
+      doc.setFontSize(10);
+      doc.setTextColor(249, 115, 22);
+      doc.text(`+ ${data.highlights.length - 3} more opportunities in full report`, 25, yPosition);
+      yPosition += 5;
+    }
+    
     yPosition += 10;
   }
   
@@ -197,7 +245,11 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     
     doc.setFontSize(12);
     doc.setTextColor(31, 41, 55); // Black for content
-    data.recommendations.forEach((rec, index) => {
+    
+    // Limit recommendations for guest users
+    const recommendationsToShow = isGuest ? data.recommendations.slice(0, 3) : data.recommendations;
+    
+    recommendationsToShow.forEach((rec, index) => {
       if (yPosition > 250) {
         doc.addPage();
         yPosition = 20;
@@ -209,11 +261,20 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
       doc.text(rec, 30, yPosition);
       yPosition += 7;
     });
+    
+    // Show limited notice for guest users
+    if (isGuest && data.recommendations.length > 3) {
+      doc.setFontSize(10);
+      doc.setTextColor(249, 115, 22);
+      doc.text(`+ ${data.recommendations.length - 3} more strategies in full report`, 30, yPosition);
+      yPosition += 5;
+    }
+    
     yPosition += 10;
   }
   
-  // Detailed analysis section - use actual AI analysis data
-  if (data.detailedAnalysis || data.productData || data.contentQuality) {
+  // Detailed analysis section - use actual AI analysis data (only for account users)
+  if (!isGuest && (data.detailedAnalysis || data.productData || data.contentQuality)) {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
@@ -502,6 +563,42 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     }
   }
   
+  // Add upgrade notice for guest users
+  if (isGuest) {
+    if (yPosition > 220) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    // Add upgrade section
+    doc.setFillColor(37, 99, 235, 0.1); // Light blue background
+    doc.rect(15, yPosition - 5, 180, 40, 'F');
+    
+    doc.setFontSize(16);
+    doc.setTextColor(37, 99, 235);
+    doc.text('Unlock Your Full Amazon Audit Report', 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    doc.setFontSize(11);
+    doc.setTextColor(31, 41, 55);
+    doc.text('Create your free account to access:', 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(75, 85, 99);
+    doc.text('• Complete detailed analysis and recommendations', 105, yPosition, { align: 'center' });
+    yPosition += 4;
+    doc.text('• Advanced competitive insights and ROI projections', 105, yPosition, { align: 'center' });
+    yPosition += 4;
+    doc.text('• Priority support and follow-up assistance', 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(249, 115, 22);
+    doc.text('Create Account Now - It\'s Free!', 105, yPosition, { align: 'center' });
+    yPosition += 15;
+  }
+  
   // Footer
   if (yPosition > 250) {
     doc.addPage();
@@ -523,10 +620,11 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
 
 export function generateListingPackPDF(data: PDFData): jsPDF {
   const doc = new jsPDF();
+  const isGuest = data.accessType === 'guest';
   
   // Set document properties
   doc.setProperties({
-    title: 'Amazon Listing Pack - E-CTRL',
+    title: isGuest ? 'Amazon Listing Pack Preview - E-CTRL' : 'Amazon Listing Pack - E-CTRL',
     subject: 'Complete Amazon Listing Pack',
     author: 'E-CTRL',
     creator: 'E-CTRL Amazon Audit Tool'
@@ -539,7 +637,7 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
   
   doc.setFontSize(16);
   doc.setTextColor(31, 41, 55); // Black color
-  doc.text('Amazon Listing Pack', 105, 35, { align: 'center' });
+  doc.text(isGuest ? 'Amazon Listing Pack Preview' : 'Amazon Listing Pack', 105, 35, { align: 'center' });
   
   // Add brand tagline
   doc.setFontSize(10);
@@ -558,7 +656,40 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
   doc.text(`Email: ${data.email}`, 20, yPosition);
   yPosition += 8;
   doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, yPosition);
-  yPosition += 15;
+  yPosition += 8;
+  
+  // Add guest access notice for new sellers
+  if (isGuest) {
+    doc.setFontSize(12);
+    doc.setTextColor(249, 115, 22); // Orange color
+    doc.text('GUEST ACCESS - LIMITED PREVIEW', 20, yPosition);
+    yPosition += 8;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(75, 85, 99);
+    doc.text('This is a preview of your listing pack. Create a free account to unlock:', 20, yPosition);
+    yPosition += 5;
+    doc.text('• Complete optimized title and bullet points', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Detailed keyword research and optimization', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Professional product description templates', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Image requirements and optimization guide', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Compliance checklist and best practices', 25, yPosition);
+    yPosition += 4;
+    doc.text('• Priority support and launch assistance', 25, yPosition);
+    yPosition += 10;
+    
+    // Add upgrade CTA
+    doc.setFontSize(11);
+    doc.setTextColor(37, 99, 235); // Blue color
+    doc.text('Create your free account now to unlock the complete listing pack!', 20, yPosition);
+    yPosition += 15;
+  } else {
+    yPosition += 7;
+  }
   
   // Product details
   if (data.category) {
@@ -616,7 +747,11 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
     
     doc.setFontSize(12);
     doc.setTextColor(31, 41, 55); // Black for content
-    data.keywords.forEach((keyword, index) => {
+    
+    // Limit keywords for guest users
+    const keywordsToShow = isGuest ? data.keywords.slice(0, 5) : data.keywords;
+    
+    keywordsToShow.forEach((keyword, index) => {
       if (yPosition > 250) {
         doc.addPage();
         yPosition = 20;
@@ -628,11 +763,20 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
       doc.text(keyword, 25, yPosition);
       yPosition += 7;
     });
+    
+    // Show limited notice for guest users
+    if (isGuest && data.keywords.length > 5) {
+      doc.setFontSize(10);
+      doc.setTextColor(249, 115, 22);
+      doc.text(`+ ${data.keywords.length - 5} more keywords in full listing pack`, 25, yPosition);
+      yPosition += 5;
+    }
+    
     yPosition += 10;
   }
   
-  // Detailed analysis section
-  if (data.detailedAnalysis) {
+  // Detailed analysis section (only for account users)
+  if (!isGuest && data.detailedAnalysis) {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
@@ -687,6 +831,42 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
         yPosition += 3;
       });
     }
+  }
+  
+  // Add upgrade notice for guest users
+  if (isGuest) {
+    if (yPosition > 220) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    // Add upgrade section
+    doc.setFillColor(37, 99, 235, 0.1); // Light blue background
+    doc.rect(15, yPosition - 5, 180, 40, 'F');
+    
+    doc.setFontSize(16);
+    doc.setTextColor(37, 99, 235);
+    doc.text('Unlock Your Complete Amazon Listing Pack', 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    doc.setFontSize(11);
+    doc.setTextColor(31, 41, 55);
+    doc.text('Create your free account to access:', 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(75, 85, 99);
+    doc.text('• Complete optimized title and bullet points', 105, yPosition, { align: 'center' });
+    yPosition += 4;
+    doc.text('• Detailed keyword research and optimization', 105, yPosition, { align: 'center' });
+    yPosition += 4;
+    doc.text('• Professional product description templates', 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(249, 115, 22);
+    doc.text('Create Account Now - It\'s Free!', 105, yPosition, { align: 'center' });
+    yPosition += 15;
   }
   
   // Footer
