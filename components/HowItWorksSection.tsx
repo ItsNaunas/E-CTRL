@@ -26,7 +26,11 @@ const steps = [
   }
 ];
 
-export default function HowItWorksSection() {
+interface HowItWorksSectionProps {
+  onCtaClick?: () => void;
+}
+
+export default function HowItWorksSection({ onCtaClick }: HowItWorksSectionProps) {
   return (
     <section className="relative bg-gradient-to-br from-[#0a0b1a] via-[#0f1020] to-[#1a0c00] text-white py-16 overflow-hidden">
       {/* Background Gradients */}
@@ -96,7 +100,10 @@ export default function HowItWorksSection() {
 
         {/* Micro-CTA */}
         <div className="text-center mt-12">
-          <button className="relative inline-flex h-[48px] rounded-[24px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]">
+          <button 
+            onClick={onCtaClick}
+            className="relative inline-flex h-[48px] rounded-[24px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
+          >
             {/* Inner fill (pure black) */}
             <span className="relative flex-1 rounded-[22.5px] bg-black text-white font-medium text-base leading-none inline-flex items-center justify-center select-none px-6">
               Start with a URL →

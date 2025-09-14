@@ -61,7 +61,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <head>
-        <link rel="icon" type="image/png" href="/logos/logo.png" />
+        <link rel="shortcut icon" type="image/png" href="/logos/logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/logo.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/logos/logo.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/logos/logo.png" />
         <link rel="manifest" href="/site.webmanifest" />
         
         {/* Preconnect for performance */}

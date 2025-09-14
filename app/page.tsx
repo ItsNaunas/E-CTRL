@@ -85,28 +85,12 @@ export default function HomePage() {
     }, 100);
   };
 
-  // Enhanced CTA scroll function that always scrolls to hero form
+  // Simple CTA scroll function that scrolls to top
   const scrollToHeroForm = () => {
-    setTimeout(() => {
-      // Try to find the hero input field first
-      const heroInput = document.querySelector('[data-testid="hero-input"]') || 
-                       document.querySelector('input[placeholder*="ASIN"]') ||
-                       document.querySelector('input[placeholder*="URL"]');
-      
-      if (heroInput) {
-        const heroPosition = heroInput.getBoundingClientRect().top + window.scrollY - 100;
-        window.scrollTo({
-          top: heroPosition,
-          behavior: 'smooth'
-        });
-      } else {
-        // Fallback: scroll to top of page
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      }
-    }, 100);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
   
   // Debug logging for state
@@ -720,7 +704,7 @@ export default function HomePage() {
 
 
       {/* How It Works - Process Explanation */}
-      <HowItWorksSection />
+      <HowItWorksSection onCtaClick={scrollToHeroForm} />
 
       {/* Benefits - Value Proposition */}
       {mode === 'audit' ? (
@@ -824,7 +808,7 @@ export default function HomePage() {
 
 
       {/* Premium Footer with Glass Effect */}
-      <FooterGlow />
+      <FooterGlow onCtaClick={scrollToHeroForm} />
     </>
   );
 }
