@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import NewNewCTAButton from '@/components/NewNewCTAButton';
+import NewCTAButton from '@/components/NewCTAButton';
 
 interface PartialResultProps {
   score?: number; // Make score optional for initial state

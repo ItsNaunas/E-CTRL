@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import NewNewCTAButton from '@/components/NewNewCTAButton';
+import NewCTAButton from '@/components/NewCTAButton';
 import { isValidEmail } from '@/app/utils/validators';
 
 interface EmailGateProps {

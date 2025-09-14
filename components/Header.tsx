@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import NewNewCTAButton from './NewNewCTAButton';
+import NewCTAButton from './NewCTAButton';
 import { copy } from '@/lib/copy';
 
 export default function Header() {

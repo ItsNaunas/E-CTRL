@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import NewNewCTAButton from '@/components/NewNewCTAButton';
+import NewCTAButton from '@/components/NewCTAButton';
 import ClientTestimonials from '@/components/ClientTestimonials';
 import { parseAsinOrUrl } from '@/app/utils/validators';
 

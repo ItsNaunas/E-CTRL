@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import NewNewCTAButton from '@/components/NewNewCTAButton';
+import NewCTAButton from '@/components/NewCTAButton';
 
 interface AccessControlProps {
   mode: 'audit' | 'create';
