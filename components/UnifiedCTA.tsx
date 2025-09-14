@@ -47,7 +47,7 @@ export default function UnifiedCTA({
 }) {
   const base = `
     relative group inline-flex items-center justify-center
-    font-bold rounded-xl transition-all duration-300 ease-out
+    font-bold rounded-full transition-all duration-300 ease-out
     focus:outline-none focus:ring-4 focus:ring-white/30
     hover:scale-105 active:scale-95 overflow-hidden
     disabled:opacity-50 disabled:cursor-not-allowed
@@ -56,7 +56,7 @@ export default function UnifiedCTA({
   const shine = `
     before:content-[''] before:absolute before:inset-0
     before:bg-gradient-to-b before:from-white/20 before:via-transparent before:to-transparent
-    before:opacity-50 before:pointer-events-none before:rounded-xl
+    before:opacity-50 before:pointer-events-none before:rounded-full
   `;
 
   const classes = [
