@@ -72,7 +72,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.className} h-full flex flex-col bg-[#0D0D0D] text-white`}>
+      <body className={`${inter.className} h-full flex flex-col bg-[#0B0B0C] text-white`}>
         <main className="flex-1">
           {children}
         </main>

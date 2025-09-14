@@ -11,6 +11,8 @@
   html {
     font-family: 'Inter', system-ui, sans-serif;
     scroll-behavior: smooth;
+    border: none;
+    outline: none;
   }
   
 body {
@@ -18,6 +20,8 @@ body {
   font-family: "General Sans", sans-serif;
   font-size: 16px;
   line-height: 1.5;
+  border: none;
+  outline: none;
 }
 
   /* Focus styles for better accessibility */
