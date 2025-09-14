@@ -287,6 +287,9 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
                       aria-describedby={error ? "url-error" : "url-help"}
                       aria-invalid={!!error}
                     />
+                    <p className="mt-2 text-xs text-white/60" id="url-help">
+                      Works best with static product pages. For JavaScript-heavy sites (Shopify, React apps), use Manual Input instead.
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -541,19 +544,32 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
 
                         <div>
                           <label htmlFor="fulfilment" className="block text-sm font-medium text-white mb-2">
-                            Fulfilment Method
+                            Fulfilment Method *
                           </label>
                           <select
                             id="fulfilment"
                             name="fulfilment"
                             value={fulfilmentIntent}
                             onChange={(e) => setFulfilmentIntent(e.target.value)}
-                            className="block w-full rounded-[45px] bg-white/5 backdrop-blur-sm text-white border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none"
+                            className="block w-full rounded-[45px] bg-[#0B0B0C] backdrop-blur-sm text-white border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-white/20 px-6 py-4 transition outline-none appearance-none cursor-pointer"
+                            style={{
+                              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                              backgroundPosition: 'right 1.5rem center',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundSize: '1.5em 1.5em',
+                              paddingRight: '3rem'
+                            }}
+                            required
                           >
-                            <option value="FBA">FBA (Fulfilled by Amazon)</option>
-                            <option value="FBM">FBM (Fulfilled by Merchant)</option>
-                            <option value="Unsure">Not sure yet</option>
+                            <option value="" disabled className="bg-[#0B0B0C] text-white">Choose fulfillment method...</option>
+                            <option value="FBA" className="bg-[#0B0B0C] text-white">FBA (Fulfilled by Amazon) - Amazon handles storage, packing & shipping</option>
+                            <option value="FBM" className="bg-[#0B0B0C] text-white">FBM (Fulfilled by Merchant) - You handle storage, packing & shipping</option>
+                            <option value="Unsure" className="bg-[#0B0B0C] text-white">Not sure yet - Get recommendations</option>
                           </select>
+                          <p className="mt-2 text-xs text-white/60">
+                            <strong>FBA:</strong> Higher fees but Amazon Prime eligibility and customer trust<br/>
+                            <strong>FBM:</strong> Lower fees but you manage inventory and shipping yourself
+                          </p>
                         </div>
                       </div>
                     )}
