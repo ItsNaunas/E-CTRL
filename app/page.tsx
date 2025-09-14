@@ -494,13 +494,28 @@ export default function HomePage() {
     
     // Send welcome email for guest access too
     try {
+      // Prepare preview data for PDF generation
+      const previewData = {
+        score: aiResult?.score || 0,
+        highlights: aiResult?.highlights || [],
+        recommendations: aiResult?.recommendations || [],
+        detailedAnalysis: aiResult?.detailedAnalysis || {},
+        asin: mode === 'audit' ? asinOrUrl : undefined,
+        productUrl: mode === 'create' ? productUrl : undefined,
+        keywords: manualProductData?.keywords || sampleData.keywords,
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || SAMPLE_DATA.DEFAULT_FULFILMENT),
+        category: mode === 'create' ? (manualProductData?.category || SAMPLE_DATA.DEFAULT_CATEGORY) : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || SAMPLE_DATA.DEFAULT_DESCRIPTION) : undefined
+      };
+      
       const response = await fetch('/api/submit-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           email, 
           name: email.split('@')[0], // Use email prefix as name
-          mode: mode // Use current mode (audit or create)
+          mode: mode, // Use current mode (audit or create)
+          previewData: previewData
         })
       });
       
@@ -565,13 +580,28 @@ export default function HomePage() {
     
     // Send welcome email
     try {
+      // Prepare preview data for PDF generation
+      const previewData = {
+        score: aiResult?.score || 0,
+        highlights: aiResult?.highlights || [],
+        recommendations: aiResult?.recommendations || [],
+        detailedAnalysis: aiResult?.detailedAnalysis || {},
+        asin: mode === 'audit' ? asinOrUrl : undefined,
+        productUrl: mode === 'create' ? productUrl : undefined,
+        keywords: manualProductData?.keywords || sampleData.keywords,
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || SAMPLE_DATA.DEFAULT_FULFILMENT),
+        category: mode === 'create' ? (manualProductData?.category || SAMPLE_DATA.DEFAULT_CATEGORY) : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || SAMPLE_DATA.DEFAULT_DESCRIPTION) : undefined
+      };
+      
       const response = await fetch('/api/submit-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           email, 
           name: email.split('@')[0], // Use email prefix as name
-          mode: mode // Use current mode (audit or create)
+          mode: mode, // Use current mode (audit or create)
+          previewData: previewData
         })
       });
       
