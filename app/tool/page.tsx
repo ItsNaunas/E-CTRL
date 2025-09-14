@@ -83,6 +83,12 @@ export default function ToolPage() {
       }
       
       const result = await response.json();
+      
+      // Validate response structure
+      if (!result.result || !result.leadId) {
+        throw new Error('Invalid response format from server');
+      }
+      
       setSummary(result.result);
       setCurrentLeadId(result.leadId);
       setShowEmailGate(true); // Show email gate for guests
@@ -129,6 +135,12 @@ export default function ToolPage() {
       }
       
       const result = await response.json();
+      
+      // Validate response structure
+      if (!result.result || !result.leadId) {
+        throw new Error('Invalid response format from server');
+      }
+      
       setSummary(result.result);
       setCurrentLeadId(result.leadId);
       setShowEmailGate(true); // Show email gate for guests
@@ -207,6 +219,13 @@ export default function ToolPage() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to submit email');
+      }
+
+      const result = await response.json();
+      
+      // Validate response structure
+      if (!result.success) {
+        throw new Error(result.error || 'Email submission failed');
       }
 
       // Unlock the full report

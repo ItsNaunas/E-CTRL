@@ -8,10 +8,15 @@ const emailSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   name: z.string().min(1, 'Name is required'),
   leadId: z.string().uuid('Invalid lead ID'),
-  mode: z.enum(['audit', 'create']).optional().default('audit'),
+  mode: z.enum(['audit', 'create']).default('audit').transform(val => val as 'audit' | 'create'),
 });
 
 type EmailSchemaType = z.infer<typeof emailSchema>;
+
+// Type guard for mode
+function isValidMode(mode: string): mode is 'audit' | 'create' {
+  return mode === 'audit' || mode === 'create';
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,10 +90,10 @@ export async function POST(request: NextRequest) {
     const emailResult = await sendWelcomeEmail({
       to: validatedData.email,
       name: validatedData.name,
-      mode: validatedData.mode,
       // Include PDF data if available
-      ...(pdfData || {})
-    } as any);
+      ...(pdfData || {}),
+      mode: validatedData.mode as 'audit' | 'create' // Zod validates this is one of these values
+    });
 
     if (!emailResult.success) {
       console.error('Failed to send email:', emailResult.error);

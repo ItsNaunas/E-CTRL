@@ -33,8 +33,12 @@ export async function scrapeProductPage(url: string): Promise<GenericProductData
     const urlObj = new URL(url);
     const domain = urlObj.hostname;
     
-    // Fetch the page
-    const response = await fetch(url, {
+    // Fetch the page with timeout
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout')), 15000); // 15 second timeout for generic sites
+    });
+
+    const fetchPromise = fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -44,6 +48,8 @@ export async function scrapeProductPage(url: string): Promise<GenericProductData
         'Upgrade-Insecure-Requests': '1',
       },
     });
+
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (!response.ok) {
       return {

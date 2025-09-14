@@ -115,7 +115,12 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     const url = `https://www.amazon.co.uk/dp/${asin}`;
     console.log(`Scraping Amazon product: ${url}`);
 
-    const response = await fetch(url, {
+    // Create a timeout promise
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout')), 10000); // 10 second timeout
+    });
+
+    const fetchPromise = fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -125,6 +130,8 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
         'Upgrade-Insecure-Requests': '1',
       },
     });
+
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (!response.ok) {
       // 404 specifically means product not found
