@@ -25,6 +25,11 @@ jobs:
       
     - name: Run type checking
       run: npm run typecheck
+      env:
+        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       
     - name: Run linting
       run: npm run lint
@@ -76,7 +81,7 @@ jobs:
         RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         
     - name: Upload E2E test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: playwright-report

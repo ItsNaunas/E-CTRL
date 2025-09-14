@@ -11,12 +11,14 @@ const emailSchema = z.object({
   mode: z.enum(['audit', 'create']).optional().default('audit'),
 });
 
+type EmailSchemaType = z.infer<typeof emailSchema>;
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     console.log('Email API received:', body);
     
-    const validatedData = emailSchema.parse(body);
+    const validatedData: EmailSchemaType = emailSchema.parse(body);
     console.log('Validated data:', validatedData);
 
     // Update the lead with the email information
@@ -86,7 +88,7 @@ export async function POST(request: NextRequest) {
       mode: validatedData.mode,
       // Include PDF data if available
       ...(pdfData || {})
-    });
+    } as any);
 
     if (!emailResult.success) {
       console.error('Failed to send email:', emailResult.error);
