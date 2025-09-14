@@ -5,6 +5,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
+  fullWidth?: boolean;
 }
 
 export default function Button({
@@ -12,34 +13,37 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
+  fullWidth = false,
   className = '',
   disabled,
   ...props
 }: ButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation';
   
   const variantClasses = {
-    primary: 'relative inline-flex h-[60px] rounded-[45px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]',
-    secondary: 'border border-white/15 text-white/90 hover:border-white/40 hover:bg-white/5 transition focus:ring-white/20',
-    ghost: 'text-white/90 hover:bg-white/5 focus:ring-white/20',
+    primary: 'relative rounded-full p-[1.5px] bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none',
+    secondary: 'border border-white/20 text-white/90 hover:border-white/40 hover:bg-white/5 transition focus:ring-white/20 rounded-xl',
+    ghost: 'text-white/90 hover:bg-white/5 focus:ring-white/20 rounded-xl',
   };
   
   const sizeClasses = {
-    sm: 'px-3 py-2 text-sm min-h-[36px]',
-    md: 'px-4 py-2 text-sm min-h-[44px]',
-    lg: 'px-6 py-3 text-base min-h-[48px]',
+    sm: 'h-11 px-4 text-sm',
+    md: 'h-12 px-6 text-base',
+    lg: 'h-14 px-8 text-lg',
   };
+
+  const widthClasses = fullWidth ? 'w-full' : '';
 
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClasses} ${className}`}
       disabled={disabled || loading}
       {...props}
     >
       {variant === 'primary' ? (
         <>
-          {/* Inner fill (pure black) - Fixed responsive sizing */}
-          <span className="relative flex-1 rounded-[43.5px] bg-black text-white font-medium text-sm sm:text-base leading-tight inline-flex items-center justify-center select-none px-4 sm:px-6 py-2 sm:py-3 min-h-[58px] sm:min-h-[58px]">
+          {/* Inner fill with consistent sizing */}
+          <span className="relative flex-1 rounded-full bg-black text-white font-semibold leading-tight inline-flex items-center justify-center select-none h-full">
             {loading && (
               <svg
                 className="mr-2 h-4 w-4 animate-spin"
@@ -62,8 +66,8 @@ export default function Button({
               </svg>
             )}
             {children}
-            {/* Optional glossy overlay from your Figma fill @ ~38% */}
-            <span className="pointer-events-none absolute inset-0 rounded-[43.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
+            {/* Subtle glossy overlay */}
+            <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/20 via-white/5 to-transparent opacity-30" />
           </span>
         </>
       ) : (

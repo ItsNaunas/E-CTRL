@@ -37,7 +37,7 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
   return (
     <>
       {/* Tablet Top Tabs - Only visible on tablet, tabs only */}
-      <div className="fixed top-6 left-0 right-0 z-40 md:lg:hidden block">
+      <div className="fixed top-6 left-0 right-0 z-40 md:block lg:hidden hidden">
         <div className="flex items-center justify-center px-6">
           {/* Tab Toggle - Centered */}
           <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
