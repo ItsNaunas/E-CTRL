@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import CTAButton from './CTAButton';
+import NewNewCTAButton from './NewNewCTAButton';
 import { copy } from '@/lib/copy';
 
 export default function Header() {
   return (
-    <header className="border-b border-white/10 bg-[#0B0B0C]">
+    <header className="bg-[#0B0B0C]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -26,7 +26,7 @@ export default function Header() {
           </Link>
 
           {/* CTA Button - No navigation distractions */}
-          <CTAButton
+          <NewCTAButton
             variant="sticky"
             size="sm"
             text="audit"

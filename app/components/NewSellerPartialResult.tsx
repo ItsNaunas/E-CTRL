@@ -1,6 +1,6 @@
 'use client';
 
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 
 interface NewSellerPartialResultProps {
   productUrl?: string;
@@ -247,7 +247,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                 
                 {hasDetailedAnalysis && (
                   <>
-                    <CTAButton
+                    <NewCTAButton
                       variant="primary"
                       size="lg"
                       text="get my complete amazon listing"

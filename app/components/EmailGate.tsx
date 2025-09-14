@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 import { isValidEmail } from '@/app/utils/validators';
 
 interface EmailGateProps {
@@ -125,7 +125,7 @@ export default function EmailGate({ onEmailSubmit, isLoading = false, mode = 'au
                   )}
                 </div>
 
-                <CTAButton
+                <NewCTAButton
                   type="submit"
                   variant="primary"
                   size="lg"

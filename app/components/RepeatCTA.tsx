@@ -1,6 +1,6 @@
 'use client';
 
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 
 interface RepeatCTAProps {
   variant?: 'mid' | 'footer';
@@ -37,7 +37,7 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
             }
           </p>
           
-          <CTAButton
+          <NewCTAButton
             variant="primary"
             size="lg"
             text={mode === 'audit' ? 'get my free audit report' : 'create my listing now'}
@@ -71,7 +71,7 @@ export default function RepeatCTA({ variant = 'mid', onCtaClick, mode = 'audit' 
           }
         </p>
         
-        <CTAButton
+        <NewCTAButton
           variant="secondary"
           size="lg"
           text={mode === 'audit' ? 'unlock my audit report' : 'get my listing now'}

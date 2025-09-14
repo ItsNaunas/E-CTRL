@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 import ClientTestimonials from '@/components/ClientTestimonials';
 
 interface NewSellerHeroProps {

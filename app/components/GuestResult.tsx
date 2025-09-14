@@ -1,6 +1,6 @@
 'use client';
 
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 
 interface GuestResultProps {
   mode: 'audit' | 'create';
@@ -170,7 +170,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
                 </div>
               </div>
 
-              <CTAButton
+              <NewCTAButton
                 variant="secondary"
                 size="lg"
                 text="upgrade to full account now"

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 
 interface PartialResultProps {
   score?: number; // Make score optional for initial state
@@ -167,7 +167,7 @@ export default function PartialResult({ score, highlights, onUnlock, isLoading =
                 Get detailed recommendations, keyword analysis, and optimization strategies.
               </p>
               
-              <CTAButton
+              <NewCTAButton
                 variant="primary"
                 size="lg"
                 text={isLoading ? "AI Analysis in Progress..." : "unlock my full report now"}

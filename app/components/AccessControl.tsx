@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import CTAButton from '@/components/CTAButton';
+import NewNewCTAButton from '@/components/NewNewCTAButton';
 
 interface AccessControlProps {
   mode: 'audit' | 'create';
@@ -277,7 +277,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 </div>
               )}
 
-              <CTAButton
+              <NewCTAButton
                 type="submit"
                 variant="primary"
                 size="lg"
