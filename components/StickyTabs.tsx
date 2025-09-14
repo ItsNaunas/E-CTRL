@@ -36,61 +36,36 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
 
   return (
     <>
-      {/* Tablet Top Tabs - Only visible on tablet */}
+      {/* Tablet Top Tabs - Only visible on tablet, tabs only */}
       <div className="fixed top-6 left-0 right-0 z-40 md:lg:hidden block">
-        <div className="flex items-center justify-between px-6 relative">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/logos/logo.png"
-              alt="e-ctrl"
-              width={1020}
-              height={306}
-              className="h-24 w-auto"
-              priority
-            />
-          </Link>
-          
-          {/* Tab Toggle */}
+        <div className="flex items-center justify-center px-6">
+          {/* Tab Toggle - Centered */}
           <div className="flex bg-white/[0.08] ring-1 ring-white/25 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full p-1">
             <button
               type="button"
               onClick={() => handleTabChange('audit')}
-              className={`px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+              className={`px-4 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeTab === 'audit'
                   ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
                   : 'text-white/70 hover:text-white hover:bg-white/8 hover:border-white/10 border border-transparent'
               }`}
               aria-label="Audit existing Amazon listing"
             >
-              Audit Existing
+              Audit Existing Amazon Listing
             </button>
             <button
               type="button"
               onClick={() => handleTabChange('create')}
-              className={`px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+              className={`px-4 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeTab === 'create'
                   ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm border border-white/20'
                   : 'text-white/70 hover:text-white hover:bg-white/8 hover:border-white/10 border border-transparent'
               }`}
               aria-label="Create new Amazon listing"
             >
-              Create New
+              Create New Amazon Listing
             </button>
           </div>
-          
-          {/* CTA Button */}
-          <button
-            type="button"
-            onClick={handleCtaClick}
-            className="relative inline-flex h-[36px] rounded-[18px] p-[1px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
-            data-testid="sticky-cta"
-          >
-            <span className="relative flex-1 rounded-[17px] bg-black text-white font-medium text-sm leading-none inline-flex items-center justify-center select-none px-4">
-              {activeTab === 'audit' ? 'run free audit' : 'create listing now'}
-              <span className="pointer-events-none absolute inset-0 rounded-[17px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
-            </span>
-          </button>
         </div>
       </div>
 
