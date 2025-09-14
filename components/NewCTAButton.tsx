@@ -43,45 +43,21 @@ export default function NewCTAButton({
 
   const buttonContent = text || ctaTexts.audit;
 
+  const baseClasses = 'relative inline-flex items-center justify-center font-bold text-white text-center rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-white/30 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation';
+  
+  const variantClasses = {
+    primary: 'bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] shadow-lg shadow-[#296AFF]/30 hover:shadow-[0_0_40px_rgba(41,106,255,0.6),0_0_60px_rgba(255,125,43,0.4)] hover:scale-105 active:scale-95 disabled:hover:scale-100 disabled:hover:shadow-lg',
+    secondary: 'bg-transparent border-2 border-white/30 text-white/90 hover:border-white/60 hover:bg-white/10 hover:shadow-lg hover:shadow-white/20'
+  };
+
+  const buttonClasses = `${baseClasses} ${sizeClasses[size]} ${widthClasses} ${variantClasses[variant]} ${className}`;
+
   const ButtonContent = (
     <button
       onClick={onClick}
       type={type}
       disabled={disabled}
-      className={`
-        ${sizeClasses[size]}
-        ${widthClasses}
-        ${className}
-        
-        /* Base styles */
-        relative inline-flex items-center justify-center
-        font-bold text-white text-center
-        rounded-xl
-        transition-all duration-300 ease-out
-        focus:outline-none focus:ring-4 focus:ring-white/30
-        disabled:opacity-50 disabled:cursor-not-allowed
-        touch-manipulation
-        
-        /* Primary variant - Bright gradient with glow */
-        ${variant === 'primary' ? `
-          bg-gradient-to-r from-[#296AFF] to-[#FF7D2B]
-          shadow-lg shadow-[#296AFF]/30
-          hover:shadow-[0_0_40px_rgba(41,106,255,0.6),0_0_60px_rgba(255,125,43,0.4)]
-          hover:scale-105
-          active:scale-95
-          disabled:hover:scale-100 disabled:hover:shadow-lg
-        ` : ''}
-        
-        /* Secondary variant - Subtle outline */
-        ${variant === 'secondary' ? `
-          bg-transparent
-          border-2 border-white/30
-          text-white/90
-          hover:border-white/60
-          hover:bg-white/10
-          hover:shadow-lg hover:shadow-white/20
-        ` : ''}
-      `}
+      className={buttonClasses}
     >
       {/* Content */}
       <span className="relative z-10 flex items-center justify-center gap-2">

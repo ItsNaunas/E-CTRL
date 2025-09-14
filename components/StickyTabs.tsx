@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import NewCTAButton from './NewCTAButton';
 
 interface StickyTabsProps {
   activeTab: 'audit' | 'create';
@@ -116,19 +117,13 @@ export default function StickyTabs({ activeTab, onTabChange, onCtaClick }: Stick
           
           {/* CTA Button - Responsive positioning */}
           <div className="flex items-center absolute right-[15%] lg:right-1/4 transform translate-x-1/2">
-          <button
-            type="button"
-            onClick={handleCtaClick}
-            className="relative inline-flex h-[40px] lg:h-[48px] rounded-[20px] lg:rounded-[24px] p-[1.5px] bg-[linear-gradient(90deg,#296AFF_0%,#FF7D2B_100%)] focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-[0_8px_32px_rgba(41,106,255,0.3)] hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-[0_0_0_0_rgba(0,0,0,0)]"
-            data-testid="sticky-cta"
-          >
-            {/* Inner fill (pure black) */}
-            <span className="relative flex-1 rounded-[18.5px] lg:rounded-[22.5px] bg-black text-white font-medium text-sm lg:text-base leading-none inline-flex items-center justify-center select-none px-4 lg:px-6">
-              {activeTab === 'audit' ? 'run free audit' : 'create listing now'}
-              {/* Optional glossy overlay from your Figma fill @ ~38% */}
-              <span className="pointer-events-none absolute inset-0 rounded-[18.5px] lg:rounded-[22.5px] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_60%)] opacity-40" />
-            </span>
-          </button>
+            <NewCTAButton
+              variant="primary"
+              size="sm"
+              text={activeTab === 'audit' ? 'run free audit' : 'create listing now'}
+              onClick={handleCtaClick}
+              data-testid="sticky-cta"
+            />
           </div>
         </div>
       </div>
