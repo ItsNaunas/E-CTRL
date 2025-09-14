@@ -159,14 +159,14 @@ export async function POST(request: NextRequest) {
               summary: aiResult.summary,
               binaryIdqResult: aiResult.binaryIdqResult // Include binary results in PDF
             },
-          // Type-safe property access
-          asin: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).asin : undefined,
-          productUrl: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).websiteUrl : undefined,
-          keywords: validatedData.keywords,
-          fulfilment: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).fulfilment : undefined,
-          category: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).category : undefined,
-          productDesc: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).desc : undefined
-        };
+            // Type-safe property access
+            asin: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).asin : undefined,
+            productUrl: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).websiteUrl : undefined,
+            keywords: validatedData.keywords,
+            fulfilment: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).fulfilment : undefined,
+            category: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).category : undefined,
+            productDesc: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).desc : undefined
+          };
         } else {
           // Old structure (for existing sellers)
           emailData = {
@@ -181,15 +181,16 @@ export async function POST(request: NextRequest) {
               ...aiResult.detailedAnalysis,
               binaryIdqResult: aiResult.binaryIdqResult // Include binary results in PDF
             },
-          // Type-safe property access
-          asin: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).asin : undefined,
-          productUrl: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).websiteUrl : undefined,
-          keywords: validatedData.keywords,
-          fulfilment: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).fulfilment : undefined,
-          category: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).category : undefined,
-          productDesc: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).desc : undefined
-        };
-      }
+            // Type-safe property access
+            asin: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).asin : undefined,
+            productUrl: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).websiteUrl : undefined,
+            keywords: validatedData.keywords,
+            fulfilment: type === AUDIT_TYPES.EXISTING_SELLER ? (validatedData as ExistingSellerData).fulfilment : undefined,
+            category: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).category : undefined,
+            productDesc: type === AUDIT_TYPES.NEW_SELLER ? (validatedData as NewSellerData).desc : undefined
+          };
+        }
+
 
       const emailResult = await sendWelcomeEmail(emailData);
 
