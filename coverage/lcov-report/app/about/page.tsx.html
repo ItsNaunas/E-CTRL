@@ -327,8 +327,8 @@ export default function <span class="cstat-no" title="statement not covered" ><s
       &lt;Section className="pt-24 pb-16 sm:pt-32 sm:pb-24"&gt;
         &lt;Container&gt;
           &lt;div className="text-center"&gt;
-            &lt;h1&gt;{copy.about.title}&lt;/h1&gt;
-            &lt;p className="mt-4 text-xl text-muted-foreground max-w-2xl mx-auto"&gt;
+            &lt;h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4"&gt;{copy.about.title}&lt;/h1&gt;
+            &lt;p className="mt-4 text-xl text-white/70 max-w-2xl mx-auto"&gt;
               {copy.about.subtitle}
             &lt;/p&gt;
           &lt;/div&gt;
@@ -336,12 +336,12 @@ export default function <span class="cstat-no" title="statement not covered" ><s
       &lt;/Section&gt;
 &nbsp;
       {/* About Content */}
-      &lt;Section className="py-16 bg-muted"&gt;
+      &lt;Section className="py-16"&gt;
         &lt;Container&gt;
           &lt;div className="max-w-3xl mx-auto"&gt;
-            &lt;Card padding="lg"&gt;
+            &lt;Card padding="lg" className="bg-white/5 backdrop-blur-sm border border-white/10"&gt;
               &lt;div className="prose prose-lg max-w-none"&gt;
-                &lt;p className="text-lg text-muted-foreground leading-relaxed"&gt;
+                &lt;p className="text-lg text-white/70 leading-relaxed"&gt;
                   {copy.about.intro}
                 &lt;/p&gt;
               &lt;/div&gt;
@@ -355,8 +355,8 @@ export default function <span class="cstat-no" title="statement not covered" ><s
         &lt;Container&gt;
           &lt;div className="max-w-4xl mx-auto"&gt;
             &lt;div className="text-center mb-12"&gt;
-              &lt;h2&gt;{copy.about.whatWeDo.title}&lt;/h2&gt;
-              &lt;p className="mt-4 text-lg text-muted-foreground"&gt;
+              &lt;h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4"&gt;{copy.about.whatWeDo.title}&lt;/h2&gt;
+              &lt;p className="mt-4 text-lg text-white/70"&gt;
                 Our expertise covers all aspects of Amazon marketplace success
               &lt;/p&gt;
             &lt;/div&gt;
@@ -364,8 +364,8 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             &lt;div className="grid gap-6 md:grid-cols-2"&gt;
               {copy.about.whatWeDo.items.map(<span class="fstat-no" title="function not covered" >(i</span>tem, index) =&gt; (
 <span class="cstat-no" title="statement not covered" >                &lt;div key={index} c</span>lassName="flex items-start space-x-3"&gt;
-                  &lt;CheckCircle className="h-6 w-6 text-accent mt-0.5 flex-shrink-0" /&gt;
-                  &lt;p className="text-foreground"&gt;{item}&lt;/p&gt;
+                  &lt;CheckCircle className="h-6 w-6 text-[#FF7D2B] mt-0.5 flex-shrink-0" /&gt;
+                  &lt;p className="text-white/90"&gt;{item}&lt;/p&gt;
                 &lt;/div&gt;
               ))}
             &lt;/div&gt;
@@ -374,27 +374,27 @@ export default function <span class="cstat-no" title="statement not covered" ><s
       &lt;/Section&gt;
 &nbsp;
       {/* How It Works */}
-      &lt;Section className="bg-muted"&gt;
+      &lt;Section&gt;
         &lt;Container&gt;
           &lt;div className="max-w-4xl mx-auto"&gt;
             &lt;div className="text-center mb-12"&gt;
-              &lt;h2&gt;{copy.about.howItWorks.title}&lt;/h2&gt;
-              &lt;p className="mt-4 text-lg text-muted-foreground"&gt;
+              &lt;h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4"&gt;{copy.about.howItWorks.title}&lt;/h2&gt;
+              &lt;p className="mt-4 text-lg text-white/70"&gt;
                 Simple, straightforward process with immediate value
               &lt;/p&gt;
             &lt;/div&gt;
             
             &lt;div className="grid gap-8 md:grid-cols-3"&gt;
               {copy.about.howItWorks.steps.map(<span class="fstat-no" title="function not covered" >(s</span>tep, index) =&gt; (
-<span class="cstat-no" title="statement not covered" >                &lt;Card key={index}&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;Card key={index} c</span>lassName="bg-white/5 backdrop-blur-sm border border-white/10"&gt;
                   &lt;div className="text-center"&gt;
-                    &lt;div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground text-lg font-semibold"&gt;
+                    &lt;div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white text-lg font-semibold"&gt;
                       {step.number}
                     &lt;/div&gt;
-                    &lt;h3 className="mt-4 text-lg font-semibold"&gt;
+                    &lt;h3 className="mt-4 text-lg font-semibold text-white"&gt;
                       {step.title}
                     &lt;/h3&gt;
-                    &lt;p className="mt-2 text-muted-foreground"&gt;
+                    &lt;p className="mt-2 text-white/70"&gt;
                       {step.description}
                     &lt;/p&gt;
                   &lt;/div&gt;
@@ -409,8 +409,8 @@ export default function <span class="cstat-no" title="statement not covered" ><s
       &lt;Section&gt;
         &lt;Container&gt;
           &lt;div className="max-w-3xl mx-auto text-center"&gt;
-            &lt;h2&gt;Experience you can trust&lt;/h2&gt;
-            &lt;div className="mt-8 space-y-6 text-lg text-muted-foreground"&gt;
+            &lt;h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-8"&gt;Experience you can trust&lt;/h2&gt;
+            &lt;div className="mt-8 space-y-6 text-lg text-white/70"&gt;
               &lt;p&gt;
                 Fesal brings years of hands-on experience as an Amazon Marketplace Consultant, 
                 having worked with hundreds of UK and EU sellers across diverse product categories.
@@ -439,7 +439,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T10:05:47.281Z
+                at 2025-09-14T12:06:35.552Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

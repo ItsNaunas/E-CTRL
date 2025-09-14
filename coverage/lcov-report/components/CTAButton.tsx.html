@@ -186,7 +186,11 @@
 <a name='L121'></a><a href='#L121'>121</a>
 <a name='L122'></a><a href='#L122'>122</a>
 <a name='L123'></a><a href='#L123'>123</a>
-<a name='L124'></a><a href='#L124'>124</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -241,6 +245,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -348,15 +356,15 @@ export default function <span class="cstat-no" title="statement not covered" ><s
   const baseClasses = <span class="cstat-no" title="statement not covered" >'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation';</span>
   
   const sizeClasses = <span class="cstat-no" title="statement not covered" >{</span>
-    sm: 'h-11 px-4 text-sm',
-    md: 'h-12 px-6 text-base',
-    lg: 'h-14 px-8 text-lg'
+    sm: 'h-11 px-4 text-sm py-3',
+    md: 'h-12 px-6 text-base py-3 md:py-4 md:px-8',
+    lg: 'h-14 px-8 text-lg py-3 md:py-4 md:px-8'
   };
 &nbsp;
   const variantClasses = <span class="cstat-no" title="statement not covered" >{</span>
-    primary: 'relative rounded-full p-[1.5px] bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none',
-    secondary: 'border border-white/20 text-white/90 hover:border-white/40 hover:bg-white/5 transition focus:ring-white/20 rounded-xl',
-    sticky: 'relative rounded-full p-[1.5px] bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none'
+    primary: 'relative rounded-full focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white md:p-[1.5px] md:bg-gradient-to-r md:from-[#296AFF] md:to-[#FF7D2B]',
+    secondary: 'border border-white/10 text-white/90 hover:border-white/20 hover:bg-white/5 transition focus:ring-white/20 rounded-full bg-[#0B0B0C]',
+    sticky: 'relative rounded-full focus:ring-white/20 hover:shadow-lg hover:shadow-[#296AFF]/25 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:hover:shadow-none bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white md:p-[1.5px] md:bg-gradient-to-r md:from-[#296AFF] md:to-[#FF7D2B]'
   };
 &nbsp;
   const widthClasses = <span class="cstat-no" title="statement not covered" >fullWidth ? 'w-full' : '';</span>
@@ -374,10 +382,14 @@ export default function <span class="cstat-no" title="statement not covered" ><s
     &gt;
       {(variant === 'primary' || variant === 'sticky') ? (
         &lt;&gt;
-          {/* Inner fill with consistent sizing */}
-          &lt;span className="relative flex-1 rounded-full bg-black text-white font-semibold leading-tight inline-flex items-center justify-center select-none h-full"&gt;
+          {/* Mobile: Simple gradient background */}
+          &lt;span className="relative flex-1 rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white font-semibold leading-tight inline-flex items-center justify-center select-none h-full md:hidden"&gt;
             {buttonContent}
-            {/* Subtle glossy overlay */}
+          &lt;/span&gt;
+          {/* Desktop: Layered black-on-gradient */}
+          &lt;span className="relative flex-1 rounded-full bg-black text-white font-semibold leading-tight inline-flex items-center justify-center select-none h-full hidden md:inline-flex"&gt;
+            {buttonContent}
+            {/* Subtle glossy overlay for desktop */}
             &lt;span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/20 via-white/5 to-transparent opacity-30" /&gt;
           &lt;/span&gt;
         &lt;/&gt;
@@ -439,7 +451,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T10:05:47.281Z
+                at 2025-09-14T12:06:35.552Z
             </div>
         <script src="../prettify.js"></script>
         <script>

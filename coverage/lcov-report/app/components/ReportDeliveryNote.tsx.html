@@ -179,50 +179,50 @@
 &nbsp;
 export default function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ReportDeliveryNote({</span></span> email }: { email: string }) {
   return (
-    &lt;section className="py-16 bg-muted"&gt;
+    &lt;section className="py-16 md:py-20"&gt;
       &lt;div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"&gt;
         &lt;div className="text-center"&gt;
-          &lt;div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground mb-6"&gt;
+          &lt;div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-[#296AFF] to-[#FF7D2B] text-white mb-6"&gt;
             &lt;svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;
               &lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /&gt;
             &lt;/svg&gt;
           &lt;/div&gt;
-          &lt;h2 className="text-3xl font-bold text-foreground mb-4"&gt;
+          &lt;h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4"&gt;
             Check your email!
           &lt;/h2&gt;
-          &lt;p className="text-lg text-muted-foreground mb-4"&gt;
-            Your complete Amazon audit report with PDF attachment is on its way to &lt;strong&gt;{email}&lt;/strong&gt;
+          &lt;p className="text-lg text-white/70 mb-4"&gt;
+            Your complete Amazon audit report with PDF attachment is on its way to &lt;strong className="text-white"&gt;{email}&lt;/strong&gt;
           &lt;/p&gt;
-          &lt;div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg mb-4"&gt;
-            &lt;span className="text-green-600"&gt;✓&lt;/span&gt;
+          &lt;div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-400 rounded-lg mb-4"&gt;
+            &lt;span className="text-green-400"&gt;✓&lt;/span&gt;
             &lt;span className="text-sm font-medium"&gt;PDF Report Sent&lt;/span&gt;
           &lt;/div&gt;
-          &lt;p className="text-sm text-muted-foreground mb-8"&gt;
+          &lt;p className="text-sm text-white/60 mb-8"&gt;
             Didn&amp;apos;t receive it? Check your spam folder or contact us at contact@e-ctrl.co.uk
           &lt;/p&gt;
           
-          &lt;div className="bg-background rounded-lg border border-border p-6"&gt;
-            &lt;h3 className="font-semibold text-foreground mb-3"&gt;What&amp;apos;s in your report:&lt;/h3&gt;
+          &lt;div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6"&gt;
+            &lt;h3 className="font-semibold text-white mb-3"&gt;What&amp;apos;s in your report:&lt;/h3&gt;
             &lt;div className="grid gap-3 text-sm text-left"&gt;
               &lt;div className="flex items-center gap-3"&gt;
-                &lt;span className="text-accent"&gt;📊&lt;/span&gt;
-                &lt;span&gt;Detailed performance analysis&lt;/span&gt;
+                &lt;span className="text-[#FF7D2B]"&gt;📊&lt;/span&gt;
+                &lt;span className="text-white/90"&gt;Detailed performance analysis&lt;/span&gt;
               &lt;/div&gt;
               &lt;div className="flex items-center gap-3"&gt;
-                &lt;span className="text-accent"&gt;🎯&lt;/span&gt;
-                &lt;span&gt;Specific keyword recommendations&lt;/span&gt;
+                &lt;span className="text-[#FF7D2B]"&gt;🎯&lt;/span&gt;
+                &lt;span className="text-white/90"&gt;Specific keyword recommendations&lt;/span&gt;
               &lt;/div&gt;
               &lt;div className="flex items-center gap-3"&gt;
-                &lt;span className="text-accent"&gt;📸&lt;/span&gt;
-                &lt;span&gt;Image optimization checklist&lt;/span&gt;
+                &lt;span className="text-[#FF7D2B]"&gt;📸&lt;/span&gt;
+                &lt;span className="text-white/90"&gt;Image optimization checklist&lt;/span&gt;
               &lt;/div&gt;
               &lt;div className="flex items-center gap-3"&gt;
-                &lt;span className="text-accent"&gt;📈&lt;/span&gt;
-                &lt;span&gt;Conversion rate improvement tips&lt;/span&gt;
+                &lt;span className="text-[#FF7D2B]"&gt;📈&lt;/span&gt;
+                &lt;span className="text-white/90"&gt;Conversion rate improvement tips&lt;/span&gt;
               &lt;/div&gt;
               &lt;div className="flex items-center gap-3"&gt;
-                &lt;span className="text-accent"&gt;📄&lt;/span&gt;
-                &lt;span&gt;Complete PDF report with all details&lt;/span&gt;
+                &lt;span className="text-[#FF7D2B]"&gt;📄&lt;/span&gt;
+                &lt;span className="text-white/90"&gt;Complete PDF report with all details&lt;/span&gt;
               &lt;/div&gt;
             &lt;/div&gt;
           &lt;/div&gt;
@@ -238,7 +238,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T10:05:47.281Z
+                at 2025-09-14T12:06:35.552Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
