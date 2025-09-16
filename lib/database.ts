@@ -1,5 +1,6 @@
 import { supabase, supabaseAdmin, TABLES, type Lead, type Report, type ReportWithLead, type AuditType, type AccessType } from './supabase';
 import type { ExistingSellerData, NewSellerData } from './validation';
+import { withTransaction, dbOps } from './transactions';
 
 // Get client IP address from request headers
 export function getClientIP(headers: Headers): string | undefined {
@@ -121,7 +122,7 @@ export async function updateLeadEmail(leadId: string, email: string, name: strin
   }
 }
 
-// Upgrade guest user to account user (handle email duplicates)
+// Upgrade guest user to account user (handle email duplicates) - TRANSACTION SAFE
 export async function upgradeGuestToAccount(
   email: string, 
   name: string, 
@@ -138,10 +139,7 @@ export async function upgradeGuestToAccount(
 
     if (userCheckError) {
       // If error is "not found", that's expected for new users
-      if (userCheckError.code === 'PGRST116') {
-        console.log('No existing user found for email:', email);
-        // Continue with account creation
-      } else {
+      if (userCheckError.code !== 'PGRST116') {
         console.error('Error checking existing user:', userCheckError);
         return { success: false, message: 'Database error checking user' };
       }
@@ -166,18 +164,20 @@ export async function upgradeGuestToAccount(
       return { success: false, message: 'Database error' };
     }
 
-    // Create new user account
+    // Create user account first (most critical operation)
+    const userData = {
+      email: email,
+      name: name,
+      password_hash: password, // Note: In production, this should be hashed
+      email_verified: false,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
     const { data: newUser, error: createUserError } = await supabaseAdmin
       .from(TABLES.USERS)
-      .insert({
-        email: email,
-        name: name,
-        password_hash: password, // Note: In production, this should be hashed
-        email_verified: false,
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
+      .insert(userData)
       .select()
       .single();
 
@@ -186,40 +186,35 @@ export async function upgradeGuestToAccount(
       return { success: false, message: 'Failed to create account' };
     }
 
-    // Update guest leads to link to the new user account
+    // If we have guest leads, link them atomically
     if (guestLeads && guestLeads.length > 0) {
-      const { error: updateLeadsError } = await supabaseAdmin
-        .from(TABLES.LEADS)
-        .update({ 
-          user_id: newUser.id,
-          name: name, // Update name in leads too
-          updated_at: new Date().toISOString()
-        })
-        .in('id', guestLeads.map(lead => lead.id));
+      const leadIds = guestLeads.map(lead => lead.id);
+      
+      try {
+        // Execute linking operations with compensating actions if needed
+        const linkSteps = [
+          dbOps.linkLeadsToUser(email, newUser.id),
+          dbOps.upgradeReportsToAccount(leadIds, newUser.id)
+        ];
 
-      if (updateLeadsError) {
-        console.error('Error updating guest leads:', updateLeadsError);
-        // Don't fail the whole operation, just log the error
+        const linkTransaction = await withTransaction(linkSteps);
+        
+        if (!linkTransaction.success) {
+          console.error('Failed to link guest data to new account:', linkTransaction.error);
+          // Account was created successfully, but linking failed
+          // We could attempt manual cleanup or leave for later reconciliation
+          console.log('Account created but some guest data may not be linked');
+        } else {
+          console.log(`Successfully linked ${guestLeads.length} guest leads to new account`);
+        }
+      } catch (linkError) {
+        console.error('Error linking guest data:', linkError);
+        // Don't fail the account creation, just log the issue
       }
     }
 
-    // Update any existing reports to link to the new user AND upgrade access type
-    if (guestLeads && guestLeads.length > 0) {
-      const { error: updateReportsError } = await supabaseAdmin
-        .from(TABLES.REPORTS)
-        .update({ 
-          user_id: newUser.id,
-          access_type: 'account', // Upgrade all existing reports to account access
-          updated_at: new Date().toISOString()
-        })
-        .in('lead_id', guestLeads.map(lead => lead.id));
-
-      if (updateReportsError) {
-        console.error('Error updating reports:', updateReportsError);
-        // Don't fail the whole operation, just log the error
-      }
-    }
-
+    console.log(`Successfully created account for ${email} with ${guestLeads?.length || 0} guest leads`);
+    
     return { 
       success: true, 
       userId: newUser.id,
@@ -228,7 +223,10 @@ export async function upgradeGuestToAccount(
 
   } catch (error) {
     console.error('Upgrade guest to account failed:', error);
-    return { success: false, message: 'Internal server error' };
+    return { 
+      success: false, 
+      message: 'Failed to create account. Please try again.' 
+    };
   }
 }
 

@@ -91,20 +91,30 @@ export async function POST(request: NextRequest) {
     console.log('Starting AI analysis for type:', type);
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
     
-    // If user has account, link the lead to them
+    // If user has account, link the lead to them (with error handling)
     if (accessType === 'account') {
-      const { data: existingUser } = await supabaseAdmin
-        .from('users')
-        .select('id')
-        .eq('email', validatedData.email)
-        .single();
-      
-      if (existingUser) {
-        // Update the lead to link it to the existing user
-        await supabaseAdmin
-          .from('leads')
-          .update({ user_id: existingUser.id })
-          .eq('id', lead.id);
+      try {
+        const { data: existingUser } = await supabaseAdmin
+          .from('users')
+          .select('id')
+          .eq('email', validatedData.email)
+          .single();
+        
+        if (existingUser) {
+          // Update the lead to link it to the existing user
+          const { error: linkError } = await supabaseAdmin
+            .from('leads')
+            .update({ user_id: existingUser.id, updated_at: new Date().toISOString() })
+            .eq('id', lead.id);
+          
+          if (linkError) {
+            console.error('Failed to link lead to user:', linkError);
+            // Don't fail the entire operation, just log the error
+          }
+        }
+      } catch (linkError) {
+        console.error('Error linking lead to account user:', linkError);
+        // Continue with report generation even if linking fails
       }
     }
     
