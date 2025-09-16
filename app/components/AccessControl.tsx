@@ -10,7 +10,7 @@ interface AccessControlProps {
 }
 
 export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: AccessControlProps) {
-  const [accessType, setAccessType] = useState<'guest' | 'account'>('guest');
+  const [accessType, setAccessType] = useState<'guest' | 'account' | 'login'>('guest');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,7 +36,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
       return;
     }
 
-    if (accessType === 'account' && !password) {
+    if ((accessType === 'account' || accessType === 'login') && !password) {
       setError('Please enter a password');
       setIsSubmitting(false);
       return;
@@ -54,6 +54,22 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
     try {
       if (accessType === 'guest') {
         onGuestAccess(email);
+      } else if (accessType === 'login') {
+        // For login, call the login API
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Login successful:', result.user);
+          onAccountAccess(email, password);
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || 'Login failed');
+        }
       } else {
         // For account creation, call the registration API
         const response = await fetch('/api/register', {
@@ -111,7 +127,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
           <div className="p-8">
             {/* Access Type Selection */}
             <div className="mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Guest Access */}
                 <button
                   onClick={() => setAccessType('guest')}
@@ -213,6 +229,54 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                     </div>
                   </div>
                 </button>
+
+                {/* Login Access */}
+                <button
+                  onClick={() => setAccessType('login')}
+                  className={`p-6 rounded-xl border-2 transition-all text-left ${
+                    accessType === 'login'
+                      ? 'border-[#296AFF] bg-[#296AFF]/10'
+                      : 'border-white/20 hover:border-white/40 bg-white/5'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${
+                      accessType === 'login' ? 'border-[#296AFF] bg-[#296AFF]' : 'border-white/40'
+                    }`}>
+                      {accessType === 'login' && (
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-white font-semibold text-lg">Sign In</h3>
+                        <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-medium">Returning</span>
+                      </div>
+                      <p className="text-white/70 text-sm mb-4">Already have an account? Sign in to access your enhanced features.</p>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Access saved reports</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Account dashboard</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <svg className="h-4 w-4 text-[#296AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Higher daily limits</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </button>
               </div>
             </div>
 
@@ -250,10 +314,10 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 />
               </div>
 
-              {accessType === 'account' && (
+              {(accessType === 'account' || accessType === 'login') && (
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
-                    Create Password
+                    {accessType === 'login' ? 'Password' : 'Create Password'}
                   </label>
                   <input
                     id="password"
@@ -298,9 +362,12 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 type="submit"
                 variant="primary"
                 size="lg"
-                text={accessType === 'guest' 
-                  ? (isAuditMode ? 'get my preview report' : 'get my preview listing')
-                  : (isAuditMode ? 'create account & get full report' : 'create account & get full listing')
+                text={
+                  accessType === 'guest' 
+                    ? (isAuditMode ? 'get my preview report' : 'get my preview listing')
+                    : accessType === 'login'
+                    ? (isAuditMode ? 'sign in & get full report' : 'sign in & get full listing')
+                    : (isAuditMode ? 'create account & get full report' : 'create account & get full listing')
                 }
                 fullWidth
                 disabled={isSubmitting}

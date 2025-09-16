@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
+import { AuthProvider } from '@/lib/AuthContext';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -73,9 +74,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} h-full flex flex-col bg-[#0B0B0C] text-white`}>
-        <main className="flex-1">
-          {children}
-        </main>
+        <AuthProvider>
+          <main className="flex-1">
+            {children}
+          </main>
+        </AuthProvider>
         
         {/* Vercel Analytics - Only load in production on Vercel */}
         {process.env.NODE_ENV === 'production' && process.env.VERCEL && <Analytics />}

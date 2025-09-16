@@ -20,12 +20,17 @@ export function getClientIP(headers: Headers): string | undefined {
   return undefined;
 }
 
-// Check rate limit using database function
-export async function checkRateLimit(email: string, auditType: AuditType): Promise<boolean> {
+// Check rate limit using database function with access type support
+export async function checkRateLimit(
+  email: string, 
+  auditType: AuditType, 
+  accessType: AccessType = 'guest'
+): Promise<boolean> {
   try {
     const { data, error } = await supabaseAdmin.rpc('check_rate_limit', {
       p_email: email,
-      p_audit_type: auditType
+      p_audit_type: auditType,
+      p_access_type: accessType
     });
     
     if (error) {
@@ -198,12 +203,13 @@ export async function upgradeGuestToAccount(
       }
     }
 
-    // Update any existing reports to link to the new user
+    // Update any existing reports to link to the new user AND upgrade access type
     if (guestLeads && guestLeads.length > 0) {
       const { error: updateReportsError } = await supabaseAdmin
         .from(TABLES.REPORTS)
         .update({ 
           user_id: newUser.id,
+          access_type: 'account', // Upgrade all existing reports to account access
           updated_at: new Date().toISOString()
         })
         .in('lead_id', guestLeads.map(lead => lead.id));

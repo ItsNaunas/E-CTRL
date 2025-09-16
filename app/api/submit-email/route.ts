@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWelcomeEmail } from '@/lib/email';
-import { getReportsByEmail, updateLeadEmail } from '@/lib/database';
+import { getReportsByEmail, updateLeadEmail, checkRateLimit } from '@/lib/database';
+import { supabaseAdmin } from '@/lib/supabase';
 import type { ReportWithLead } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
@@ -16,6 +17,40 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Email submission received:', { email, mode, leadId, hasPreviewData: !!previewData });
+
+    // Determine access type by checking if user has an account
+    let accessType: 'guest' | 'account' = 'guest';
+    try {
+      const { data: existingUser } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .single();
+      
+      if (existingUser) {
+        accessType = 'account';
+        console.log('User has account - using account access type');
+      } else {
+        console.log('User does not have account - using guest access type');
+      }
+    } catch (error) {
+      console.log('No existing user found for email:', email, '- using guest access type');
+    }
+
+    // Check rate limit for PDF generation (separate from report generation)
+    // Use 'existing_seller' as default audit type for PDF requests
+    const auditType = mode === 'create' ? 'new_seller' : 'existing_seller';
+    const rateLimitAllowed = await checkRateLimit(email, auditType, accessType);
+    if (!rateLimitAllowed) {
+      const limitMessage = accessType === 'account' 
+        ? 'Rate limit exceeded. Account users can request up to 5 PDFs per day.'
+        : 'Rate limit exceeded. One PDF per email per day. Create a free account for higher limits!';
+      
+      return NextResponse.json(
+        { error: limitMessage },
+        { status: 429 }
+      );
+    }
 
     // If leadId is provided, update the existing lead with the user's email
     if (leadId) {
@@ -40,6 +75,7 @@ export async function POST(request: NextRequest) {
         name: name || 'User',
         email: email,
         mode: mode || 'audit',
+        accessType: accessType, // Use current account status
         score: previewData.score || 0,
         highlights: previewData.highlights || [],
         recommendations: previewData.recommendations || [],
@@ -80,6 +116,7 @@ export async function POST(request: NextRequest) {
           name: latestReport.leads?.name || name || 'User',
           email: email,
           mode: latestReport.leads?.audit_type === 'existing_seller' ? 'audit' : 'create',
+          accessType: accessType, // Use current account status, not stored report access type
           score: latestReport.score,
           highlights: latestReport.highlights || [],
           recommendations: latestReport.recommendations || [],
@@ -116,6 +153,7 @@ export async function POST(request: NextRequest) {
       to: email,
       name: name || 'there',
       mode: mode || 'audit',
+      accessType: accessType, // Always pass the current account status
       // Include PDF data if available
       ...(pdfData || {})
     });

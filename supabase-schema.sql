@@ -161,27 +161,44 @@ CREATE TRIGGER update_reports_updated_at BEFORE UPDATE ON reports
 -- Function to check rate limits
 CREATE OR REPLACE FUNCTION check_rate_limit(
     p_email VARCHAR(255),
-    p_audit_type audit_type
+    p_audit_type audit_type,
+    p_access_type access_type DEFAULT 'guest'
 )
 RETURNS BOOLEAN AS $$
 DECLARE
     last_request TIMESTAMP WITH TIME ZONE;
     current_count INTEGER;
+    has_account BOOLEAN := FALSE;
+    daily_limit INTEGER;
 BEGIN
-    -- Check if user has made a request in the last 24 hours
+    -- Check if user has an account
+    SELECT EXISTS(SELECT 1 FROM users WHERE email = p_email AND is_active = TRUE)
+    INTO has_account;
+    
+    -- Set rate limits based on account type
+    -- Account users: 5 reports per day
+    -- Guest users: 1 report per day  
+    -- Override: If someone just upgraded to account, allow immediate access
+    IF has_account OR p_access_type = 'account' THEN
+        daily_limit := 5;
+    ELSE
+        daily_limit := 1;
+    END IF;
+    
+    -- Check existing rate limit record
     SELECT last_request_at, request_count 
     INTO last_request, current_count
     FROM rate_limits 
     WHERE email = p_email AND audit_type = p_audit_type;
     
-    -- If no previous request, allow
+    -- If no previous request, allow and create record
     IF last_request IS NULL THEN
         INSERT INTO rate_limits (email, audit_type, last_request_at, request_count)
         VALUES (p_email, p_audit_type, NOW(), 1);
         RETURN TRUE;
     END IF;
     
-    -- If last request was more than 24 hours ago, reset
+    -- If last request was more than 24 hours ago, reset counter
     IF last_request < NOW() - INTERVAL '24 hours' THEN
         UPDATE rate_limits 
         SET last_request_at = NOW(), request_count = 1
@@ -189,12 +206,29 @@ BEGIN
         RETURN TRUE;
     END IF;
     
-    -- If within 24 hours and already made a request, deny
-    IF current_count >= 1 THEN
+    -- Special case: If user just upgraded to account and was previously rate limited,
+    -- allow one immediate request regardless of previous count
+    IF has_account AND p_access_type = 'account' AND current_count >= 1 THEN
+        -- Check if they have any guest reports (indicating they upgraded)
+        IF EXISTS(
+            SELECT 1 FROM reports r 
+            JOIN leads l ON r.lead_id = l.id 
+            WHERE l.email = p_email AND r.access_type = 'guest'
+        ) THEN
+            -- Allow the upgrade request but don't reset the counter completely
+            UPDATE rate_limits 
+            SET last_request_at = NOW()
+            WHERE email = p_email AND audit_type = p_audit_type;
+            RETURN TRUE;
+        END IF;
+    END IF;
+    
+    -- Check if within daily limit
+    IF current_count >= daily_limit THEN
         RETURN FALSE;
     END IF;
     
-    -- Increment count
+    -- Increment count and allow
     UPDATE rate_limits 
     SET request_count = request_count + 1, last_request_at = NOW()
     WHERE email = p_email AND audit_type = p_audit_type;

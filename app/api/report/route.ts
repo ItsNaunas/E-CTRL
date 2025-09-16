@@ -32,16 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check rate limit first (disabled for testing)
-    // const rateLimitAllowed = await checkRateLimit(data.email, type);
-    // if (!rateLimitAllowed) {
-    //   return NextResponse.json(
-    //     { error: 'Rate limit exceeded. One report per email per day.' },
-    //     { status: 429 }
-    //   );
-    // }
-
-    // Validate form data based on type
+    // Validate form data based on type first
     let validatedData: ExistingSellerData | NewSellerData;
     
     if (type === AUDIT_TYPES.EXISTING_SELLER) {
@@ -52,6 +43,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Invalid audit type' },
         { status: 400 }
+      );
+    }
+
+    // Determine access type by checking if user already has an account
+    let accessType: 'guest' | 'account' = 'guest';
+    try {
+      const { data: existingUser } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', validatedData.email)
+        .single();
+      
+      if (existingUser) {
+        accessType = 'account';
+      }
+    } catch (error) {
+      // No existing user found, remain as guest
+    }
+
+    // Check rate limit with access type support
+    const rateLimitAllowed = await checkRateLimit(validatedData.email, type, accessType);
+    if (!rateLimitAllowed) {
+      const limitMessage = accessType === 'account' 
+        ? 'Rate limit exceeded. Account users can generate up to 5 reports per day.'
+        : 'Rate limit exceeded. One report per email per day. Create a free account for higher limits!';
+      
+      return NextResponse.json(
+        { error: limitMessage },
+        { status: 429 }
       );
     }
 
@@ -71,9 +91,8 @@ export async function POST(request: NextRequest) {
     console.log('Starting AI analysis for type:', type);
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
     
-    // Determine access type by checking if user already has an account
-    let accessType: 'guest' | 'account' = 'guest';
-    try {
+    // If user has account, link the lead to them
+    if (accessType === 'account') {
       const { data: existingUser } = await supabaseAdmin
         .from('users')
         .select('id')
@@ -81,15 +100,12 @@ export async function POST(request: NextRequest) {
         .single();
       
       if (existingUser) {
-        accessType = 'account';
         // Update the lead to link it to the existing user
         await supabaseAdmin
           .from('leads')
           .update({ user_id: existingUser.id })
           .eq('id', lead.id);
       }
-    } catch (error) {
-      console.log('No existing user found for email:', validatedData.email);
     }
     
     let aiResult;
@@ -140,13 +156,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create report in database
+    // Create report in database with access type
     const report = await createAuditReport(
       lead.id,
       aiResult.score,
       aiResult.highlights,
       aiResult.recommendations,
-      aiResult.detailedAnalysis
+      aiResult.detailedAnalysis,
+      accessType === 'account' ? lead.user_id : undefined,
+      accessType
     );
 
     if (!report) {
