@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToastHelpers } from '@/lib/toast';
 import UnifiedCTA from '@/components/UnifiedCTA';
 
 interface AccessControlProps {
@@ -17,6 +18,8 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
   const [promotionalConsent, setPromotionalConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  
+  const { success, error: showError, info } = useToastHelpers();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +56,7 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
 
     try {
       if (accessType === 'guest') {
+        info('Starting analysis...', 'Generating your preview report');
         onGuestAccess(email);
       } else if (accessType === 'login') {
         // For login, call the login API
@@ -64,11 +68,13 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
 
         if (response.ok) {
           const result = await response.json();
-          console.log('Login successful:', result.user);
+          success('Login successful!', `Welcome back, ${result.user?.name || 'there'}!`);
           onAccountAccess(email, password);
         } else {
           const errorData = await response.json();
-          setError(errorData.error || 'Login failed');
+          const errorMessage = errorData.error || 'Login failed';
+          setError(errorMessage);
+          showError('Login failed', errorMessage);
         }
       } else {
         // For account creation, call the registration API
@@ -80,16 +86,20 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
 
         if (response.ok) {
           const result = await response.json();
-          console.log('Account created successfully:', result);
+          success('Account created!', `Welcome to e-ctrl, ${name}! Generating your full report...`);
           onAccountAccess(email, password);
         } else {
           const errorData = await response.json();
-          setError(errorData.error || 'Failed to create account');
+          const errorMessage = errorData.error || 'Failed to create account';
+          setError(errorMessage);
+          showError('Registration failed', errorMessage);
         }
       }
     } catch (error) {
       console.error('Error during access:', error);
-      setError('An unexpected error occurred. Please try again.');
+      const errorMessage = 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
+      showError('Connection error', errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -363,7 +373,9 @@ export default function AccessControl({ mode, onGuestAccess, onAccountAccess }: 
                 variant="primary"
                 size="lg"
                 text={
-                  accessType === 'guest' 
+                  isSubmitting 
+                    ? 'Processing...'
+                    : accessType === 'guest' 
                     ? (isAuditMode ? 'get my preview report' : 'get my preview listing')
                     : accessType === 'login'
                     ? (isAuditMode ? 'sign in & get full report' : 'sign in & get full listing')

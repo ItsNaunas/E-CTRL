@@ -22,6 +22,9 @@ import ReportDeliveryNote from './components/ReportDeliveryNote';
 import NewSellerDeliveryNote from './components/NewSellerDeliveryNote';
 import AccessControl from './components/AccessControl';
 import GuestResult from './components/GuestResult';
+import AnalysisLoadingBar from '@/components/AnalysisLoadingBar';
+import { ComponentErrorBoundary } from '@/components/ErrorBoundary';
+import { reportApiError } from '@/lib/errorHandler';
 import FooterGlow from '@/components/FooterGlow';
 import { AUDIT_TYPES, FULFILMENT_TYPES, SAMPLE_DATA, FILE_CONSTANTS, EMAIL_CONSTANTS } from '@/lib/constants';
 
@@ -154,6 +157,9 @@ export default function HomePage() {
           error: errorData
         });
         
+        // Report API error
+        reportApiError('/api/preview', response.status, errorData);
+        
         // Show specific error message to user
         if (errorData.error) {
           setAiResult({
@@ -171,6 +177,8 @@ export default function HomePage() {
       }
     } catch (error) {
       console.error('Preview analysis failed:', error);
+      // Report API error
+      reportApiError('/api/preview', 0, error);
       // Fallback to error state
       setAiResult(null);
     } finally {
@@ -758,8 +766,9 @@ export default function HomePage() {
 
       {/* Conditional Flow Components */}
       {showPartial && (
-        <div id="partial-result">
-          {mode === 'audit' ? (
+        <ComponentErrorBoundary context="Analysis Results">
+          <div id="partial-result">
+            {mode === 'audit' ? (
                          <PartialResult
                score={hasUserInput ? (aiResult?.score || 0) : undefined}
                highlights={hasUserInput ? (aiResult?.highlights || [
@@ -790,6 +799,7 @@ export default function HomePage() {
              />
           )}
         </div>
+        </ComponentErrorBoundary>
       )}
 
       {/* Access Control System */}
@@ -839,6 +849,22 @@ export default function HomePage() {
 
       {/* Premium Footer with Glass Effect */}
       <FooterGlow onCtaClick={scrollToHeroForm} />
+
+      {/* Analysis Loading Bar */}
+      <ComponentErrorBoundary context="Analysis Loading">
+        <AnalysisLoadingBar
+          isVisible={isAnalyzing}
+          mode={mode}
+          onComplete={() => {
+            // Analysis complete - let the existing flow handle the results
+            console.log('Analysis completed via loading bar');
+          }}
+          onCancel={() => {
+            setIsAnalyzing(false);
+            setShowPartial(false);
+          }}
+        />
+      </ComponentErrorBoundary>
     </>
   );
 }

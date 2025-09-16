@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
+import { useToastHelpers } from '@/lib/toast';
 import UnifiedCTA from './UnifiedCTA';
 
 interface LoginProps {
@@ -15,6 +16,7 @@ export default function Login({ onSuccess, onCancel, showCancel = true }: LoginP
   const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth();
+  const { success, error: showError } = useToastHelpers();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,12 +42,17 @@ export default function Login({ onSuccess, onCancel, showCancel = true }: LoginP
           });
         }
         
+        success('Login successful!', 'Welcome back!');
         onSuccess?.();
       } else {
-        setError(result.error || 'Login failed');
+        const errorMessage = result.error || 'Login failed';
+        setError(errorMessage);
+        showError('Login failed', errorMessage);
       }
     } catch (error) {
-      setError('Login failed. Please try again.');
+      const errorMessage = 'Login failed. Please try again.';
+      setError(errorMessage);
+      showError('Connection error', errorMessage);
     } finally {
       setIsLoading(false);
     }
