@@ -64,11 +64,11 @@ export default function HomePage() {
     fulfilmentIntent: string;
   } | null>(null);
 
-  // Real data for AI analysis
+  // Real data for AI analysis - no longer using SAMPLE_DATA
   const sampleData = useMemo(() => ({
     asin: "", // Will be filled by user input
-    keywords: SAMPLE_DATA.KEYWORDS,
-    fulfilment: SAMPLE_DATA.DEFAULT_FULFILMENT
+    keywords: [], // Empty array instead of SAMPLE_DATA
+    fulfilment: 'Unsure' // Default instead of SAMPLE_DATA
   }), []);
 
   // Don't load initial AI analysis - wait for user input
