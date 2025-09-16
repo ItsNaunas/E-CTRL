@@ -104,13 +104,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Log for monitoring (no rate limiting)
-    console.log('Preview analysis completed:', {
+    const logData: any = {
       type,
-      asin: type === AUDIT_TYPES.EXISTING_SELLER ? validatedData.asin : undefined,
       hasProductData: !!productData,
       timestamp: new Date().toISOString(),
       estimatedCost: 0.10
-    });
+    };
+    
+    // Add ASIN only for existing seller audits
+    if (type === AUDIT_TYPES.EXISTING_SELLER && 'asin' in validatedData) {
+      logData.asin = validatedData.asin;
+    }
+    
+    console.log('Preview analysis completed:', logData);
 
     return NextResponse.json({
       success: true,
