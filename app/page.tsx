@@ -463,42 +463,7 @@ export default function HomePage() {
     setShowGuestResult(true);
     setShowAccessControl(false); // Hide access control after guest access
     
-    // For new sellers, we need to generate AI analysis first to create PDF data
-    if (mode === 'create' && productUrl) {
-      try {
-        // Call AI API for new seller analysis to generate PDF data
-        const requestBody = {
-          type: 'new_seller',
-          data: {
-            name: email.split('@')[0],
-            email: email,
-            keywords: ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl,
-            category: "Home & Garden", // Required field
-            desc: SAMPLE_DATA.DEFAULT_DESCRIPTION, // Required field
-            fulfilmentIntent: SAMPLE_DATA.DEFAULT_FULFILMENT, // Required field
-            image: FILE_CONSTANTS.PLACEHOLDER_IMAGE
-          }
-        };
-        
-        console.log('Generating AI analysis for guest access:', requestBody);
-        
-        const response = await fetch('/api/report', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Guest AI analysis completed:', result);
-        } else {
-          console.error('Failed to generate AI analysis for guest');
-        }
-      } catch (error) {
-        console.error('Error generating AI analysis for guest:', error);
-      }
-    }
+    // Use the existing preview analysis data - no need to regenerate with placeholder data
     
     // Send welcome email for guest access too
     try {
@@ -549,42 +514,7 @@ export default function HomePage() {
     setEmailSubmitted(true); // Mark email as submitted
     setShowAccessControl(false); // Hide access control after account creation
     
-    // For new sellers, we need to generate AI analysis first to create PDF data
-    if (mode === 'create' && productUrl) {
-      try {
-        // Call AI API for new seller analysis to generate PDF data
-        const requestBody = {
-          type: 'new_seller',
-          data: {
-            name: email.split('@')[0],
-            email: email,
-            keywords: ["eco friendly", "sustainable", "organic"],
-            websiteUrl: productUrl,
-            category: "Home & Garden", // Required field
-            desc: SAMPLE_DATA.DEFAULT_DESCRIPTION, // Required field
-            fulfilmentIntent: SAMPLE_DATA.DEFAULT_FULFILMENT, // Required field
-            image: FILE_CONSTANTS.PLACEHOLDER_IMAGE
-          }
-        };
-        
-        console.log('Generating AI analysis for account creation:', requestBody);
-        
-        const response = await fetch('/api/report', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Account creation AI analysis completed:', result);
-        } else {
-          console.error('Failed to generate AI analysis for account creation');
-        }
-      } catch (error) {
-        console.error('Error generating AI analysis for account creation:', error);
-      }
-    }
+    // Use the existing preview analysis data - no need to regenerate with placeholder data
     
     // Send welcome email
     try {
