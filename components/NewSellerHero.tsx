@@ -93,71 +93,19 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
           return;
         }
         
-        // First, validate the URL can be scraped before proceeding
-        try {
-          const response = await fetch('/api/preview', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: 'new_seller',
-              data: {
-                name: 'Preview User',
-                email: 'preview@example.com',
-                keywords: ["eco friendly", "sustainable", "organic"],
-                websiteUrl: productUrl,
-                category: "Home & Garden",
-                desc: "Eco-friendly product for sustainable living",
-                fulfilmentIntent: "FBA",
-                image: {
-                  name: "placeholder.jpg",
-                  size: 1024,
-                  type: "image/jpeg"
-                }
-              }
-            })
+        // URL validation is now handled by the parent component
+        // No need to make API calls with placeholder data here
+        
+        // Track the event
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'listing_creation_start', {
+            event_category: 'engagement',
+            event_label: 'new_seller_url_form'
           });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            if (errorData.code === 'URL_SCRAPING_FAILED') {
-              setError('This URL cannot be accessed. Please use the manual input form instead to create your Amazon listing.');
-              setIsSubmitting(false);
-              return;
-            } else {
-              setError('Something went wrong. Please try again or use manual input.');
-              setIsSubmitting(false);
-              return;
-            }
-          }
-
-          // URL is valid, proceed with analysis and scroll immediately
-          // Track the event
-          if (typeof window !== 'undefined' && window.gtag) {
-            window.gtag('event', 'listing_creation_start', {
-              event_category: 'engagement',
-              event_label: 'new_seller_url_form'
-            });
-          }
-          
-          // Scroll to preview area immediately since URL is valid
-          setTimeout(() => {
-            const element = document.getElementById('partial-result');
-            if (element) {
-              const elementPosition = element.offsetTop - 80;
-              window.scrollTo({
-                top: elementPosition,
-                behavior: 'smooth'
-              });
-            }
-          }, 100);
-          
-          onUrlSubmit(productUrl);
-        } catch (fetchError) {
-          console.error('URL validation failed:', fetchError);
-          setError('Unable to access this URL. Please use the manual input form instead.');
-          setIsSubmitting(false);
-          return;
         }
+        
+        // Submit URL to parent component
+        onUrlSubmit(productUrl);
       } else {
         // Enhanced manual input validation
         if (!productName.trim() || !category.trim() || !description.trim() || !keywords.trim()) {

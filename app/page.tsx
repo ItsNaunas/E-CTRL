@@ -191,127 +191,10 @@ export default function HomePage() {
     console.log('Product URL submitted:', url);
     setProductUrl(url);
     setHasUserInput(true);
-    setIsAnalyzing(true);
-    setShowPartial(true); // Show partial results immediately like existing seller
     
-    // Scroll to partial result immediately when analysis starts
-    scrollToElement('partial-result', 80);
-    
-    try {
-      // Generate REAL preview WITHOUT creating database entry
-      const requestBody = {
-        type: AUDIT_TYPES.NEW_SELLER,
-        data: {
-          name: 'Preview User',
-          email: EMAIL_CONSTANTS.PREVIEW_EMAIL, // Temporary email for preview only
-          keywords: SAMPLE_DATA.KEYWORDS,
-          websiteUrl: url,
-          category: SAMPLE_DATA.DEFAULT_CATEGORY, // Required field
-          desc: SAMPLE_DATA.DEFAULT_DESCRIPTION, // Required field
-          fulfilmentIntent: SAMPLE_DATA.DEFAULT_FULFILMENT, // Required field
-          image: FILE_CONSTANTS.PLACEHOLDER_IMAGE // Required field - placeholder
-        }
-      };
-
-      const response = await fetch('/api/preview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log('New seller preview result received:', result.aiResult);
-      
-      if (result.success && result.aiResult) {
-        // Convert new IDQ structure to old structure for compatibility
-        const idqAnalysis = result.aiResult.idqAnalysis;
-        const summary = result.aiResult.summary;
-        
-        console.log('AI Result for new seller URL:', result.aiResult);
-        console.log('Summary:', summary);
-        console.log('Key improvements:', summary?.keyImprovements);
-        console.log('Next steps:', summary?.nextSteps);
-        
-        // Create highlights from actual generated content
-        const generatedHighlights = [];
-        if (idqAnalysis?.title?.optimized) {
-          generatedHighlights.push(idqAnalysis.title.optimized);
-        }
-        if (idqAnalysis?.bullets?.optimized) {
-          generatedHighlights.push(...idqAnalysis.bullets.optimized);
-        }
-        if (idqAnalysis?.description?.optimized) {
-          generatedHighlights.push(idqAnalysis.description.optimized);
-        }
-        // Add any additional key improvements
-        if (summary?.keyImprovements) {
-          generatedHighlights.push(...summary.keyImprovements);
-        }
-        
-        setAiResult({
-          score: 0, // No score in new format
-          highlights: generatedHighlights,
-          recommendations: summary?.nextSteps || [],
-          detailedAnalysis: {
-            idqAnalysis: idqAnalysis,
-            summary: summary
-          }
-        });
-        // No lead ID needed for preview
-        setLeadId(null);
-      } else {
-        console.error('No AI result received from successful response');
-        setAiResult(null);
-      }
-      } else {
-        // Get error details from response - same pattern as existing seller
-        const errorData = await response.json();
-        console.error('New seller preview API request failed:', {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorData
-        });
-        
-        // Handle URL scraping failure by redirecting to manual input
-        if (errorData.code === 'URL_SCRAPING_FAILED') {
-          console.log('URL scraping failed, redirecting to manual input');
-          // Set a special error state that will trigger manual input redirect
-          setAiResult({
-            score: 0,
-            highlights: [],
-            recommendations: [],
-            detailedAnalysis: {
-              error: errorData.error,
-              errorCode: errorData.code,
-              message: errorData.message,
-              suggestion: errorData.suggestion
-            }
-          });
-        } else {
-          // Show specific error message to user - same pattern as existing seller
-          if (errorData.error) {
-            setAiResult({
-              score: 0,
-              highlights: [],
-              recommendations: [],
-              detailedAnalysis: {
-                error: errorData.error,
-                errorCode: errorData.code
-              }
-            });
-          } else {
-            setAiResult(null);
-          }
-        }
-      }
-  } catch (error) {
-    console.error('New seller preview analysis failed:', error);
-    // Fallback to error state - same pattern as existing seller
-    setAiResult(null);
-  } finally {
-    setIsAnalyzing(false);
-  }
+    // Don't make API call with placeholder data - wait for manual form submission
+    // The user needs to fill out the manual form with real product data
+    console.log('URL stored, waiting for manual product data submission...');
   };
 
   // Handle manual product data submission from NewSellerHero
@@ -346,9 +229,9 @@ export default function HomePage() {
         type: 'new_seller',
         data: {
           name: 'Preview User',
-          email: 'preview@example.com', // Temporary email for preview only
+          email: EMAIL_CONSTANTS.PREVIEW_EMAIL, // Temporary email for preview only
           keywords: data.keywords,
-          websiteUrl: undefined, // No website URL for manual input
+          websiteUrl: productUrl || undefined, // Use URL if provided, otherwise undefined
           category: data.category,
           desc: data.description,
           fulfilmentIntent: data.fulfilmentIntent as "FBA" | "FBM" | "Unsure",
@@ -475,10 +358,10 @@ export default function HomePage() {
         detailedAnalysis: aiResult?.detailedAnalysis || {},
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
-        keywords: manualProductData?.keywords || sampleData.keywords,
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || SAMPLE_DATA.DEFAULT_FULFILMENT),
-        category: mode === 'create' ? (manualProductData?.category || SAMPLE_DATA.DEFAULT_CATEGORY) : undefined,
-        productDesc: mode === 'create' ? (manualProductData?.description || SAMPLE_DATA.DEFAULT_DESCRIPTION) : undefined
+        keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || 'Unsure'),
+        category: mode === 'create' ? (manualProductData?.category || '') : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
       
       const response = await fetch('/api/submit-email', {
@@ -526,10 +409,10 @@ export default function HomePage() {
         detailedAnalysis: aiResult?.detailedAnalysis || {},
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
-        keywords: manualProductData?.keywords || sampleData.keywords,
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || SAMPLE_DATA.DEFAULT_FULFILMENT),
-        category: mode === 'create' ? (manualProductData?.category || SAMPLE_DATA.DEFAULT_CATEGORY) : undefined,
-        productDesc: mode === 'create' ? (manualProductData?.description || SAMPLE_DATA.DEFAULT_DESCRIPTION) : undefined
+        keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || 'Unsure'),
+        category: mode === 'create' ? (manualProductData?.category || '') : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
       
       const response = await fetch('/api/submit-email', {
@@ -577,10 +460,10 @@ export default function HomePage() {
         detailedAnalysis: aiResult?.detailedAnalysis || {},
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
-        keywords: manualProductData?.keywords || sampleData.keywords,
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || SAMPLE_DATA.DEFAULT_FULFILMENT),
-        category: mode === 'create' ? (manualProductData?.category || SAMPLE_DATA.DEFAULT_CATEGORY) : undefined,
-        productDesc: mode === 'create' ? (manualProductData?.description || SAMPLE_DATA.DEFAULT_DESCRIPTION) : undefined
+        keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || 'Unsure'),
+        category: mode === 'create' ? (manualProductData?.category || '') : undefined,
+        productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
       
       console.log('Preview data being sent:', previewData);
