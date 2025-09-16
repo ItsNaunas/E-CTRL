@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWelcomeEmail } from '@/lib/email';
-import { getReportsByEmail, updateLeadEmail, checkRateLimit } from '@/lib/database';
+import { getReportsByEmail, updateLeadEmail } from '@/lib/database';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { ReportWithLead } from '@/lib/supabase';
 

@@ -7,7 +7,6 @@ import {
   type NewSellerData 
 } from '@/lib/validation';
 import { 
-  checkRateLimit, 
   createLead, 
   createAuditReport, 
   trackEvent 
@@ -46,6 +45,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Simple bot detection
+    const userAgent = request.headers.get('user-agent');
+    if (!userAgent || userAgent.toLowerCase().includes('bot')) {
+      return NextResponse.json(
+        { error: 'Please use a web browser' },
+        { status: 403 }
+      );
+    }
+
     // Determine access type by checking if user already has an account
     let accessType: 'guest' | 'account' = 'guest';
     try {
@@ -60,19 +68,6 @@ export async function POST(request: NextRequest) {
       }
     } catch (error) {
       // No existing user found, remain as guest
-    }
-
-    // Check rate limit with access type support
-    const rateLimitAllowed = await checkRateLimit(validatedData.email, type, accessType);
-    if (!rateLimitAllowed) {
-      const limitMessage = accessType === 'account' 
-        ? 'Rate limit exceeded. Account users can generate up to 5 reports per day.'
-        : 'Rate limit exceeded. One report per email per day. Create a free account for higher limits!';
-      
-      return NextResponse.json(
-        { error: limitMessage },
-        { status: 429 }
-      );
     }
 
     // Create lead in database

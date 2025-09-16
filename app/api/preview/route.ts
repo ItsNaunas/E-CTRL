@@ -4,8 +4,6 @@ import { scrapeProductPage } from '@/lib/product-scraper';
 import { scrapeProduct } from '@/lib/amazon-scraper';
 import { newSellerSchema, existingSellerSchema } from '@/lib/validation';
 import { AUDIT_TYPES } from '@/lib/constants';
-import { checkOperationRateLimit, recordOperation } from '@/lib/rate-limiting';
-import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,37 +25,13 @@ export async function POST(request: NextRequest) {
       validatedData = existingSellerSchema.parse(data);
     }
 
-    // Determine access type by checking if user has an account
-    let accessType: 'guest' | 'account' = 'guest';
-    try {
-      const { data: existingUser } = await supabaseAdmin
-        .from('users')
-        .select('id')
-        .eq('email', validatedData.email)
-        .single();
-      
-      if (existingUser) {
-        accessType = 'account';
-      }
-    } catch (error) {
-      // No existing user found, remain as guest
-    }
-
-    // Check rate limit for preview operations
-    const rateLimitResult = await checkOperationRateLimit(
-      validatedData.email, 
-      'preview', 
-      accessType,
-      type === AUDIT_TYPES.EXISTING_SELLER ? validatedData.asin : undefined
-    );
-
-    if (!rateLimitResult.allowed) {
+    // Simple bot detection - minimal abuse prevention
+    const userAgent = request.headers.get('user-agent');
+    if (!userAgent || userAgent.toLowerCase().includes('bot')) {
       return NextResponse.json({ 
         success: false, 
-        error: rateLimitResult.message,
-        resetTime: rateLimitResult.resetTime,
-        remaining: rateLimitResult.remaining
-      }, { status: 429 });
+        error: 'Please use a web browser' 
+      }, { status: 403 });
     }
     
     // Scrape product data based on type
@@ -129,18 +103,14 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
 
-    // Record successful operation for analytics
-    await recordOperation(
-      validatedData.email,
-      'preview',
-      accessType,
-      {
-        type,
-        asin: type === AUDIT_TYPES.EXISTING_SELLER ? validatedData.asin : undefined,
-        hasProductData: !!productData,
-        timestamp: new Date().toISOString()
-      }
-    );
+    // Log for monitoring (no rate limiting)
+    console.log('Preview analysis completed:', {
+      type,
+      asin: type === AUDIT_TYPES.EXISTING_SELLER ? validatedData.asin : undefined,
+      hasProductData: !!productData,
+      timestamp: new Date().toISOString(),
+      estimatedCost: 0.10
+    });
 
     return NextResponse.json({
       success: true,

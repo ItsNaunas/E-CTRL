@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { suggestKeywords, suggestTitle } from '@/lib/ai';
-import { checkOperationRateLimit, recordOperation } from '@/lib/rate-limiting';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, data, email = 'anonymous@example.com' } = body; // Allow anonymous suggestions
+    const { type, data } = body;
 
     if (!type || !data) {
       return NextResponse.json(
@@ -14,19 +13,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check rate limit for AI suggestions
-    const rateLimitResult = await checkOperationRateLimit(
-      email,
-      'suggestions',
-      'guest' // Most suggestions are from guest users during form filling
-    );
-
-    if (!rateLimitResult.allowed) {
-      return NextResponse.json({
-        error: rateLimitResult.message,
-        resetTime: rateLimitResult.resetTime,
-        remaining: rateLimitResult.remaining
-      }, { status: 429 });
+    // Simple bot detection
+    const userAgent = request.headers.get('user-agent');
+    if (!userAgent || userAgent.toLowerCase().includes('bot')) {
+      return NextResponse.json(
+        { error: 'Please use a web browser' },
+        { status: 403 }
+      );
     }
 
     let result;
@@ -58,16 +51,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Record successful operation
-    await recordOperation(
-      email,
-      'suggestions',
-      'guest',
-      {
-        type,
-        timestamp: new Date().toISOString()
-      }
-    );
+    // Log for monitoring
+    console.log('AI suggestion completed:', {
+      type,
+      timestamp: new Date().toISOString(),
+      estimatedCost: 0.02
+    });
 
     return NextResponse.json({
       success: true,

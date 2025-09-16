@@ -21,30 +21,7 @@ export function getClientIP(headers: Headers): string | undefined {
   return undefined;
 }
 
-// Check rate limit using database function with access type support
-export async function checkRateLimit(
-  email: string, 
-  auditType: AuditType, 
-  accessType: AccessType = 'guest'
-): Promise<boolean> {
-  try {
-    const { data, error } = await supabaseAdmin.rpc('check_rate_limit', {
-      p_email: email,
-      p_audit_type: auditType,
-      p_access_type: accessType
-    });
-    
-    if (error) {
-      console.error('Rate limit check error:', error);
-      return false;
-    }
-    
-    return data === true;
-  } catch (error) {
-    console.error('Rate limit check failed:', error);
-    return false;
-  }
-}
+// Rate limiting removed - no longer needed
 
 // Create a new lead from form data
 export async function createLead(
