@@ -37,20 +37,9 @@ export async function POST(request: NextRequest) {
       console.log('No existing user found for email:', email, '- using guest access type');
     }
 
-    // Check rate limit for PDF generation (separate from report generation)
-    // Use 'existing_seller' as default audit type for PDF requests
-    const auditType = mode === 'create' ? 'new_seller' : 'existing_seller';
-    const rateLimitAllowed = await checkRateLimit(email, auditType, accessType);
-    if (!rateLimitAllowed) {
-      const limitMessage = accessType === 'account' 
-        ? 'Rate limit exceeded. Account users can request up to 5 PDFs per day.'
-        : 'Rate limit exceeded. One PDF per email per day. Create a free account for higher limits!';
-      
-      return NextResponse.json(
-        { error: limitMessage },
-        { status: 429 }
-      );
-    }
+    // Skip rate limiting for email submission - this is just sending the email with preview data
+    // Rate limiting should only apply to actual report generation in /api/report
+    // The user has already seen the preview, we're just delivering the PDF
 
     // If leadId is provided, update the existing lead with the user's email
     if (leadId) {

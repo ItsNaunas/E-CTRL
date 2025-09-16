@@ -4,6 +4,8 @@ import { scrapeProductPage } from '@/lib/product-scraper';
 import { scrapeProduct } from '@/lib/amazon-scraper';
 import { newSellerSchema, existingSellerSchema } from '@/lib/validation';
 import { AUDIT_TYPES } from '@/lib/constants';
+import { checkOperationRateLimit, recordOperation } from '@/lib/rate-limiting';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +25,39 @@ export async function POST(request: NextRequest) {
       validatedData = newSellerSchema.parse(data);
     } else {
       validatedData = existingSellerSchema.parse(data);
+    }
+
+    // Determine access type by checking if user has an account
+    let accessType: 'guest' | 'account' = 'guest';
+    try {
+      const { data: existingUser } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', validatedData.email)
+        .single();
+      
+      if (existingUser) {
+        accessType = 'account';
+      }
+    } catch (error) {
+      // No existing user found, remain as guest
+    }
+
+    // Check rate limit for preview operations
+    const rateLimitResult = await checkOperationRateLimit(
+      validatedData.email, 
+      'preview', 
+      accessType,
+      type === AUDIT_TYPES.EXISTING_SELLER ? validatedData.asin : undefined
+    );
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json({ 
+        success: false, 
+        error: rateLimitResult.message,
+        resetTime: rateLimitResult.resetTime,
+        remaining: rateLimitResult.remaining
+      }, { status: 429 });
     }
     
     // Scrape product data based on type
@@ -93,6 +128,19 @@ export async function POST(request: NextRequest) {
         error: 'Failed to generate analysis' 
       }, { status: 500 });
     }
+
+    // Record successful operation for analytics
+    await recordOperation(
+      validatedData.email,
+      'preview',
+      accessType,
+      {
+        type,
+        asin: type === AUDIT_TYPES.EXISTING_SELLER ? validatedData.asin : undefined,
+        hasProductData: !!productData,
+        timestamp: new Date().toISOString()
+      }
+    );
 
     return NextResponse.json({
       success: true,

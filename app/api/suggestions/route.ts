@@ -1,16 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { suggestKeywords, suggestTitle } from '@/lib/ai';
+import { checkOperationRateLimit, recordOperation } from '@/lib/rate-limiting';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, data } = body;
+    const { type, data, email = 'anonymous@example.com' } = body; // Allow anonymous suggestions
 
     if (!type || !data) {
       return NextResponse.json(
         { error: 'Missing type or data' },
         { status: 400 }
       );
+    }
+
+    // Check rate limit for AI suggestions
+    const rateLimitResult = await checkOperationRateLimit(
+      email,
+      'suggestions',
+      'guest' // Most suggestions are from guest users during form filling
+    );
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json({
+        error: rateLimitResult.message,
+        resetTime: rateLimitResult.resetTime,
+        remaining: rateLimitResult.remaining
+      }, { status: 429 });
     }
 
     let result;
@@ -41,6 +57,17 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Record successful operation
+    await recordOperation(
+      email,
+      'suggestions',
+      'guest',
+      {
+        type,
+        timestamp: new Date().toISOString()
+      }
+    );
 
     return NextResponse.json({
       success: true,
