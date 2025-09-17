@@ -912,6 +912,11 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
     // Handle different types of detailed analysis
     if (typeof data.detailedAnalysis === 'object') {
       Object.entries(data.detailedAnalysis).forEach(([key, value]) => {
+        // Skip idqAnalysis and summary as they're handled separately above
+        if (key === 'idqAnalysis' || key === 'summary') {
+          return;
+        }
+        
         if (yPosition > 250) {
           doc.addPage();
           yPosition = 20;
