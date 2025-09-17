@@ -205,7 +205,7 @@ export default function HomePage() {
           data: {
             name: 'Preview User',
             email: EMAIL_CONSTANTS.PREVIEW_EMAIL,
-            keywords: [],
+            keywords: ['product', 'quality'], // Dummy keywords to pass validation
             websiteUrl: url,
             category: 'General',
             desc: 'Checking if URL is scannable...',
@@ -238,7 +238,7 @@ export default function HomePage() {
             data: {
               name: 'Preview User',
               email: EMAIL_CONSTANTS.PREVIEW_EMAIL,
-              keywords: [],
+              keywords: ['product', 'quality'], // Dummy keywords to pass validation
               websiteUrl: url,
               category: 'General',
               desc: 'Product analysis in progress...',
