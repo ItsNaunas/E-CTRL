@@ -73,8 +73,9 @@ export async function POST(request: NextRequest) {
         mode: mode || 'audit',
         accessType: accessType, // Use current account status
         score: previewData.score || 0,
-        highlights: previewData.highlights || [],
-        recommendations: previewData.recommendations || [],
+        // Fix: Use correct data structure for new sellers vs existing sellers
+        highlights: previewData.highlights || previewData.summary?.keyImprovements || [],
+        recommendations: previewData.recommendations || previewData.summary?.nextSteps || [],
         detailedAnalysis: previewData.detailedAnalysis || {},
         // Pass through the complete AI analysis data structure
         idqAnalysis: previewData.idqAnalysis || previewData.detailedAnalysis?.idqAnalysis,
@@ -93,6 +94,8 @@ export async function POST(request: NextRequest) {
       console.log('=== PDF DATA DEBUG ===');
       console.log('pdfData.idqAnalysis:', pdfData.idqAnalysis);
       console.log('pdfData.summary:', pdfData.summary);
+      console.log('pdfData.highlights:', pdfData.highlights);
+      console.log('pdfData.recommendations:', pdfData.recommendations);
       console.log('=====================');
       
       console.log('Preview PDF data extracted:', {
