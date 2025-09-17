@@ -193,8 +193,8 @@ export default function HomePage() {
     setProductUrl(url);
     setHasUserInput(true);
     
-    // Don't make API call with placeholder data - wait for manual form submission
-    // The user needs to fill out the manual form with real product data
+    // Don't make immediate API call - wait for manual form submission
+    // This preserves the original fallback flow design
     console.log('URL stored, waiting for manual product data submission...');
   };
 
@@ -225,14 +225,14 @@ export default function HomePage() {
     scrollToElement('partial-result', 80);
     
     try {
-      // Generate REAL preview WITHOUT creating database entry
+      // Try URL first if available, then fallback to manual data
       const requestBody = {
         type: 'new_seller',
         data: {
           name: 'Preview User',
           email: EMAIL_CONSTANTS.PREVIEW_EMAIL, // Temporary email for preview only
           keywords: data.keywords,
-          websiteUrl: productUrl || undefined, // Use URL if provided, otherwise undefined
+          websiteUrl: productUrl || undefined, // Use URL if provided (fallback flow)
           category: data.category,
           desc: data.description,
           fulfilmentIntent: data.fulfilmentIntent as "FBA" | "FBM" | "Unsure",

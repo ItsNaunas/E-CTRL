@@ -25,6 +25,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
     highlightsLength: highlights?.length, 
     condition: highlights && highlights.length > 0 
   });
+  console.log('Component render state:', { isLoading, hasDetailedAnalysis: highlights && highlights.length > 0 && !highlights.some(h => h.includes('AI analysis in progress') || h.includes('Ready to analyze')) });
   
   // Extract detailed analysis from highlights if available
   const hasDetailedAnalysis = highlights && highlights.length > 0 && 
