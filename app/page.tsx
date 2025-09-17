@@ -215,61 +215,98 @@ export default function HomePage() {
               size: 1024,
               type: "image/jpeg"
             }
-          }
+          },
+          checkOnly: true // Just check if URL is scannable, don't do AI analysis
         })
       });
       
-      if (checkResponse.ok) {
-        const checkResult = await checkResponse.json();
-        console.log('URL check result:', checkResult);
+      const checkResult = await checkResponse.json();
+      console.log('URL check result:', checkResponse.status, checkResult);
+      
+      if (checkResponse.ok && checkResult.success && checkResult.scannable) {
+        // URL is scannable - now do the full analysis
+        console.log('URL is scannable, proceeding with full analysis');
         
-        if (checkResult.success && checkResult.aiResult) {
-          // URL is scannable - proceed with full analysis
-          console.log('URL is scannable, proceeding with analysis');
-          
-          const idqAnalysis = checkResult.aiResult.idqAnalysis;
-          const summary = checkResult.aiResult.summary;
-          
-          // Create highlights from actual generated content
-          const generatedHighlights = [];
-          if (idqAnalysis?.title?.optimized) {
-            generatedHighlights.push(idqAnalysis.title.optimized);
-          }
-          if (idqAnalysis?.bullets?.optimized) {
-            generatedHighlights.push(...idqAnalysis.bullets.optimized);
-          }
-          if (idqAnalysis?.description?.optimized) {
-            generatedHighlights.push(idqAnalysis.description.optimized);
-          }
-          if (summary?.keyImprovements) {
-            generatedHighlights.push(...summary.keyImprovements);
-          }
-          
-          setAiResult({
-            score: 0,
-            highlights: generatedHighlights,
-            recommendations: summary?.nextSteps || [],
-            detailedAnalysis: {
-              idqAnalysis: idqAnalysis,
-              summary: summary
+        // Make second API call for full analysis
+        const analysisResponse = await fetch('/api/preview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'new_seller',
+            data: {
+              name: 'Preview User',
+              email: EMAIL_CONSTANTS.PREVIEW_EMAIL,
+              keywords: [],
+              websiteUrl: url,
+              category: 'General',
+              desc: 'Product analysis in progress...',
+              fulfilmentIntent: 'Unsure',
+              image: {
+                name: "placeholder.jpg",
+                size: 1024,
+                type: "image/jpeg"
+              }
             }
-          });
+            // No checkOnly flag - do full analysis
+          })
+        });
+        
+        if (analysisResponse.ok) {
+          const analysisResult = await analysisResponse.json();
+          console.log('Analysis result:', analysisResult);
           
-          // Show partial results since analysis succeeded
-          setShowPartial(true);
-          scrollToElement('partial-result', 80);
+          if (analysisResult.success && analysisResult.aiResult) {
+            const idqAnalysis = analysisResult.aiResult.idqAnalysis;
+            const summary = analysisResult.aiResult.summary;
+            
+            // Create highlights from actual generated content
+            const generatedHighlights = [];
+            if (idqAnalysis?.title?.optimized) {
+              generatedHighlights.push(idqAnalysis.title.optimized);
+            }
+            if (idqAnalysis?.bullets?.optimized) {
+              generatedHighlights.push(...idqAnalysis.bullets.optimized);
+            }
+            if (idqAnalysis?.description?.optimized) {
+              generatedHighlights.push(idqAnalysis.description.optimized);
+            }
+            if (summary?.keyImprovements) {
+              generatedHighlights.push(...summary.keyImprovements);
+            }
+            
+            setAiResult({
+              score: 0,
+              highlights: generatedHighlights,
+              recommendations: summary?.nextSteps || [],
+              detailedAnalysis: {
+                idqAnalysis: idqAnalysis,
+                summary: summary
+              }
+            });
+            
+            // Show partial results since analysis succeeded
+            setShowPartial(true);
+            scrollToElement('partial-result', 80);
+          } else {
+            // Analysis failed even though URL was scannable
+            console.log('URL was scannable but analysis failed, switching to manual input');
+            setForceManualMode(true);
+            scrollToHeroForm();
+          }
         } else {
-          // URL is not scannable - show message and refer to manual input
-          console.log('URL is not scannable, showing message and referring to manual input');
+          // Analysis API call failed
+          console.log('Analysis API call failed, switching to manual input');
           setForceManualMode(true);
           scrollToHeroForm();
         }
+      } else if (checkResponse.status === 400 && checkResult.code === 'URL_SCRAPING_FAILED') {
+        // URL is specifically not scannable - show message and refer to manual input
+        console.log('URL is not scannable (URL_SCRAPING_FAILED), showing message and referring to manual input');
+        setForceManualMode(true);
+        scrollToHeroForm();
       } else {
-        const errorData = await checkResponse.json();
-        console.error('URL check failed:', checkResponse.status, errorData);
-        
-        // URL is not scannable - show message and refer to manual input
-        console.log('URL check failed, showing message and referring to manual input');
+        // Other errors (network issues, etc.) - show generic error
+        console.error('URL check failed with unexpected error:', checkResponse.status, checkResult);
         setForceManualMode(true);
         scrollToHeroForm();
       }

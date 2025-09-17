@@ -8,7 +8,7 @@ import { AUDIT_TYPES } from '@/lib/constants';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, data } = body;
+    const { type, data, checkOnly = false } = body;
 
     if (type !== AUDIT_TYPES.NEW_SELLER && type !== AUDIT_TYPES.EXISTING_SELLER) {
       return NextResponse.json({ 
@@ -88,6 +88,15 @@ export async function POST(request: NextRequest) {
       console.log('No product data available for preview, using user data only');
     }
     
+    // If checkOnly is true, just return success without AI analysis
+    if (checkOnly) {
+      return NextResponse.json({
+        success: true,
+        scannable: true,
+        message: 'URL is scannable'
+      });
+    }
+
     // Generate AI analysis WITHOUT creating database entries
     let aiResult;
     if (type === AUDIT_TYPES.NEW_SELLER) {
