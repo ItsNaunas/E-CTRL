@@ -38,6 +38,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
     if (forceManualMode) {
       setInputMode('manual');
       setError('This website could not be scanned automatically. Please fill in your product details manually below to get the same quality analysis.');
+      setIsSubmitting(false); // Reset button loading state
       onManualModeSet?.();
     }
   }, [forceManualMode, onManualModeSet]);
