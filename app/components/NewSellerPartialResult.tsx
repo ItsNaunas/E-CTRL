@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import UnifiedCTA from '@/components/UnifiedCTA';
 
 interface NewSellerPartialResultProps {
@@ -30,6 +31,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
   // Extract detailed analysis from highlights if available
   const hasDetailedAnalysis = highlights && highlights.length > 0 && 
     !highlights.some(h => h.includes('AI analysis in progress') || h.includes('Ready to analyze'));
+  
   
   return (
     <section className="py-16 bg-[#0B0B0C]">

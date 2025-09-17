@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import UnifiedCTA from '@/components/UnifiedCTA';
 import ClientTestimonials from '@/components/ClientTestimonials';
@@ -23,13 +23,23 @@ interface NewSellerHeroProps {
     useCase: string;
   }) => void;
   isAnalyzing?: boolean;
+  forceManualMode?: boolean;
+  onManualModeSet?: () => void;
 }
 
-export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing = false }: NewSellerHeroProps) {
+export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing = false, forceManualMode = false, onManualModeSet }: NewSellerHeroProps) {
   const [productUrl, setProductUrl] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputMode, setInputMode] = useState<'url' | 'manual'>('url');
+  
+  // Auto-switch to manual mode when forced
+  React.useEffect(() => {
+    if (forceManualMode) {
+      setInputMode('manual');
+      onManualModeSet?.();
+    }
+  }, [forceManualMode, onManualModeSet]);
   
   // Manual input fields
   const [category, setCategory] = useState('');
@@ -93,9 +103,6 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
           return;
         }
         
-        // URL validation is now handled by the parent component
-        // No need to make API calls with placeholder data here
-        
         // Track the event
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'listing_creation_start', {
@@ -106,16 +113,19 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
         
         // Submit URL to parent component
         onUrlSubmit(productUrl);
+        // Don't set isSubmitting to false here - let parent handle loading state
       } else {
         // Enhanced manual input validation
         if (!productName.trim() || !category.trim() || !description.trim() || !keywords.trim()) {
           setError('Please fill in all required fields (Product Name, Category, Description, Keywords)');
+          setIsSubmitting(false);
           return;
         }
         
         const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k.length > 0);
         if (keywordsArray.length < 2) {
           setError('Please provide at least 2 keywords');
+          setIsSubmitting(false);
           return;
         }
         
@@ -142,12 +152,12 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
           materials: materials.trim(),
           useCase: useCase.trim()
         });
+        // Don't set isSubmitting to false here - let parent handle loading state
       }
     } catch (err) {
       setError('Something went wrong. Please try again.');
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   };
 
   return (

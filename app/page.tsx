@@ -64,6 +64,7 @@ export default function HomePage() {
     keywords: string[];
     fulfilmentIntent: string;
   } | null>(null);
+  const [forceManualMode, setForceManualMode] = useState(false);
 
   // Real data for AI analysis - no longer using SAMPLE_DATA
   const sampleData = useMemo(() => ({
@@ -192,10 +193,89 @@ export default function HomePage() {
     console.log('Product URL submitted:', url);
     setProductUrl(url);
     setHasUserInput(true);
+    setIsAnalyzing(true);
+    setShowPartial(true); // Show partial results immediately like existing seller
     
-    // Don't make immediate API call - wait for manual form submission
-    // This preserves the original fallback flow design
-    console.log('URL stored, waiting for manual product data submission...');
+    // Scroll to partial result immediately when analysis starts
+    scrollToElement('partial-result', 80);
+    
+    try {
+      // Make immediate API call for URL analysis (exactly like existing seller flow)
+      const requestBody = {
+        type: 'new_seller',
+        data: {
+          name: 'Preview User',
+          email: EMAIL_CONSTANTS.PREVIEW_EMAIL,
+          keywords: [], // Will be enhanced by manual form later if needed
+          websiteUrl: url,
+          category: 'General', // Default category
+          desc: 'Product analysis in progress...',
+          fulfilmentIntent: 'Unsure',
+          image: {
+            name: "placeholder.jpg",
+            size: 1024,
+            type: "image/jpeg"
+          }
+        }
+      };
+
+      const response = await fetch('/api/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('URL analysis result received:', result.aiResult);
+        
+        if (result.success && result.aiResult) {
+          const idqAnalysis = result.aiResult.idqAnalysis;
+          const summary = result.aiResult.summary;
+          
+          // Create highlights from actual generated content
+          const generatedHighlights = [];
+          if (idqAnalysis?.title?.optimized) {
+            generatedHighlights.push(idqAnalysis.title.optimized);
+          }
+          if (idqAnalysis?.bullets?.optimized) {
+            generatedHighlights.push(...idqAnalysis.bullets.optimized);
+          }
+          if (idqAnalysis?.description?.optimized) {
+            generatedHighlights.push(idqAnalysis.description.optimized);
+          }
+          if (summary?.keyImprovements) {
+            generatedHighlights.push(...summary.keyImprovements);
+          }
+          
+          setAiResult({
+            score: 0,
+            highlights: generatedHighlights,
+            recommendations: summary?.nextSteps || [],
+            detailedAnalysis: {
+              idqAnalysis: idqAnalysis,
+              summary: summary
+            }
+          });
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('URL analysis failed:', response.status, errorData);
+        
+        // URL scraping failed - just switch to manual input mode
+        console.log('URL scraping failed, switching to manual input mode');
+        setForceManualMode(true);
+        scrollToHeroForm();
+      }
+    } catch (error) {
+      console.error('URL analysis error:', error);
+      // Network or other errors - just switch to manual input
+      console.log('Network error, switching to manual input mode');
+      setForceManualMode(true);
+      scrollToHeroForm();
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Handle manual product data submission from NewSellerHero
@@ -545,6 +625,8 @@ export default function HomePage() {
           onUrlSubmit={handleProductUrlSubmit} 
           onManualSubmit={handleManualProductSubmit}
           isAnalyzing={isAnalyzing}
+          forceManualMode={forceManualMode}
+          onManualModeSet={() => setForceManualMode(false)}
         />
       )}
 
