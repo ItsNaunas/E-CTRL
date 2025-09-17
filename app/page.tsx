@@ -192,8 +192,8 @@ export default function HomePage() {
   const handleProductUrlSubmit = async (url: string) => {
     console.log('Product URL submitted:', url);
     setProductUrl(url);
-    setHasUserInput(true);
-    setIsAnalyzing(true);
+    setShowPartial(false); // Reset partial state - don't show analysis until we know URL is scannable
+    // Don't set hasUserInput or isAnalyzing yet - only set them when we actually start analysis
     
     try {
       // First, check if URL is scannable (without doing full analysis)
@@ -226,6 +226,8 @@ export default function HomePage() {
       if (checkResponse.ok && checkResult.success && checkResult.scannable) {
         // URL is scannable - now do the full analysis
         console.log('URL is scannable, proceeding with full analysis');
+        setHasUserInput(true); // Only set this when we actually start analysis
+        setIsAnalyzing(true); // Only start analyzing when we know URL is scannable
         
         // Make second API call for full analysis
         const analysisResponse = await fetch('/api/preview', {
@@ -302,11 +304,13 @@ export default function HomePage() {
       } else if (checkResponse.status === 400 && checkResult.code === 'URL_SCRAPING_FAILED') {
         // URL is specifically not scannable - show message and refer to manual input
         console.log('URL is not scannable (URL_SCRAPING_FAILED), showing message and referring to manual input');
+        setShowPartial(false); // Make sure no analysis is shown
         setForceManualMode(true);
         scrollToHeroForm();
       } else {
         // Other errors (network issues, etc.) - show generic error
         console.error('URL check failed with unexpected error:', checkResponse.status, checkResult);
+        setShowPartial(false); // Make sure no analysis is shown
         setForceManualMode(true);
         scrollToHeroForm();
       }
@@ -314,6 +318,7 @@ export default function HomePage() {
       console.error('URL check error:', error);
       // Network or other errors - show message and refer to manual input
       console.log('URL check error, showing message and referring to manual input');
+      setShowPartial(false); // Make sure no analysis is shown
       setForceManualMode(true);
       scrollToHeroForm();
     } finally {
