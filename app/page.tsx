@@ -7,6 +7,7 @@ import NewSellerHero from '@/components/NewSellerHero';
 import ModeToggle from '@/components/ModeToggle';
 import StickyTabs from '@/components/StickyTabs';
 import TrustSection from '@/components/TrustSection';
+import BeforeAfterProof from '@/components/BeforeAfterProof';
 import HowItWorks from './components/HowItWorks';
 import NewSellerHowItWorks from './components/NewSellerHowItWorks';
 import HowItWorksSection from '@/components/HowItWorksSection';
@@ -547,15 +548,20 @@ export default function HomePage() {
         />
       )}
 
-      {/* Trust Section - Build Credibility */}
-      <TrustSection />
+      {/* Before/After Proof - Visual Transformation */}
+      <BeforeAfterProof onCtaClick={scrollToHeroForm} />
 
       {/* Section Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
-
       {/* How It Works - Process Explanation */}
       <HowItWorksSection onCtaClick={scrollToHeroForm} />
+
+      {/* Trust Section - Build Credibility (moved below How It Works) */}
+      <TrustSection />
+
+      {/* Section Divider */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
       {/* Benefits - Value Proposition */}
       {mode === 'audit' ? (

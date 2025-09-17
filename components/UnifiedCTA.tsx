@@ -51,6 +51,7 @@ export default function UnifiedCTA({
     focus:outline-none focus:ring-4 focus:ring-white/30
     hover:scale-105 active:scale-95 overflow-hidden
     disabled:opacity-50 disabled:cursor-not-allowed
+    border-0 outline-none
   `;
 
   const shine = `
