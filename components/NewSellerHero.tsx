@@ -37,7 +37,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
   React.useEffect(() => {
     if (forceManualMode) {
       setInputMode('manual');
-      setError('This website could not be scanned automatically. Please fill in your product details manually below to get the same quality analysis.');
+      setError('This website is not scannable automatically. Please fill in your product details manually below to get the same quality analysis.');
       setIsSubmitting(false); // Reset button loading state
       onManualModeSet?.();
     }

@@ -195,42 +195,40 @@ export default function HomePage() {
     setHasUserInput(true);
     setIsAnalyzing(true);
     
-    // Don't show partial results immediately - wait to see if URL scraping succeeds
-    // setShowPartial(true); // Removed this line
-    
     try {
-      // Make immediate API call for URL analysis (exactly like existing seller flow)
-      const requestBody = {
-        type: 'new_seller',
-        data: {
-          name: 'Preview User',
-          email: EMAIL_CONSTANTS.PREVIEW_EMAIL,
-          keywords: [], // Will be enhanced by manual form later if needed
-          websiteUrl: url,
-          category: 'General', // Default category
-          desc: 'Product analysis in progress...',
-          fulfilmentIntent: 'Unsure',
-          image: {
-            name: "placeholder.jpg",
-            size: 1024,
-            type: "image/jpeg"
-          }
-        }
-      };
-
-      const response = await fetch('/api/preview', {
+      // First, check if URL is scannable (without doing full analysis)
+      const checkResponse = await fetch('/api/preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          type: 'new_seller',
+          data: {
+            name: 'Preview User',
+            email: EMAIL_CONSTANTS.PREVIEW_EMAIL,
+            keywords: [],
+            websiteUrl: url,
+            category: 'General',
+            desc: 'Checking if URL is scannable...',
+            fulfilmentIntent: 'Unsure',
+            image: {
+              name: "placeholder.jpg",
+              size: 1024,
+              type: "image/jpeg"
+            }
+          }
+        })
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        console.log('URL analysis result received:', result.aiResult);
+      if (checkResponse.ok) {
+        const checkResult = await checkResponse.json();
+        console.log('URL check result:', checkResult);
         
-        if (result.success && result.aiResult) {
-          const idqAnalysis = result.aiResult.idqAnalysis;
-          const summary = result.aiResult.summary;
+        if (checkResult.success && checkResult.aiResult) {
+          // URL is scannable - proceed with full analysis
+          console.log('URL is scannable, proceeding with analysis');
+          
+          const idqAnalysis = checkResult.aiResult.idqAnalysis;
+          const summary = checkResult.aiResult.summary;
           
           // Create highlights from actual generated content
           const generatedHighlights = [];
@@ -257,32 +255,28 @@ export default function HomePage() {
             }
           });
           
-          // Only show partial results if we got successful analysis
+          // Show partial results since analysis succeeded
           setShowPartial(true);
           scrollToElement('partial-result', 80);
         } else {
-          // API returned success: false - switch to manual input
-          console.log('API returned success: false, switching to manual input mode');
+          // URL is not scannable - show message and refer to manual input
+          console.log('URL is not scannable, showing message and referring to manual input');
           setForceManualMode(true);
           scrollToHeroForm();
         }
       } else {
-        const errorData = await response.json();
-        console.error('URL analysis failed:', response.status, errorData);
+        const errorData = await checkResponse.json();
+        console.error('URL check failed:', checkResponse.status, errorData);
         
-        // Check if it's specifically a URL scraping failure
-        if (errorData.code === 'URL_SCRAPING_FAILED') {
-          console.log('URL scraping failed, switching to manual input mode');
-        } else {
-          console.log('API error, switching to manual input mode');
-        }
+        // URL is not scannable - show message and refer to manual input
+        console.log('URL check failed, showing message and referring to manual input');
         setForceManualMode(true);
         scrollToHeroForm();
       }
     } catch (error) {
-      console.error('URL analysis error:', error);
-      // Network or other errors - just switch to manual input
-      console.log('Network error, switching to manual input mode');
+      console.error('URL check error:', error);
+      // Network or other errors - show message and refer to manual input
+      console.log('URL check error, showing message and referring to manual input');
       setForceManualMode(true);
       scrollToHeroForm();
     } finally {
