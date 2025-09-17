@@ -30,7 +30,7 @@ export default function Header() {
             variant="primary"
             size="sm"
             text="Get Free Audit"
-            href="/tool"
+            href="#hero"
             className="hidden sm:block"
           />
         </div>

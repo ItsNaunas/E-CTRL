@@ -37,14 +37,6 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/tool"
-                    className="text-sm text-muted-foreground hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-                  >
-                    Free Tool
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     href="/about"
                     className="text-sm text-muted-foreground hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
                   >

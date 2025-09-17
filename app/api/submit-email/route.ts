@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         productUrl: pdfData.productUrl
       });
     } else {
-      // Fallback to database lookup for tool page submissions
+      // Fallback to database lookup for submissions without preview data
       console.log('Retrieving latest report data for email:', email);
       const reports = await getReportsByEmail(email);
       

@@ -16,7 +16,6 @@ export const copy = {
       body: "Minimal inputs. Clear outcomes." 
     }
   ],
-  toolIntro: "Pick your path, fill the form, get a summary now. We'll email the full report.",
   usageNote: "1 free report per email per day.",
   footer: "© e-ctrl. All rights reserved.",
   contactMailto: "contact@e-ctrl.co.uk",
@@ -67,23 +66,6 @@ export const copy = {
     }
   },
 
-  // Tool page content
-  tool: {
-    title: "Free Amazon Growth Audit",
-    subtitle: "Get instant insights for your Amazon business",
-    existingTab: "I sell on Amazon",
-    newTab: "I don't sell on Amazon yet",
-    
-    existing: {
-      title: "Existing Amazon Seller Audit",
-      description: "Get a comprehensive analysis of your current listing"
-    },
-    
-    new: {
-      title: "New Seller Readiness Check", 
-      description: "See how ready your product is for Amazon marketplace"
-    }
-  },
 
   // Form labels and placeholders
   form: {
