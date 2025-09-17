@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
         recommendations: previewData.recommendations || [],
         detailedAnalysis: previewData.detailedAnalysis || {},
         // Pass through the complete AI analysis data structure
-        idqAnalysis: previewData.detailedAnalysis?.idqAnalysis,
-        summary: previewData.detailedAnalysis?.summary,
+        idqAnalysis: previewData.idqAnalysis || previewData.detailedAnalysis?.idqAnalysis,
+        summary: previewData.summary || previewData.detailedAnalysis?.summary,
         productData: previewData.detailedAnalysis?.productData,
         contentQuality: previewData.detailedAnalysis?.contentQuality,
         binaryIdqResult: previewData.detailedAnalysis?.binaryIdqResult,

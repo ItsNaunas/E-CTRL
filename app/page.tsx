@@ -485,6 +485,9 @@ export default function HomePage() {
         highlights: aiResult?.highlights || [],
         recommendations: aiResult?.recommendations || [],
         detailedAnalysis: aiResult?.detailedAnalysis || {},
+        // Extract idqAnalysis and summary for PDF generation
+        idqAnalysis: aiResult?.detailedAnalysis?.idqAnalysis || {},
+        summary: aiResult?.detailedAnalysis?.summary || {},
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
@@ -536,6 +539,9 @@ export default function HomePage() {
         highlights: aiResult?.highlights || [],
         recommendations: aiResult?.recommendations || [],
         detailedAnalysis: aiResult?.detailedAnalysis || {},
+        // Extract idqAnalysis and summary for PDF generation
+        idqAnalysis: aiResult?.detailedAnalysis?.idqAnalysis || {},
+        summary: aiResult?.detailedAnalysis?.summary || {},
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
@@ -587,6 +593,9 @@ export default function HomePage() {
         highlights: aiResult?.highlights || [],
         recommendations: aiResult?.recommendations || [],
         detailedAnalysis: aiResult?.detailedAnalysis || {},
+        // Extract idqAnalysis and summary for PDF generation
+        idqAnalysis: aiResult?.detailedAnalysis?.idqAnalysis || {},
+        summary: aiResult?.detailedAnalysis?.summary || {},
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
