@@ -32,6 +32,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputMode, setInputMode] = useState<'url' | 'manual'>('url');
+  const [isUrlCheckInProgress, setIsUrlCheckInProgress] = useState(false);
   
   // Auto-switch to manual mode when forced
   React.useEffect(() => {
@@ -39,6 +40,7 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
       setInputMode('manual');
       setError('This website is not scannable automatically. Please fill in your product details manually below to get the same quality analysis.');
       setIsSubmitting(false); // Reset button loading state
+      setIsUrlCheckInProgress(false); // Reset URL check flag
       onManualModeSet?.();
     }
   }, [forceManualMode, onManualModeSet]);
@@ -114,9 +116,18 @@ export default function NewSellerHero({ onUrlSubmit, onManualSubmit, isAnalyzing
         }
         
         // Submit URL to parent component
+        setIsUrlCheckInProgress(true);
         onUrlSubmit(productUrl);
         // Don't set isSubmitting to false here - let parent handle loading state
       } else {
+        // Don't proceed with manual submission if we're in the middle of a URL check
+        if (isUrlCheckInProgress) {
+          // URL check is still in progress, don't submit manual form yet
+          setError('Please wait for the URL check to complete.');
+          setIsSubmitting(false);
+          return;
+        }
+        
         // Enhanced manual input validation
         if (!productName.trim() || !category.trim() || !description.trim() || !keywords.trim()) {
           setError('Please fill in all required fields (Product Name, Category, Description, Keywords)');
