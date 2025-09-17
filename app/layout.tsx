@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_GB',
     url: 'https://e-ctrl.ai',
-    title: 'e-ctrl — Free Amazon Growth Audit Tool (UK/EU)',
+    title: 'e-ctrl — Free Amazon Growth Audit Tool',
     description: 'Free AI-powered Amazon listing audit tool for UK/EU sellers. Get instant insights to boost sales. No credit card required.',
     siteName: 'e-ctrl',
     images: [
