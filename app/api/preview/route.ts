@@ -39,11 +39,27 @@ export async function POST(request: NextRequest) {
     
     if (type === AUDIT_TYPES.NEW_SELLER && 'websiteUrl' in validatedData && validatedData.websiteUrl) {
       console.log('Scraping product data for new seller preview:', validatedData.websiteUrl);
-      const scrapedData = await scrapeProductPage(validatedData.websiteUrl);
       
-      if ('error' in scrapedData) {
-        console.warn('Product scraping failed for preview:', scrapedData.error);
-        // Return specific error for URL scraping failure to redirect to manual input
+      try {
+        const scrapedData = await scrapeProductPage(validatedData.websiteUrl);
+        
+        if ('error' in scrapedData) {
+          console.warn('Product scraping failed for preview:', scrapedData.error);
+          // Return specific error for URL scraping failure to redirect to manual input
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Unable to scrape product data from this URL',
+            code: 'URL_SCRAPING_FAILED',
+            message: 'Please use the manual input form instead to create your Amazon listing.',
+            suggestion: 'manual_input'
+          }, { status: 400 });
+        } else {
+          console.log('Successfully scraped product data for preview');
+          productData = scrapedData;
+        }
+      } catch (scrapingError) {
+        console.error('Scraping function threw an exception:', scrapingError);
+        // Handle any exceptions thrown by the scraping function
         return NextResponse.json({ 
           success: false, 
           error: 'Unable to scrape product data from this URL',
@@ -51,9 +67,6 @@ export async function POST(request: NextRequest) {
           message: 'Please use the manual input form instead to create your Amazon listing.',
           suggestion: 'manual_input'
         }, { status: 400 });
-      } else {
-        console.log('Successfully scraped product data for preview');
-        productData = scrapedData;
       }
     } else if (type === AUDIT_TYPES.EXISTING_SELLER && 'asin' in validatedData && validatedData.asin) {
       console.log('Scraping Amazon product data for existing seller preview:', validatedData.asin);

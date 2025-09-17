@@ -133,11 +133,34 @@ export async function POST(request: NextRequest) {
       
       if (newSellerData.websiteUrl) {
         console.log('Scraping product data for new seller website:', newSellerData.websiteUrl);
-        const scrapedData = await scrapeProductPage(newSellerData.websiteUrl);
         
-        if ('error' in scrapedData) {
-          console.warn('Product scraping failed for new seller:', scrapedData.error);
-          // Return specific error for URL scraping failure to be consistent with preview API
+        try {
+          const scrapedData = await scrapeProductPage(newSellerData.websiteUrl);
+          
+          if ('error' in scrapedData) {
+            console.warn('Product scraping failed for new seller:', scrapedData.error);
+            // Return specific error for URL scraping failure to be consistent with preview API
+            return NextResponse.json({ 
+              success: false, 
+              error: 'Unable to scrape product data from this URL',
+              code: 'URL_SCRAPING_FAILED',
+              message: 'Please use the manual input form instead to create your Amazon listing.',
+              suggestion: 'manual_input'
+            }, { status: 400 });
+          } else if (checkOnly) {
+            // If checkOnly is true, just return success without AI analysis
+            return NextResponse.json({
+              success: true,
+              scannable: true,
+              message: 'URL is scannable'
+            });
+          } else {
+            console.log('Successfully scraped product data for new seller');
+            productData = scrapedData;
+          }
+        } catch (scrapingError) {
+          console.error('Scraping function threw an exception:', scrapingError);
+          // Handle any exceptions thrown by the scraping function
           return NextResponse.json({ 
             success: false, 
             error: 'Unable to scrape product data from this URL',
@@ -145,16 +168,6 @@ export async function POST(request: NextRequest) {
             message: 'Please use the manual input form instead to create your Amazon listing.',
             suggestion: 'manual_input'
           }, { status: 400 });
-        } else if (checkOnly) {
-          // If checkOnly is true, just return success without AI analysis
-          return NextResponse.json({
-            success: true,
-            scannable: true,
-            message: 'URL is scannable'
-          });
-        } else {
-          console.log('Successfully scraped product data for new seller');
-          productData = scrapedData;
         }
       } else {
         console.log('No website URL provided, using user-provided data only');
