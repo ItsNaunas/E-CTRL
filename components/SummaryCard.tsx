@@ -40,7 +40,7 @@ export default function SummaryCard({ result }: SummaryCardProps) {
         {/* AI-Powered Insights */}
         <div className="space-y-4">
           <div className="flex items-center space-x-2">
-            <div className="text-lg">🤖</div>
+            <div className="text-lg"></div>
             <h4 className="font-medium text-foreground">AI-Powered Analysis</h4>
           </div>
           

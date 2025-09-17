@@ -309,7 +309,7 @@ export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
           <p>Great news! Your ${data.mode === 'audit' ? 'Amazon audit report' : 'Amazon listing pack'} is ready for review.</p>
           
           <div style="background-color: #dbeafe; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
-            <h3 style="color: #1e40af; margin-top: 0;">📊 View Your Complete Report</h3>
+            <h3 style="color: #1e40af; margin-top: 0;">View Your Complete Report</h3>
             <a href="${data.reportUrl}" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Open Report Now
             </a>

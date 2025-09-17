@@ -79,13 +79,13 @@ export function useCROChecks() {
 
     // Log warnings
     if (warnings.length > 0) {
-      console.group('🚨 CRO Audit Warnings');
+      console.group('CRO Audit Warnings');
       warnings.forEach(warning => {
         console.warn(warning);
       });
       console.groupEnd();
     } else {
-      console.log('✅ CRO audit passed - all critical elements present');
+      console.log('CRO audit passed - all critical elements present');
     }
   }, []);
 }

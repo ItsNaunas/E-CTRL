@@ -58,7 +58,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
             {/* Quick Wins Section */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold text-white mb-4">
-                🎯 Analysis Results ({guestData.quickWins.length} of many)
+                Analysis Results ({guestData.quickWins.length} of many)
               </h3>
               <div className="space-y-3">
                 {guestData.quickWins.map((win, index) => (
@@ -78,14 +78,14 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
             {/* Audit Insights Section */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold text-white mb-4">
-                📊 Audit Insights (Preview)
+                Audit Insights (Preview)
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {guestData.auditInsights.map((insight, index) => (
                   <div key={index} className="relative">
                     <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-2xl">📊</span>
+                        <span className="text-2xl"></span>
                         <span className="font-medium text-white">{insight.type}</span>
                       </div>
                       <p className="text-sm text-white/70 mb-3">
@@ -96,7 +96,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
                       <div className="relative bg-gradient-to-br from-white/10 to-white/5 rounded-lg h-32 flex items-center justify-center overflow-hidden">
                         <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
                         <div className="relative z-10 text-center">
-                          <div className="text-3xl mb-2">🔒</div>
+                          <div className="text-3xl mb-2"></div>
                           <p className="text-xs text-white/70 font-medium">PREVIEW ONLY</p>
                           <p className="text-xs text-white/50">Upgrade for full access</p>
                         </div>
@@ -119,7 +119,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
             {/* Checklist Preview */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold text-white mb-4">
-                ✅ Action Checklist (Preview)
+                Action Checklist (Preview)
               </h3>
               <div className="space-y-3">
                 {guestData.checklistPreview.map((item, index) => (

@@ -166,7 +166,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
       const asinMatch = html.match(pattern);
       if (asinMatch) {
         extractedAsin = asinMatch[1];
-        console.log(`✅ ASIN extracted from HTML: ${extractedAsin}`);
+        console.log(`ASIN extracted from HTML: ${extractedAsin}`);
         break;
       }
     }
@@ -323,7 +323,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     }
 
     // Extract brand using multiple regex patterns - improved approach
-    console.log('🔍 Extracting brand...');
+    console.log('Extracting brand...');
     const brandPatterns = [
       /<span[^>]*id="bylineInfo"[^>]*>([^<]+)<\/span>/,
       /<a[^>]*id="bylineInfo"[^>]*>([^<]+)<\/a>/,
@@ -347,7 +347,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
           
           if (brandText && brandText.length > 0) {
             productData.brand = brandText;
-            console.log(`✅ Brand found: ${brandText}`);
+            console.log(`Brand found: ${brandText}`);
             break;
           }
         }
@@ -356,7 +356,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
 
     // If no brand found with regex, try text-based extraction
     if (!productData.brand) {
-      console.log('🔍 Trying text-based brand extraction...');
+      console.log('Trying text-based brand extraction...');
       
       // Try to extract brand from title (first word) - generic approach
       if (productData.title) {
@@ -367,7 +367,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
           const commonWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
           if (firstWord.length > 2 && firstWord.length < 20 && !commonWords.includes(firstWord.toLowerCase())) {
             productData.brand = firstWord;
-            console.log(`✅ Brand extracted from title: ${firstWord}`);
+            console.log(`Brand extracted from title: ${firstWord}`);
           }
         }
       }
@@ -376,12 +376,12 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
       if (!productData.brand) {
         if (html.includes('Amazon Basics')) {
           productData.brand = 'Amazon Basics';
-          console.log('✅ Brand found: Amazon Basics');
+          console.log('Brand found: Amazon Basics');
         }
       }
     }
     
-    console.log(`📊 Final brand: ${productData.brand || 'NOT FOUND'}`);
+    console.log(`Final brand: ${productData.brand || 'NOT FOUND'}`);
 
     // Extract availability using multiple regex patterns
     const availabilityPatterns = [
@@ -399,7 +399,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     }
 
     // Extract product images - focus on actual product images only
-    console.log('🔍 Extracting product images...');
+    console.log('Extracting product images...');
     
     // Extract images from specific product image containers only
     const productImagePatterns = [
@@ -432,7 +432,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     
     // If we didn't find enough images in specific containers, try a more targeted search
     if (productData.images.length < 5) {
-      console.log('🔍 Trying targeted image search...');
+      console.log('Trying targeted image search...');
       
       // Look for images in the product details section only
       const productDetailsMatch = html.match(/<div[^>]*id="centerCol"[^>]*>([\s\S]*?)<div[^>]*id="rightCol"/);
@@ -481,7 +481,7 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
       return 0;
     });
     
-    console.log(`📊 Final image count: ${productData.images.length}`);
+    console.log(`Final image count: ${productData.images.length}`);
 
     // Check for Amazon error pages
     const errorPageIndicators = [

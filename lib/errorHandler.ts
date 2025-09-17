@@ -43,7 +43,7 @@ class ErrorHandler {
     window.addEventListener('error', this.handleResourceError, true);
 
     this.isInitialized = true;
-    console.log('✅ Global error handler initialized');
+    console.log('Global error handler initialized');
   }
 
   private handleUnhandledRejection = (event: PromiseRejectionEvent) => {
@@ -112,7 +112,7 @@ class ErrorHandler {
 
     // Log for development
     if (process.env.NODE_ENV === 'development') {
-      console.group(`🚨 ${errorType.toUpperCase()}`);
+      console.group(`${errorType.toUpperCase()}`);
       console.error('Error Report:', errorReport);
       console.groupEnd();
     }

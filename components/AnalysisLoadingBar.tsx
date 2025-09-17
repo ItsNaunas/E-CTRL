@@ -301,7 +301,7 @@ export default function AnalysisLoadingBar({ isVisible, mode, onComplete, onCanc
 
         {/* Tips */}
         <div className="mt-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-          <h4 className="font-medium text-white mb-2">💡 Did you know?</h4>
+          <h4 className="font-medium text-white mb-2">Did you know?</h4>
           <p className="text-sm text-white/70">
             {mode === 'audit' 
               ? 'Our AI analyzes over 50 ranking factors to identify the biggest opportunities for your listing.'

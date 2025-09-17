@@ -28,23 +28,23 @@ export default function ReportDeliveryNote({ email }: { email: string }) {
             <h3 className="font-semibold text-white mb-3">What&apos;s in your report:</h3>
             <div className="grid gap-3 text-sm text-left">
               <div className="flex items-center gap-3">
-                <span className="text-[#FF7D2B]">📊</span>
+                <span className="text-[#FF7D2B]"></span>
                 <span className="text-white/90">Detailed performance analysis</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[#FF7D2B]">🎯</span>
+                <span className="text-[#FF7D2B]"></span>
                 <span className="text-white/90">Specific keyword recommendations</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[#FF7D2B]">📸</span>
+                <span className="text-[#FF7D2B]"></span>
                 <span className="text-white/90">Image optimization checklist</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[#FF7D2B]">📈</span>
+                <span className="text-[#FF7D2B]"></span>
                 <span className="text-white/90">Conversion rate improvement tips</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[#FF7D2B]">📄</span>
+                <span className="text-[#FF7D2B]"></span>
                 <span className="text-white/90">Complete PDF report with all details</span>
               </div>
             </div>
