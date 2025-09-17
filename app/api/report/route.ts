@@ -21,7 +21,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, data } = body;
+    const { type, data, checkOnly } = body;
 
     // Validate request structure
     if (!type || !data) {
@@ -136,7 +136,22 @@ export async function POST(request: NextRequest) {
         const scrapedData = await scrapeProductPage(newSellerData.websiteUrl);
         
         if ('error' in scrapedData) {
-          console.warn('Product scraping failed, proceeding with user data:', scrapedData.error);
+          console.warn('Product scraping failed for new seller:', scrapedData.error);
+          // Return specific error for URL scraping failure to be consistent with preview API
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Unable to scrape product data from this URL',
+            code: 'URL_SCRAPING_FAILED',
+            message: 'Please use the manual input form instead to create your Amazon listing.',
+            suggestion: 'manual_input'
+          }, { status: 400 });
+        } else if (checkOnly) {
+          // If checkOnly is true, just return success without AI analysis
+          return NextResponse.json({
+            success: true,
+            scannable: true,
+            message: 'URL is scannable'
+          });
         } else {
           console.log('Successfully scraped product data for new seller');
           productData = scrapedData;

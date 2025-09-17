@@ -76,6 +76,12 @@ export default function ToolPage() {
         const errorData = await response.json();
         if (errorData.error === 'Rate limit exceeded. One report per email per day.') {
           setErrors({ email: 'You can only request one report per email per day. Please try again tomorrow.' });
+        } else if (errorData.code === 'URL_SCRAPING_FAILED') {
+          // Handle URL scraping failure specifically for existing sellers
+          setErrors({ 
+            asin: 'This ASIN could not be found or scraped. Please check the ASIN and try again.',
+            general: 'Product data could not be retrieved. Please verify the ASIN is correct.'
+          });
         } else {
           setErrors({ general: errorData.error || 'Failed to generate report' });
         }
@@ -118,6 +124,35 @@ export default function ToolPage() {
     try {
       const validatedData = newSellerSchema.parse(newForm);
       
+      // If website URL is provided, first check if it's scannable
+      if (validatedData.websiteUrl) {
+        const checkResponse = await fetch('/api/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            type: AUDIT_TYPES.NEW_SELLER, 
+            data: validatedData,
+            checkOnly: true // Just check if URL is scannable, don't do AI analysis
+          }),
+        });
+        
+        const checkResult = await checkResponse.json();
+        console.log('URL check result:', checkResponse.status, checkResult);
+        
+        if (!checkResponse.ok || !checkResult.success || !checkResult.scannable) {
+          // URL is not scannable - show error and suggest manual input
+          setErrors({ 
+            websiteUrl: 'This website is not scannable automatically. Please fill in your product details manually below to get the same quality analysis.',
+            general: 'URL could not be scanned. Please use the manual input fields instead.'
+          });
+          return;
+        }
+        
+        // URL is scannable - proceed with full analysis
+        console.log('URL is scannable, proceeding with full analysis');
+      }
+      
+      // Make the full analysis API call
       const response = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
