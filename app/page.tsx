@@ -194,10 +194,9 @@ export default function HomePage() {
     setProductUrl(url);
     setHasUserInput(true);
     setIsAnalyzing(true);
-    setShowPartial(true); // Show partial results immediately like existing seller
     
-    // Scroll to partial result immediately when analysis starts
-    scrollToElement('partial-result', 80);
+    // Don't show partial results immediately - wait to see if URL scraping succeeds
+    // setShowPartial(true); // Removed this line
     
     try {
       // Make immediate API call for URL analysis (exactly like existing seller flow)
@@ -257,13 +256,26 @@ export default function HomePage() {
               summary: summary
             }
           });
+          
+          // Only show partial results if we got successful analysis
+          setShowPartial(true);
+          scrollToElement('partial-result', 80);
+        } else {
+          // API returned success: false - switch to manual input
+          console.log('API returned success: false, switching to manual input mode');
+          setForceManualMode(true);
+          scrollToHeroForm();
         }
       } else {
         const errorData = await response.json();
         console.error('URL analysis failed:', response.status, errorData);
         
-        // URL scraping failed - just switch to manual input mode
-        console.log('URL scraping failed, switching to manual input mode');
+        // Check if it's specifically a URL scraping failure
+        if (errorData.code === 'URL_SCRAPING_FAILED') {
+          console.log('URL scraping failed, switching to manual input mode');
+        } else {
+          console.log('API error, switching to manual input mode');
+        }
         setForceManualMode(true);
         scrollToHeroForm();
       }
