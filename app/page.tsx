@@ -496,6 +496,14 @@ export default function HomePage() {
         productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
       
+      // Debug logging
+      console.log('=== GUEST ACCESS DEBUG ===');
+      console.log('aiResult:', aiResult);
+      console.log('previewData.idqAnalysis:', previewData.idqAnalysis);
+      console.log('previewData.summary:', previewData.summary);
+      console.log('previewData.highlights:', previewData.highlights);
+      console.log('========================');
+      
       const response = await fetch('/api/submit-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

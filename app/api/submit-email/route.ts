@@ -60,6 +60,13 @@ export async function POST(request: NextRequest) {
     // If we have preview data (from homepage preview flow), use that
     if (previewData) {
       console.log('Using preview data for PDF generation');
+      console.log('=== SUBMIT-EMAIL DEBUG ===');
+      console.log('previewData received:', previewData);
+      console.log('previewData.idqAnalysis:', previewData.idqAnalysis);
+      console.log('previewData.summary:', previewData.summary);
+      console.log('previewData.detailedAnalysis:', previewData.detailedAnalysis);
+      console.log('========================');
+      
       pdfData = {
         name: name || 'User',
         email: email,
@@ -82,6 +89,11 @@ export async function POST(request: NextRequest) {
         category: previewData.category || undefined,
         productDesc: previewData.productDesc || undefined
       };
+      
+      console.log('=== PDF DATA DEBUG ===');
+      console.log('pdfData.idqAnalysis:', pdfData.idqAnalysis);
+      console.log('pdfData.summary:', pdfData.summary);
+      console.log('=====================');
       
       console.log('Preview PDF data extracted:', {
         hasScore: pdfData.score !== null,
