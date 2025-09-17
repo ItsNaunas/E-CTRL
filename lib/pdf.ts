@@ -704,8 +704,127 @@ export function generateListingPackPDF(data: PDFData): jsPDF {
   
   yPosition += 10;
   
-  // Product description
-  if (data.productDesc) {
+  // AI-Generated Amazon Listing Content
+  if (data.idqAnalysis) {
+    // Optimized Title Section
+    if (data.idqAnalysis.title?.optimized) {
+      doc.setFontSize(16);
+      doc.setTextColor(37, 99, 235); // Blue color
+      doc.text('✓ Optimized Amazon Title', 20, yPosition);
+      yPosition += 8;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55); // Black
+      const titleWords = data.idqAnalysis.title.optimized.split(' ');
+      let titleLine = '';
+      titleWords.forEach(word => {
+        if ((titleLine + word).length > 80) {
+          doc.text(titleLine, 20, yPosition);
+          yPosition += 5;
+          titleLine = word + ' ';
+        } else {
+          titleLine += word + ' ';
+        }
+      });
+      if (titleLine) {
+        doc.text(titleLine, 20, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 10;
+    }
+    
+    // Optimized Bullet Points Section
+    if (data.idqAnalysis.bullets?.optimized && data.idqAnalysis.bullets.optimized.length > 0) {
+      if (yPosition > 200) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(16);
+      doc.setTextColor(37, 99, 235); // Blue color
+      doc.text('✓ Optimized Bullet Points', 20, yPosition);
+      yPosition += 8;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55); // Black
+      
+      const bulletsToShow = isGuest ? data.idqAnalysis.bullets.optimized.slice(0, 3) : data.idqAnalysis.bullets.optimized;
+      
+      bulletsToShow.forEach((bullet, index) => {
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        
+        // Add bullet number and content
+        doc.setTextColor(249, 115, 22); // Orange
+        doc.text(`${index + 1}.`, 20, yPosition);
+        doc.setTextColor(31, 41, 55); // Black
+        
+        const bulletWords = bullet.split(' ');
+        let bulletLine = '';
+        bulletWords.forEach(word => {
+          if ((bulletLine + word).length > 70) { // Reduced for indent
+            doc.text(bulletLine, 30, yPosition);
+            yPosition += 5;
+            bulletLine = word + ' ';
+          } else {
+            bulletLine += word + ' ';
+          }
+        });
+        if (bulletLine) {
+          doc.text(bulletLine, 30, yPosition);
+        }
+        yPosition += 8;
+      });
+      
+      // Show limited notice for guest users
+      if (isGuest && data.idqAnalysis.bullets.optimized.length > 3) {
+        doc.setFontSize(10);
+        doc.setTextColor(249, 115, 22);
+        doc.text(`+ ${data.idqAnalysis.bullets.optimized.length - 3} more bullet points in full listing pack`, 30, yPosition);
+        yPosition += 8;
+      }
+      
+      yPosition += 5;
+    }
+    
+    // Optimized Description Section
+    if (data.idqAnalysis.description?.optimized) {
+      if (yPosition > 230) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(16);
+      doc.setTextColor(37, 99, 235); // Blue color
+      doc.text('✓ Optimized Product Description', 20, yPosition);
+      yPosition += 8;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(31, 41, 55); // Black
+      
+      const descWords = data.idqAnalysis.description.optimized.split(' ');
+      let descLine = '';
+      descWords.forEach(word => {
+        if ((descLine + word).length > 80) {
+          doc.text(descLine, 20, yPosition);
+          yPosition += 5;
+          descLine = word + ' ';
+        } else {
+          descLine += word + ' ';
+        }
+      });
+      if (descLine) {
+        doc.text(descLine, 20, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 10;
+    }
+  }
+  
+  // Product description (fallback)
+  if (!data.idqAnalysis && data.productDesc) {
     doc.setFontSize(16);
     doc.setTextColor(31, 41, 55);
     doc.text('Product Description', 20, yPosition);
