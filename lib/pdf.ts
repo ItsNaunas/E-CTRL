@@ -162,10 +162,10 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     
     doc.setFontSize(16);
     doc.setTextColor(37, 99, 235); // Blue color for section headers
-    doc.text('Binary IDQ Analysis', 20, yPosition);
+    doc.text('Listing Quality Analysis', 20, yPosition);
     yPosition += 8;
     
-    // IDQ Score and Grade
+    // Listing Quality Score and Grade
     doc.setFontSize(14);
     doc.setTextColor(31, 41, 55);
     doc.text(`Binary Score: ${binaryResult.score}/${binaryResult.maxPossible} (${binaryResult.qualityPercent}%)`, 20, yPosition);

@@ -94,14 +94,14 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                 <div className="bg-gradient-to-r from-[#296AFF]/10 to-[#FF7D2B]/10 rounded-lg p-6 border border-white/10">
                   <h3 className="text-lg font-semibold text-white mb-3">🎯 Your Amazon Listing Analysis</h3>
                   <p className="text-white/90 mb-4">
-                    Based on your product page analysis, here&apos;s what we found and how to optimize it for Amazon&apos;s IDQ requirements:
+                    Based on your product page analysis, here&apos;s what we found and how to optimize it for Amazon&apos;s listing requirements:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-[#0B0B0C] rounded-lg p-4 border border-white/10">
                       <h4 className="font-medium text-white mb-2">📊 Current Status</h4>
                       <ul className="text-sm text-white/90 space-y-1">
                         <li>• Product data scraped successfully</li>
-                        <li>• IDQ requirements analyzed</li>
+                        <li>• Amazon requirements analyzed</li>
                         <li>• Amazon listing recommendations ready</li>
                       </ul>
                     </div>
@@ -129,7 +129,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                       <p className="text-white/90 font-medium text-lg leading-relaxed">
                         {highlights && highlights.length > 0 ? highlights[0] : "Loading title..."}
                       </p>
-                      <p className="text-xs text-white/60 mt-2">✅ IDQ-compliant • ✅ Brand included • ✅ Keywords optimized</p>
+                      <p className="text-xs text-white/60 mt-2">✅ Amazon-compliant • ✅ Brand included • ✅ Keywords optimized</p>
                     </div>
                   </div>
 
@@ -194,7 +194,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                       <h4 className="font-medium text-white mb-2 flex items-center gap-2">
                         <span className="text-[#FF7D2B]">📝</span> Optimized Title
                       </h4>
-                      <p className="text-sm text-white/90">IDQ-compliant title with brand and key features</p>
+                      <p className="text-sm text-white/90">Amazon-compliant title with brand and key features</p>
                     </div>
                     <div className="bg-[#0B0B0C] rounded-lg p-4 border border-white/10">
                       <h4 className="font-medium text-white mb-2 flex items-center gap-2">
@@ -221,7 +221,7 @@ export default function NewSellerPartialResult({ productUrl, manualData, onUnloc
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
                   <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                     <h4 className="font-medium text-white mb-2">🎯 Title Optimization</h4>
-                    <p className="text-sm text-white/90">IDQ-compliant titles that rank and convert</p>
+                    <p className="text-sm text-white/90">Amazon-compliant titles that rank and convert</p>
                   </div>
                   <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                     <h4 className="font-medium text-white mb-2">📝 Bullet Points</h4>

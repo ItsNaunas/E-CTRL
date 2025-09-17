@@ -15,7 +15,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
   const guestData = {
     quickWins: [
       "Amazon listing analysis completed",
-      "IDQ compliance check finished", 
+      "Amazon compliance check finished", 
       "Optimization recommendations ready"
     ],
     auditInsights: [
@@ -154,7 +154,7 @@ export default function GuestResult({ mode, email, onUpgrade }: GuestResultProps
               </h3>
               <p className="text-white/90 mb-4">
                 {isAuditMode 
-                  ? 'Get your complete Amazon audit report with detailed IDQ analysis, listing optimization recommendations, and actionable checklist.'
+                  ? 'Get your complete Amazon audit report with detailed listing quality analysis, optimization recommendations, and actionable checklist.'
                   : 'Get your complete listing readiness assessment, SEO-optimized copy recommendations, and step-by-step launch guide.'
                 }
               </p>

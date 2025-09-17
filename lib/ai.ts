@@ -53,7 +53,7 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
     if (percentage >= 60) return 'B';
     return 'C';
   }
-  const prompt = `You are an expert Amazon FBA consultant analyzing an EXISTING SELLER'S product listing for UK/EU markets using Amazon's IDQ (Item Data Quality) criteria.
+  const prompt = `You are an expert Amazon FBA consultant analyzing an EXISTING SELLER'S product listing for UK/EU markets using Amazon's listing quality standards.
 
 ${productData ? `
 REAL AMAZON PRODUCT DATA:
@@ -75,7 +75,7 @@ PRODUCT DETAILS (No real data available):
 `}
 
 ${binaryIdqResult ? `
-BINARY IDQ EVALUATION RESULTS:
+LISTING QUALITY EVALUATION RESULTS:
 - Binary Score: ${binaryIdqResult.score}/${binaryIdqResult.maxPossible} (${binaryIdqResult.qualityPercent}%)
 - Grade: ${binaryIdqResult.grade}
 - Failed Checks: ${binaryIdqResult.notes.join(', ')}
@@ -107,9 +107,9 @@ ENHANCED ANALYSIS REQUESTED: This user has an account and should receive premium
 STANDARD ANALYSIS: This is a guest user - provide comprehensive but focused insights suitable for preview access.
 `}
 
-Please provide a comprehensive Amazon IDQ AUDIT for this EXISTING SELLER that focuses on IMPROVEMENTS and OPTIMIZATION based on what we can actually measure from the visible listing content:
+Please provide a comprehensive Amazon LISTING QUALITY AUDIT for this EXISTING SELLER that focuses on IMPROVEMENTS and OPTIMIZATION based on what we can actually measure from the visible listing content:
 
-1. **IDQ Score (0-100)**: Use the binary score as foundation, then adjust based on content quality analysis:
+1. **Listing Quality Score (0-100)**: Use the binary score as foundation, then adjust based on content quality analysis:
    - Base Score: ${binaryIdqResult ? binaryIdqResult.qualityPercent : 'Calculate from data'}
    - Content Quality Adjustments: ±10 points based on benefit focus and conversion potential
    - Final Score: Weighted combination of binary compliance and content quality
@@ -261,7 +261,7 @@ ENHANCED PRODUCT INFORMATION:
 `}
 
 ${binaryIdqResult ? `
-BINARY IDQ EVALUATION RESULTS (from website analysis):
+LISTING QUALITY EVALUATION RESULTS (from website analysis):
 - Binary Score: ${binaryIdqResult.score}/${binaryIdqResult.maxPossible} (${binaryIdqResult.qualityPercent}%)
 - Grade: ${binaryIdqResult.grade}
 - Failed Checks: ${binaryIdqResult.notes.join(', ')}
@@ -304,32 +304,32 @@ Please create a complete Amazon listing creation guide for this NEW SELLER. Inst
 
 1. **TITLE CREATION**:
    - Current Title: [What we found from scraping or user input]
-   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Amazon Requirements: [What Amazon requires for high-quality listings]
    - Optimized Title: [Title that converts browsers into buyers and ranks well]
 
 2. **BULLET POINTS CREATION**:
    - Current Bullets: [What we found from scraping or user input]
-   - Amazon Requirements: [What Amazon requires for high IDQ scores]
-   - Optimized Bullets: [5 bullet points that drive conversions and meet IDQ standards]
+   - Amazon Requirements: [What Amazon requires for high-quality listings]
+   - Optimized Bullets: [5 bullet points that drive conversions and meet Amazon standards]
 
 3. **PRODUCT DESCRIPTION CREATION**:
    - Current Description: [What we found from scraping or user input]
-   - Amazon Requirements: [What Amazon requires for high IDQ scores]
-   - Optimized Description: [Description that answers questions, builds trust, and meets IDQ standards]
+   - Amazon Requirements: [What Amazon requires for high-quality listings]
+   - Optimized Description: [Description that answers questions, builds trust, and meets Amazon standards]
 
 4. **KEYWORD STRATEGY FOR NEW LISTINGS**:
    - Current Keywords: [What we found from scraping or user input]
-   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Amazon Requirements: [What Amazon requires for high-quality listings]
    - Optimized Keywords: [Keywords that bring in qualified buyers and help with ranking]
 
 5. **LISTING OPTIMIZATION CHECKLIST FOR NEW LISTINGS**:
    - Current Listing Elements: [What we found from scraping or user input]
-   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Amazon Requirements: [What Amazon requires for high-quality listings]
    - Optimization Checklist: [Complete checklist covering title, bullets, description, keywords, and listing requirements]
 
 6. **TRUST & CREDIBILITY FOR NEW SELLERS**:
    - Current Trust Elements: [What we found]
-   - Amazon Requirements: [What Amazon requires for high IDQ scores]
+   - Amazon Requirements: [What Amazon requires for high-quality listings]
    - Trust Requirements: [Elements that make customers feel safe buying from a new seller]
 
 Format your response as JSON:
@@ -385,7 +385,7 @@ Format your response as JSON:
   "binaryIdqResult": ${binaryIdqResult ? JSON.stringify(binaryIdqResult) : 'null'}
 }
 
-Focus on HELPING THIS NEW SELLER CREATE A HIGH-CONVERTING AMAZON LISTING FROM SCRATCH. Use the binary evaluation results to guide them on what Amazon requires for high IDQ scores and provide them with a complete listing creation strategy.`;
+Focus on HELPING THIS NEW SELLER CREATE A HIGH-CONVERTING AMAZON LISTING FROM SCRATCH. Use the binary evaluation results to guide them on what Amazon requires for high-quality listings and provide them with a complete listing creation strategy.`;
 
   try {
     const completion = await getOpenAIClient().chat.completions.create({
@@ -596,7 +596,7 @@ function parseAIResponse(text: string) {
   }
 
   return {
-    title: 'AI-Powered Amazon IDQ Analysis',
+    title: 'AI-Powered Amazon Listing Quality Analysis',
     score: score || 70, // Ensure we always have a score
     bullets: highlights, // Use highlights as bullets for compatibility
     note: 'AI analysis completed. Check your email for the full detailed report.',
