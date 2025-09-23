@@ -247,7 +247,7 @@ export async function sendWelcomeEmail(data: EmailData) {
             <p style="margin-bottom: 20px; font-size: 16px; color: white; opacity: 1;">
               Book a free 15-minute consultation with our Amazon expert to discuss your audit results and growth strategy.
             </p>
-            <a href="https://calendar.google.com/calendar/u/0?cid=ZmVzYWxzd29yazEyQGdtYWlsLmNvbQ" 
+            <a href="https://calendly.com/fesalswork12/30min" 
                style="display: inline-block; background: white; color: #296AFF; padding: 15px 30px; 
                       text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;
                       box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
@@ -365,7 +365,7 @@ export async function sendReportEmail(data: EmailData & { reportUrl: string }) {
             <p style="margin-bottom: 20px; font-size: 16px; color: white; opacity: 1;">
               Book a free 15-minute consultation with our Amazon expert to discuss your audit results and growth strategy.
             </p>
-            <a href="https://calendar.google.com/calendar/u/0?cid=ZmVzYWxzd29yazEyQGdtYWlsLmNvbQ" 
+            <a href="https://calendly.com/fesalswork12/30min" 
                style="display: inline-block; background: white; color: #296AFF; padding: 15px 30px; 
                       text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;
                       box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
