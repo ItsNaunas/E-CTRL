@@ -1,0 +1,21 @@
+{
+  "name": "e-ctrl",
+  "short_name": "e-ctrl",
+  "description": "Free AI-powered Amazon listing audit tool for UK/EU sellers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0B0C",
+  "theme_color": "#296AFF",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
