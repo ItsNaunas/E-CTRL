@@ -95,7 +95,7 @@ export default function TestimonialsCarousel({
   // Enhanced touch handling for better mobile experience
   // Embla carousel already handles touch interactions well with the configured options
 
-  const allTestimonials = [...testimonials, ...testimonials];
+  const allTestimonials = testimonials;
 
   return (
     <section
