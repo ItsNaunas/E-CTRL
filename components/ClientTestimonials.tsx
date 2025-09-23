@@ -37,13 +37,6 @@ const defaultTestimonials: ClientTestimonial[] = [
     quote: "Significant ROI improvement",
     result: "Real Amazon expertise",
     avatar: "https://i.pravatar.cc/150?img=13"
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    quote: "Boosted my ranking to page 1",
-    result: "Optimized listing structure",
-    avatar: "https://i.pravatar.cc/150?img=14"
   }
 ];
 

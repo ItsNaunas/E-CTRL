@@ -37,56 +37,6 @@ const defaultTestimonials = [
     location: 'Australia',
     result: 'Significant ROI improvement',
     rating: 5
-  },
-  {
-    text: 'E-CTRL&apos;s attention to Amazon&apos;s algorithm is impressive. The keyword recommendations significantly increased our organic traffic.',
-    imageSrc: 'https://i.pravatar.cc/150?img=4',
-    name: 'David Kim',
-    username: '@davidkim',
-    role: 'Amazon Specialist',
-    location: 'United Kingdom',
-    result: 'Major organic traffic increase',
-    rating: 5
-  },
-  {
-    text: 'The optimization checklist is comprehensive. It&apos;s exactly what we needed to launch our new product successfully.',
-    imageSrc: 'https://i.pravatar.cc/150?img=5',
-    name: 'Lisa Thompson',
-    username: '@lisathompson',
-    role: 'Product Manager',
-    location: 'Germany',
-    result: 'Successful product launch',
-    rating: 5
-  },
-  {
-    text: 'I&apos;ve tried every Amazon tool out there, but E-CTRL is different. The audit reports are comprehensive yet easy to understand.',
-    imageSrc: 'https://i.pravatar.cc/150?img=6',
-    name: 'James Wilson',
-    username: '@jameswilson',
-    role: 'Amazon Consultant',
-    location: 'France',
-    result: 'Best tool for Amazon optimization',
-    rating: 5
-  },
-  {
-    text: 'E-CTRL helped us navigate Amazon&apos;s complex requirements. We achieved 100% compliance on all our health products.',
-    imageSrc: 'https://i.pravatar.cc/150?img=7',
-    name: 'Maria Garcia',
-    username: '@mariagarcia',
-    role: 'E-commerce Lead',
-    location: 'Spain',
-    result: '100% compliance achieved',
-    rating: 5
-  },
-  {
-    text: 'Our electronics listings were underperforming until we found E-CTRL. The technical specification optimization boosted our rankings.',
-    imageSrc: 'https://i.pravatar.cc/150?img=8',
-    name: 'Alex Johnson',
-    username: '@alexjohnson',
-    role: 'Amazon Seller',
-    location: 'Italy',
-    result: 'Top 3 keyword rankings',
-    rating: 5
   }
 ];
 
