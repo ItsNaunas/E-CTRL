@@ -10,10 +10,10 @@ export default function Header() {
     <header className="bg-[#0B0B0C]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
+          {/* Logo - Hidden on mobile */}
           <Link
             href="/"
-            className="flex items-center transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+            className="hidden md:flex items-center transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
           >
             <Image
               src="/logos/logo.png"
