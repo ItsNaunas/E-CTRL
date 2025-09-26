@@ -6,7 +6,7 @@ export interface IdqConfig {
   maxTitleLength?: number;
   minBulletCount?: number;
   minDescriptionChars?: number;
-  minImageCount?: number;
+  // Removed minImageCount - no longer used in 9-point system
   keywords?: string[];
   requiredAttributes?: string[];
   gradeBands?: {
@@ -68,7 +68,7 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       maxTitleLength: config.maxTitleLength || 200,
       minBulletCount: config.minBulletCount || 5,
       minDescriptionChars: config.minDescriptionChars || 200,
-      minImageCount: config.minImageCount || 6,
+      // Removed minImageCount - no longer used in 9-point system
       keywords: config.keywords || [],
       requiredAttributes: config.requiredAttributes || [],
       gradeBands: config.gradeBands || { A: [8, 9], B: [6, 7], C: [0, 5] }
@@ -102,11 +102,13 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       has_brand: dataToAnalyze.brand ? 1 : 0,
       title_starts_with_brand: (dataToAnalyze.brand && dataToAnalyze.title && startsWithBrand(dataToAnalyze.title, dataToAnalyze.brand)) ? 1 : 0,
       title_correct_length: (dataToAnalyze.title && dataToAnalyze.title.length >= 10 && dataToAnalyze.title.length <= cfg.maxTitleLength) ? 1 : 0,
-      has_bullets_5plus: (dataToAnalyze.bullets && dataToAnalyze.bullets.length >= cfg.minBulletCount) ? 1 : 0,
+      has_bullets_5plus: (dataToAnalyze.bullets && Array.isArray(dataToAnalyze.bullets) && dataToAnalyze.bullets.length >= cfg.minBulletCount) ? 1 : 0,
       has_description_200plus: (dataToAnalyze.description && dataToAnalyze.description.length >= cfg.minDescriptionChars) ? 1 : 0,
-      has_main_image: (dataToAnalyze.images && dataToAnalyze.images.length > 0) ? 1 : 0,
-      brand_in_bullets_or_desc: (dataToAnalyze.brand && (dataToAnalyze.bullets && dataToAnalyze.bullets.some((bullet: string) => includesAny(bullet, [dataToAnalyze.brand])) || 
-        (dataToAnalyze.description && includesAny(dataToAnalyze.description, [dataToAnalyze.brand])))) ? 1 : 0,
+      has_main_image: (dataToAnalyze.images && Array.isArray(dataToAnalyze.images) && dataToAnalyze.images.length > 0) ? 1 : 0,
+      brand_in_bullets_or_desc: (dataToAnalyze.brand && (
+        (dataToAnalyze.bullets && Array.isArray(dataToAnalyze.bullets) && dataToAnalyze.bullets.some((bullet: string) => bullet && includesAny(bullet, [dataToAnalyze.brand]))) || 
+        (dataToAnalyze.description && typeof dataToAnalyze.description === 'string' && includesAny(dataToAnalyze.description, [dataToAnalyze.brand]))
+      )) ? 1 : 0,
       has_reviews: (dataToAnalyze.reviewCount && dataToAnalyze.reviewCount >= 1) ? 1 : 0,
       has_star_rating: (dataToAnalyze.rating !== null && isFinite(dataToAnalyze.rating) && dataToAnalyze.rating > 0) ? 1 : 0
     };
@@ -190,7 +192,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     maxTitleLength: config.maxTitleLength || 200,
     minBulletCount: config.minBulletCount || 5,
     minDescriptionChars: config.minDescriptionChars || 200,
-    minImageCount: config.minImageCount || 6,
+    // Removed minImageCount - no longer used in 9-point system
     keywords: config.keywords || [],
     requiredAttributes: config.requiredAttributes || [],
       gradeBands: config.gradeBands || { A: [8, 9], B: [6, 7], C: [0, 5] }

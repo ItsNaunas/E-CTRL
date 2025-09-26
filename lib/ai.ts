@@ -35,7 +35,7 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
         maxTitleLength: 200,
         minBulletCount: 5,
         minDescriptionChars: 200,
-        minImageCount: 6
+        // Removed minImageCount since we no longer check images_6plus in our 9-point system
       };
       // Use the extracted data directly for IDQ evaluation
       binaryIdqResult = await evaluateIdqWithAI(productData.htmlContent, idqConfig, productData);
@@ -186,6 +186,13 @@ Focus on HELPING THIS EXISTING SELLER FIX THEIR CURRENT LISTING. Use the binary 
       if (binaryIdqResult && !fallbackResult.binaryIdqResult) {
         fallbackResult.binaryIdqResult = binaryIdqResult;
       }
+      
+      // If we have a valid binary IDQ result, use that score instead of parsed score
+      if (binaryIdqResult && binaryIdqResult.qualityPercent >= 0) {
+        fallbackResult.score = binaryIdqResult.qualityPercent;
+        console.log('Using binary IDQ score instead of parsed score:', binaryIdqResult.qualityPercent);
+      }
+      
       // Validate the fallback result
       if (fallbackResult.score >= 0 && fallbackResult.score <= 100) {
         return fallbackResult;
@@ -212,7 +219,7 @@ export async function analyzeNewSeller(data: NewSellerData, productData?: Generi
         maxTitleLength: 200,
         minBulletCount: 5,
         minDescriptionChars: 200,
-        minImageCount: 6
+        // Removed minImageCount since we no longer check images_6plus in our 9-point system
       };
       binaryIdqResult = await evaluateIdqWithAI(productData.rawContent, idqConfig);
       console.log('IDQ evaluation completed for new seller:', binaryIdqResult);
@@ -563,7 +570,7 @@ function parseAIResponse(text: string) {
     if (positiveCount > negativeCount) {
       score = Math.min(85, 70 + (positiveCount - negativeCount) * 5);
     } else if (negativeCount > positiveCount) {
-      score = Math.max(35, 70 - (negativeCount - positiveCount) * 10);
+      score = Math.max(60, 70 - (negativeCount - positiveCount) * 10);
     } else {
       score = 70; // Neutral default
     }
