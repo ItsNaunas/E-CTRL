@@ -94,7 +94,7 @@ export const productUrl = z
 // Existing seller schema
 export const existingSellerSchema = z.object({
   asin: asin,
-  keywords: requiredKeywords,
+  keywords: keywords, // Changed from requiredKeywords to optional keywords
   fulfilment: z.enum(['FBA', 'FBM', 'Unsure'], {
     errorMap: () => ({ message: "Select FBA, FBM, or Unsure" })
   }),
@@ -107,7 +107,7 @@ export const newSellerSchema = z.object({
   websiteUrl: productUrl,
   desc: shortDesc,
   category: category,
-  keywords: requiredKeywords,
+  keywords: keywords, // Changed from requiredKeywords to optional keywords
   name: name,
   email: email
 });
