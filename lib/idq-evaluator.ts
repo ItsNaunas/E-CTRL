@@ -513,7 +513,7 @@ function extractDescriptionFromHtml(html: string): string | null {
     const match = html.match(pattern);
     if (match && match[1]) {
       // Strip HTML tags and get plain text
-      let text = match[1]
+      const text = match[1]
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
         .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove styles
         .replace(/<[^>]*>/g, ' ') // Remove HTML tags
