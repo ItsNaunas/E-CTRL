@@ -1,6 +1,12 @@
-import type { AmazonProductData } from './amazon-scraper';
+// Generic product scraper for various website types
+import { extractGenericRating } from './rating-extractor';
 
 export interface GenericProductData {
+  url: string;
+  domain: string;
+  rawContent: string;
+  headings: string[];
+  paragraphs: string[];
   title?: string;
   description?: string;
   price?: string;
@@ -11,12 +17,6 @@ export interface GenericProductData {
   availability?: string;
   rating?: string;
   reviewCount?: string;
-  url: string;
-  domain: string;
-  // Raw content for AI analysis
-  rawContent?: string;
-  headings?: string[];
-  paragraphs?: string[];
 }
 
 export interface ScrapingError {
@@ -119,8 +119,7 @@ function extractRawContent(html: string): string {
   // Clean up whitespace
   content = content.replace(/\s+/g, ' ').trim();
   
-  // Limit to first 2000 characters to avoid token limits
-  return content.substring(0, 2000);
+  return content;
 }
 
 function extractHeadings(html: string): string[] {
@@ -129,13 +128,13 @@ function extractHeadings(html: string): string[] {
   let match;
   
   while ((match = headingPattern.exec(html)) !== null) {
-    const heading = match[1].trim().replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-    if (heading && heading.length > 3 && heading.length < 100) {
-      headings.push(heading);
+    const text = match[1].trim();
+    if (text && text.length > 3) {
+      headings.push(text);
     }
   }
   
-  return headings.slice(0, 10); // Limit to first 10 headings
+  return headings;
 }
 
 function extractParagraphs(html: string): string[] {
@@ -144,64 +143,56 @@ function extractParagraphs(html: string): string[] {
   let match;
   
   while ((match = paragraphPattern.exec(html)) !== null) {
-    const paragraph = match[1].trim().replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-    if (paragraph && paragraph.length > 20 && paragraph.length < 300) {
-      paragraphs.push(paragraph);
+    const text = match[1].trim();
+    if (text && text.length > 20) {
+      paragraphs.push(text);
     }
   }
   
-  return paragraphs.slice(0, 5); // Limit to first 5 paragraphs
+  return paragraphs;
 }
 
-// Helper functions to extract structured data (fallback)
+// Helper functions for structured data extraction
 function extractTitle(html: string): string | undefined {
-  // Try various title patterns
   const patterns = [
-    /<title[^>]*>([^<]+)<\/title>/i,
+    /<title>([^<]+)<\/title>/i,
     /<h1[^>]*>([^<]+)<\/h1>/i,
     /<meta[^>]*property="og:title"[^>]*content="([^"]+)"/i,
-    /<meta[^>]*name="twitter:title"[^>]*content="([^"]+)"/i,
     /<meta[^>]*name="title"[^>]*content="([^"]+)"/i
   ];
 
   for (const pattern of patterns) {
     const match = html.match(pattern);
     if (match && match[1]) {
-      return match[1].trim().replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      return match[1].trim();
     }
   }
   return undefined;
 }
 
 function extractDescription(html: string): string | undefined {
-  // Try various description patterns
   const patterns = [
-    /<meta[^>]*property="og:description"[^>]*content="([^"]+)"/i,
     /<meta[^>]*name="description"[^>]*content="([^"]+)"/i,
-    /<meta[^>]*name="twitter:description"[^>]*content="([^"]+)"/i,
-    /<p[^>]*class="[^"]*description[^"]*"[^>]*>([^<]+)<\/p>/i,
-    /<div[^>]*class="[^"]*description[^"]*"[^>]*>([^<]+)<\/div>/i
+    /<meta[^>]*property="og:description"[^>]*content="([^"]+)"/i,
+    /<meta[^>]*property="product:description"[^>]*content="([^"]+)"/i
   ];
 
   for (const pattern of patterns) {
     const match = html.match(pattern);
     if (match && match[1]) {
-      return match[1].trim().replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      return match[1].trim();
     }
   }
   return undefined;
 }
 
 function extractPrice(html: string): string | undefined {
-  // Try various price patterns
   const patterns = [
+    /<meta[^>]*property="product:price:amount"[^>]*content="([^"]+)"/i,
     /<span[^>]*class="[^"]*price[^"]*"[^>]*>([^<]+)<\/span>/i,
     /<div[^>]*class="[^"]*price[^"]*"[^>]*>([^<]+)<\/div>/i,
-    /<meta[^>]*property="product:price:amount"[^>]*content="([^"]+)"/i,
-    /<meta[^>]*property="og:price:amount"[^>]*content="([^"]+)"/i,
-    /£\s*[\d,]+\.?\d*/g,
-    /\$\s*[\d,]+\.?\d*/g,
-    /€\s*[\d,]+\.?\d*/g
+    /£(\d+\.?\d*)/i,
+    /\$(\d+\.?\d*)/i
   ];
 
   for (const pattern of patterns) {
@@ -215,70 +206,54 @@ function extractPrice(html: string): string | undefined {
 
 function extractImages(html: string, baseUrl: string): string[] {
   const images: string[] = [];
+  const imagePattern = /<img[^>]*src="([^"]+)"[^>]*>/gi;
+  let match;
   
-  // Try various image patterns
-  const patterns = [
-    /<img[^>]*src="([^"]+)"[^>]*>/gi,
-    /<meta[^>]*property="og:image"[^>]*content="([^"]+)"/gi,
-    /<meta[^>]*name="twitter:image"[^>]*content="([^"]+)"/gi
-  ];
-
-  for (const pattern of patterns) {
-    let match;
-    while ((match = pattern.exec(html)) !== null) {
-      let imageUrl = match[1];
-      
-      // Convert relative URLs to absolute
-      if (imageUrl.startsWith('//')) {
-        imageUrl = 'https:' + imageUrl;
-      } else if (imageUrl.startsWith('/')) {
-        const urlObj = new URL(baseUrl);
-        imageUrl = urlObj.origin + imageUrl;
-      }
-      
-      // Filter out small images and common non-product images
-      if (imageUrl && 
-          !imageUrl.includes('logo') && 
-          !imageUrl.includes('icon') && 
-          !imageUrl.includes('avatar') &&
-          !imageUrl.includes('favicon') &&
-          images.length < 10) {
-        images.push(imageUrl);
-      }
+  while ((match = imagePattern.exec(html)) !== null) {
+    let src = match[1];
+    
+    // Convert relative URLs to absolute
+    if (src.startsWith('/')) {
+      src = new URL(src, baseUrl).href;
+    } else if (src.startsWith('./')) {
+      src = new URL(src, baseUrl).href;
+    }
+    
+    // Filter out placeholder images
+    if (!src.includes('placeholder') && !src.includes('no-image') && src.length > 10) {
+      images.push(src);
     }
   }
-
-  return Array.from(new Set(images)); // Remove duplicates
+  
+  return images.slice(0, 10); // Limit to 10 images
 }
 
 function extractFeatures(html: string): string[] {
   const features: string[] = [];
-  
-  // Try to find feature lists
-  const patterns = [
+  const featurePatterns = [
     /<li[^>]*>([^<]+)<\/li>/gi,
-    /<ul[^>]*class="[^"]*features[^"]*"[^>]*>(.*?)<\/ul>/i,
-    /<div[^>]*class="[^"]*features[^"]*"[^>]*>(.*?)<\/div>/i
+    /<span[^>]*class="[^"]*feature[^"]*"[^>]*>([^<]+)<\/span>/gi,
+    /<div[^>]*class="[^"]*feature[^"]*"[^>]*>([^<]+)<\/div>/gi
   ];
-
-  for (const pattern of patterns) {
+  
+  for (const pattern of featurePatterns) {
     let match;
     while ((match = pattern.exec(html)) !== null) {
       const text = match[1].trim();
-      if (text && text.length > 10 && text.length < 200 && features.length < 10) {
-        features.push(text.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
+      if (text && text.length > 10 && !features.includes(text)) {
+        features.push(text);
       }
     }
   }
-
-  return features;
+  
+  return features.slice(0, 10); // Limit to 10 features
 }
 
 function extractCategory(html: string): string | undefined {
   const patterns = [
     /<meta[^>]*property="product:category"[^>]*content="([^"]+)"/i,
-    /<meta[^>]*name="category"[^>]*content="([^"]+)"/i,
-    /<span[^>]*class="[^"]*category[^"]*"[^>]*>([^<]+)<\/span>/i
+    /<span[^>]*class="[^"]*category[^"]*"[^>]*>([^<]+)<\/span>/i,
+    /<div[^>]*class="[^"]*category[^"]*"[^>]*>([^<]+)<\/div>/i
   ];
 
   for (const pattern of patterns) {
@@ -293,8 +268,8 @@ function extractCategory(html: string): string | undefined {
 function extractBrand(html: string): string | undefined {
   const patterns = [
     /<meta[^>]*property="product:brand"[^>]*content="([^"]+)"/i,
-    /<meta[^>]*name="brand"[^>]*content="([^"]+)"/i,
-    /<span[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/span>/i
+    /<span[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/span>/i,
+    /<div[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/div>/i
   ];
 
   for (const pattern of patterns) {
@@ -308,11 +283,9 @@ function extractBrand(html: string): string | undefined {
 
 function extractAvailability(html: string): string | undefined {
   const patterns = [
+    /<meta[^>]*property="product:availability"[^>]*content="([^"]+)"/i,
     /<span[^>]*class="[^"]*availability[^"]*"[^>]*>([^<]+)<\/span>/i,
-    /<div[^>]*class="[^"]*stock[^"]*"[^>]*>([^<]+)<\/div>/i,
-    /in stock/i,
-    /out of stock/i,
-    /available/i
+    /<div[^>]*class="[^"]*availability[^"]*"[^>]*>([^<]+)<\/div>/i
   ];
 
   for (const pattern of patterns) {
@@ -325,19 +298,7 @@ function extractAvailability(html: string): string | undefined {
 }
 
 function extractRating(html: string): string | undefined {
-  const patterns = [
-    /<meta[^>]*property="product:rating"[^>]*content="([^"]+)"/i,
-    /<span[^>]*class="[^"]*rating[^"]*"[^>]*>([^<]+)<\/span>/i,
-    /<div[^>]*class="[^"]*rating[^"]*"[^>]*>([^<]+)<\/div>/i
-  ];
-
-  for (const pattern of patterns) {
-    const match = html.match(pattern);
-    if (match && match[1]) {
-      return match[1].trim();
-    }
-  }
-  return undefined;
+  return extractGenericRating(html);
 }
 
 function extractReviewCount(html: string): string | undefined {

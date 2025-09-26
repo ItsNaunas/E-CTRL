@@ -2,6 +2,8 @@
 // Implements 9 reliable binary checks based on Amazon PDP HTML scraping
 // Removed unreliable image counting - focusing on quality factors we can accurately measure
 
+import { extractRatingFromHtml } from './rating-extractor';
+
 export interface IdqConfig {
   maxTitleLength?: number;
   minBulletCount?: number;
@@ -582,44 +584,6 @@ function extractReviewCountFromHtml(html: string): number {
     }
   }
   return 0;
-}
-
-function extractRatingFromHtml(html: string): number | null {
-  // Use flexible patterns to handle Amazon's changing HTML structure
-  const ratingPatterns = [
-    // Common rating patterns from product pages
-    /<span[^>]*class="a-icon-alt"[^>]*>([^<]+)<\/span>/,
-    /<span[^>]*class="a-icon a-icon-star a-star-([0-9]+)"[^>]*><\/span>/,
-    /(\d+\.?\d*)\s+out\s+of\s+5\s+stars/i,
-    /<span[^>]*id="acrPopover"[^>]*>[\s\S]*?aria-label="([^"]+)"/,
-    /<span[^>]*class="a-offscreen"[^>]*>([^<]*out of[^<]*)<\/span>/,
-    /data-hook="average-star-rating"[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/
-  ];
-  
-  for (const pattern of ratingPatterns) {
-    const ratingMatch = html.match(pattern);
-    if (ratingMatch) {
-      if (pattern === ratingPatterns[1]) {
-        // Handle star rating pattern (convert from 100-point to 5-point scale)
-        const starValue = parseInt(ratingMatch[1]);
-        if (starValue >= 0 && starValue <= 100) {
-          return starValue / 20; // Convert 0-100 to 0-5 scale
-        }
-      } else {
-        const ratingText = ratingMatch[1];
-        const ratingNumMatch = ratingText.match(/(\d+\.?\d*)/);
-        if (ratingNumMatch) {
-          const rating = parseFloat(ratingNumMatch[1]);
-          // Ensure rating is in valid range (0-5)
-          if (rating >= 0 && rating <= 5) {
-            return rating;
-          }
-        }
-      }
-    }
-  }
-  
-  return null;
 }
 
 function extractAttributeLabelsFromHtml(html: string): string[] {
