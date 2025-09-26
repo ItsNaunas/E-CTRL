@@ -4,13 +4,48 @@
 
 import { extractRatingFromHtml } from './rating-extractor';
 
+// Extract brand from product title (first word or first few words)
+function extractBrandFromTitle(title: string): string | null {
+  if (!title || typeof title !== 'string') return null;
+  
+  // Clean the title
+  const cleanTitle = title.trim();
+  
+  // Split by common separators and take the first meaningful word
+  const words = cleanTitle.split(/[\s\-_|]+/);
+  
+  if (words.length === 0) return null;
+  
+  // Get the first word as potential brand
+  let brand = words[0].trim();
+  
+  // Clean up common prefixes/suffixes
+  brand = brand.replace(/^[^\w]+/, '').replace(/[^\w]+$/, '');
+  
+  // Filter out common non-brand words
+  const nonBrandWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+  if (nonBrandWords.includes(brand.toLowerCase())) {
+    // Try the second word if first is a common word
+    if (words.length > 1) {
+      brand = words[1].trim().replace(/^[^\w]+/, '').replace(/[^\w]+$/, '');
+    }
+  }
+  
+  // Return brand if it's meaningful (at least 2 characters, not just numbers)
+  if (brand.length >= 2 && !/^\d+$/.test(brand)) {
+    return brand;
+  }
+  
+  return null;
+}
+
 export interface IdqConfig {
   maxTitleLength?: number;
   minBulletCount?: number;
   minDescriptionChars?: number;
-  // Removed minImageCount - no longer used in 9-point system
+  // Removed minImageCount - no longer used in 6-point system
   keywords?: string[];
-  // Removed requiredAttributes - maintaining consistent 9-point system
+  // Removed requiredAttributes - maintaining consistent 6-point system
   gradeBands?: {
     A: [number, number];
     B: [number, number];
@@ -30,9 +65,6 @@ export interface IdqResult {
     has_bullets_5plus: number;
     has_description_200plus: number;
     has_main_image: number;
-    brand_in_bullets_or_desc: number;
-    has_reviews: number;
-    has_star_rating: number;
     relevant_attributes_covered?: number;
   };
   notes: string[];
@@ -70,10 +102,10 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       maxTitleLength: config.maxTitleLength || 200,
       minBulletCount: config.minBulletCount || 5,
       minDescriptionChars: config.minDescriptionChars || 200,
-      // Removed minImageCount - no longer used in 9-point system
+      // Removed minImageCount - no longer used in 6-point system
       keywords: config.keywords || [],
-      // Removed requiredAttributes - maintaining consistent 9-point system
-      gradeBands: config.gradeBands || { A: [8, 9], B: [6, 7], C: [0, 5] }
+      // Removed requiredAttributes - maintaining consistent 6-point system
+      gradeBands: config.gradeBands || { A: [5, 6], B: [4, 4], C: [0, 3] }
     };
 
     const notes: string[] = [];
@@ -98,44 +130,44 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       return needles.some(needle => normHaystack.includes(normText(needle)));
     };
 
+    // Extract brand from title if not already provided (title-based approach)
+    let brand = dataToAnalyze.brand;
+    if (!brand && dataToAnalyze.title) {
+      brand = extractBrandFromTitle(dataToAnalyze.title);
+    }
+
     // Binary checks using extracted data - only score what we can reliably extract
-    // Removed has_keywords, has_aplus, has_premium_aplus, images_6plus as unreliable
+    // Removed has_keywords, has_aplus, has_premium_aplus, images_6plus, has_reviews, has_star_rating, brand_in_bullets_or_desc as unreliable or not Amazon IDQ factors
     const checks = {
-      has_brand: dataToAnalyze.brand ? 1 : 0,
-      title_starts_with_brand: (dataToAnalyze.brand && dataToAnalyze.title && startsWithBrand(dataToAnalyze.title, dataToAnalyze.brand)) ? 1 : 0,
+      has_brand: brand ? 1 : 0,
+      title_starts_with_brand: (brand && dataToAnalyze.title && startsWithBrand(dataToAnalyze.title, brand)) ? 1 : 0,
       title_correct_length: (dataToAnalyze.title && dataToAnalyze.title.length >= 10 && dataToAnalyze.title.length <= cfg.maxTitleLength) ? 1 : 0,
       has_bullets_5plus: (dataToAnalyze.bullets && Array.isArray(dataToAnalyze.bullets) && dataToAnalyze.bullets.length >= cfg.minBulletCount) ? 1 : 0,
       has_description_200plus: (dataToAnalyze.description && dataToAnalyze.description.length >= cfg.minDescriptionChars) ? 1 : 0,
-      has_main_image: (dataToAnalyze.images && Array.isArray(dataToAnalyze.images) && dataToAnalyze.images.length > 0) ? 1 : 0,
-      brand_in_bullets_or_desc: (dataToAnalyze.brand && (
-        (dataToAnalyze.bullets && Array.isArray(dataToAnalyze.bullets) && dataToAnalyze.bullets.some((bullet: string) => bullet && includesAny(bullet, [dataToAnalyze.brand]))) || 
-        (dataToAnalyze.description && typeof dataToAnalyze.description === 'string' && includesAny(dataToAnalyze.description, [dataToAnalyze.brand]))
-      )) ? 1 : 0,
-      has_reviews: (dataToAnalyze.reviewCount && dataToAnalyze.reviewCount >= 1) ? 1 : 0,
-      has_star_rating: (dataToAnalyze.rating !== null && isFinite(dataToAnalyze.rating) && dataToAnalyze.rating > 0) ? 1 : 0
+      has_main_image: (dataToAnalyze.images && Array.isArray(dataToAnalyze.images) && dataToAnalyze.images.length > 0) ? 1 : 0
     };
 
     // Calculate score
     const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
-    const maxPossible = 9; // Updated to 9 after removing unreliable image counting
+    const maxPossible = 6; // Updated to 6 after removing reviews, star rating, and brand in content checks
     
     // Adjusted scoring: If product passes most scrapable checks, it's likely 100% IDQ
     // Amazon 100% IDQ products should score 100% in our system too (we can't check everything Amazon checks)
     let qualityPercent;
-    if (score >= 8) {
-      qualityPercent = 100; // 8-9/9 = 100% (accounts for checks we can't verify that Amazon does)
-    } else if (score === 7) {
-      qualityPercent = 89; // 7/9 = Good but not perfect
+    if (score >= 5) {
+      qualityPercent = 100; // 5-6/6 = 100% (accounts for checks we can't verify that Amazon does)
+    } else if (score === 4) {
+      qualityPercent = 89; // 4/6 = Good but not perfect
     } else {
       qualityPercent = Math.round((score / maxPossible) * 100); // Standard percentage for lower scores
     }
     
     console.log(`IDQ Scoring: ${score}/${maxPossible} checks passed = ${qualityPercent}%`);
 
-    // Determine grade - adjusted for new 9-point scale
+    // Determine grade - adjusted for new 6-point scale
     let grade = 'C';
-    if (score >= 8 && score <= 9) grade = 'A'; // 8-9/9 (89-100%)
-    else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/9 (67-88%)
+    if (score >= 5 && score <= 6) grade = 'A'; // 5-6/6 (83-100%)
+    else if (score >= 4) grade = 'B'; // 4/6 (67-82%)
 
     // Debug logging for troubleshooting
     console.log('IDQ AI Method Debug:', {
@@ -147,10 +179,7 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
         titleLength: checks.title_correct_length,
         bullets: checks.has_bullets_5plus,
         description: checks.has_description_200plus,
-        mainImage: checks.has_main_image,
-        brandInContent: checks.brand_in_bullets_or_desc,
-        reviews: checks.has_reviews,
-        rating: checks.has_star_rating
+        mainImage: checks.has_main_image
       },
       finalScore: score,
       maxPossible: maxPossible,
@@ -165,9 +194,6 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
     if (!checks.has_bullets_5plus) notes.push(`Only ${dataToAnalyze.bullets ? dataToAnalyze.bullets.length : 0} bullet points - you\'re missing key selling opportunities`);
     if (!checks.has_description_200plus && dataToAnalyze.description) notes.push('Product description is too short - customers need more details to buy');
     if (!checks.has_main_image) notes.push('Main product image missing - first impression is everything');
-    if (!checks.brand_in_bullets_or_desc && dataToAnalyze.brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
-    if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');
-    if (!checks.has_star_rating) notes.push('No star rating visible - customers can\'t see your product quality');
 
     return {
       score,
@@ -206,10 +232,10 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     maxTitleLength: config.maxTitleLength || 200,
     minBulletCount: config.minBulletCount || 5,
     minDescriptionChars: config.minDescriptionChars || 200,
-    // Removed minImageCount - no longer used in 9-point system
+    // Removed minImageCount - no longer used in 6-point system
     keywords: config.keywords || [],
-    // Removed requiredAttributes - maintaining consistent 9-point system
-      gradeBands: config.gradeBands || { A: [8, 9], B: [6, 7], C: [0, 5] }
+    // Removed requiredAttributes - maintaining consistent 6-point system
+      gradeBands: config.gradeBands || { A: [5, 6], B: [4, 4], C: [0, 3] }
   };
 
   const notes: string[] = [];
@@ -252,36 +278,32 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     title_correct_length: (title && title.length >= 10 && title.length <= cfg.maxTitleLength) ? 1 : 0,
     has_bullets_5plus: (bullets.length >= cfg.minBulletCount) ? 1 : 0,
     has_description_200plus: (description && description.length >= cfg.minDescriptionChars) ? 1 : 0,
-    has_main_image: hasMainImage ? 1 : 0,
-    brand_in_bullets_or_desc: (brand && (bullets.some(bullet => includesAny(bullet, [brand])) || 
-      (description && includesAny(description, [brand])))) ? 1 : 0,
-    has_reviews: (reviewCount >= 1) ? 1 : 0,
-    has_star_rating: (rating !== null && isFinite(rating) && rating > 0) ? 1 : 0
+    has_main_image: hasMainImage ? 1 : 0
   };
 
-  // Removed optional attribute coverage check - maintaining consistent 9-point system
+  // Removed optional attribute coverage check - maintaining consistent 6-point system
 
   // Calculate score
   const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
-  const maxPossible = 9; // Fixed to always use 9-point system (removed image counting completely)
+  const maxPossible = 6; // Updated to 6 after removing reviews, star rating, and brand in content checks
   
   // Adjusted scoring: If product passes most scrapable checks, it's likely 100% IDQ
   // Amazon 100% IDQ products should score 100% in our system too (we can't check everything Amazon checks)
   let qualityPercent;
-  if (score >= 8) {
-    qualityPercent = 100; // 8-9/9 = 100% (accounts for checks we can't verify that Amazon does)
-  } else if (score === 7) {
-    qualityPercent = 89; // 7/9 = Good but not perfect
+  if (score >= 5) {
+    qualityPercent = 100; // 5-6/6 = 100% (accounts for checks we can't verify that Amazon does)
+  } else if (score === 4) {
+    qualityPercent = 89; // 4/6 = Good but not perfect
   } else {
     qualityPercent = Math.round((score / maxPossible) * 100); // Standard percentage for lower scores
   }
   
   console.log(`IDQ Scoring (Regex): ${score}/${maxPossible} checks passed = ${qualityPercent}%`);
 
-  // Determine grade - adjusted for new 9-point scale
+  // Determine grade - adjusted for new 6-point scale
   let grade = 'C';
-  if (score >= 8 && score <= 9) grade = 'A'; // 8-9/9 (89-100%)
-  else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/9 (67-88%)
+  if (score >= 5 && score <= 6) grade = 'A'; // 5-6/6 (83-100%)
+  else if (score >= 4) grade = 'B'; // 4/6 (67-82%)
 
   // Debug logging for troubleshooting
   console.log('IDQ Regex Method Debug:', {
@@ -300,10 +322,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
       titleLength: checks.title_correct_length,
       bullets: checks.has_bullets_5plus,
       description: checks.has_description_200plus,
-      mainImage: checks.has_main_image,
-      brandInContent: checks.brand_in_bullets_or_desc,
-      reviews: checks.has_reviews,
-      rating: checks.has_star_rating
+      mainImage: checks.has_main_image
     },
     finalScore: score,
     maxPossible: maxPossible,
@@ -324,10 +343,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   if (!checks.has_bullets_5plus) notes.push(`Only ${bullets.length} bullet points - you\'re missing key selling opportunities`);
   if (!checks.has_description_200plus && description) notes.push('Product description is too short - customers need more details to buy');
   if (!checks.has_main_image) notes.push('Main product image missing - first impression is everything');
-  if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
-  if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');
-  if (!checks.has_star_rating) notes.push('No star rating visible - customers can\'t see your product quality');
-  // Removed attribute coverage notes - maintaining consistent 9-point system
+  // Removed attribute coverage notes - maintaining consistent 6-point system
 
   return {
     score,
@@ -387,6 +403,13 @@ function extractBrandFromHtml(html: string): string | null {
       }
     }
   }
+  
+  // Fallback: Try to extract brand from title
+  const title = extractTitleFromHtml(html);
+  if (title) {
+    return extractBrandFromTitle(title);
+  }
+  
   return null;
 }
 

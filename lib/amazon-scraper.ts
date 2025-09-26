@@ -3,6 +3,41 @@
 
 import { extractRatingFromHtml } from './rating-extractor';
 
+// Extract brand from product title (first word or first few words)
+function extractBrandFromTitle(title: string): string | null {
+  if (!title || typeof title !== 'string') return null;
+  
+  // Clean the title
+  const cleanTitle = title.trim();
+  
+  // Split by common separators and take the first meaningful word
+  const words = cleanTitle.split(/[\s\-_|]+/);
+  
+  if (words.length === 0) return null;
+  
+  // Get the first word as potential brand
+  let brand = words[0].trim();
+  
+  // Clean up common prefixes/suffixes
+  brand = brand.replace(/^[^\w]+/, '').replace(/[^\w]+$/, '');
+  
+  // Filter out common non-brand words
+  const nonBrandWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+  if (nonBrandWords.includes(brand.toLowerCase())) {
+    // Try the second word if first is a common word
+    if (words.length > 1) {
+      brand = words[1].trim().replace(/^[^\w]+/, '').replace(/[^\w]+$/, '');
+    }
+  }
+  
+  // Return brand if it's meaningful (at least 2 characters, not just numbers)
+  if (brand.length >= 2 && !/^\d+$/.test(brand)) {
+    return brand;
+  }
+  
+  return null;
+}
+
 export interface AmazonProductData {
   asin: string;
   title: string;
@@ -276,41 +311,51 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
     }
     productData.images = images.slice(0, 10); // Limit to 10 images
 
-    // Extract brand using multiple regex patterns
-    const brandPatterns = [
-      // Primary patterns - most common
-      /<span[^>]*id="bylineInfo"[^>]*>([^<]+)<\/span>/,
-      /<a[^>]*id="bylineInfo"[^>]*>([^<]+)<\/a>/,
-      /<span[^>]*id="brand"[^>]*>([^<]+)<\/span>/,
-      
-      // Enhanced patterns for modern Amazon pages
-      /Visit the ([^<]+) Store/i,
-      /<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/,
-      /<span[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/span>/,
-      /by\s+<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/i,
-      /brand[^>]*:\s*<[^>]*>([^<]+)<\//i,
-      
-      // Fallback patterns
-      /<td[^>]*class="[^"]*label[^"]*"[^>]*>\s*Brand[^<]*<\/td>\s*<td[^>]*>([^<]+)<\/td>/i,
-      /<th[^>]*>\s*Brand[^<]*<\/th>\s*<td[^>]*>([^<]+)<\/td>/i
-    ];
+    // Extract brand using title-based approach (more reliable)
+    if (productData.title) {
+      const extractedBrand = extractBrandFromTitle(productData.title);
+      if (extractedBrand) {
+        productData.brand = extractedBrand;
+      }
+    }
     
-    for (const pattern of brandPatterns) {
-      const brandMatch = html.match(pattern);
-      if (brandMatch && brandMatch[1].trim()) {
-        let brand = brandMatch[1].trim();
+    // Fallback: Try to extract brand from HTML if title-based extraction failed
+    if (!productData.brand) {
+      const brandPatterns = [
+        // Primary patterns - most common
+        /<span[^>]*id="bylineInfo"[^>]*>([^<]+)<\/span>/,
+        /<a[^>]*id="bylineInfo"[^>]*>([^<]+)<\/a>/,
+        /<span[^>]*id="brand"[^>]*>([^<]+)<\/span>/,
         
-        // Clean up brand name
-        brand = brand.replace(/^Visit the /i, '').replace(/ Store$/i, '');
+        // Enhanced patterns for modern Amazon pages
+        /Visit the ([^<]+) Store/i,
+        /<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/,
+        /<span[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/span>/,
+        /by\s+<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/i,
+        /brand[^>]*:\s*<[^>]*>([^<]+)<\//i,
         
-        // Filter out common false positives
-        if (brand.length > 1 && 
-            !brand.includes('Visit the') && 
-            !brand.includes('Brand:') &&
-            !brand.includes('by ') &&
-            brand.length < 50) {
-          productData.brand = brand;
-          break;
+        // Fallback patterns
+        /<td[^>]*class="[^"]*label[^"]*"[^>]*>\s*Brand[^<]*<\/td>\s*<td[^>]*>([^<]+)<\/td>/i,
+        /<th[^>]*>\s*Brand[^<]*<\/th>\s*<td[^>]*>([^<]+)<\/td>/i
+      ];
+      
+      for (const pattern of brandPatterns) {
+        const brandMatch = html.match(pattern);
+        if (brandMatch && brandMatch[1].trim()) {
+          let brand = brandMatch[1].trim();
+          
+          // Clean up brand name
+          brand = brand.replace(/^Visit the /i, '').replace(/ Store$/i, '');
+          
+          // Filter out common false positives
+          if (brand.length > 1 && 
+              !brand.includes('Visit the') && 
+              !brand.includes('Brand:') &&
+              !brand.includes('by ') &&
+              brand.length < 50) {
+            productData.brand = brand;
+            break;
+          }
         }
       }
     }

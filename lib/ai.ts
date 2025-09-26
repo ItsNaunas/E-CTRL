@@ -35,7 +35,7 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
         maxTitleLength: 200,
         minBulletCount: 5,
         minDescriptionChars: 200,
-        // Removed minImageCount since we no longer check images_6plus in our 9-point system
+        // Removed minImageCount since we no longer check images_6plus in our 6-point system
       };
       // Use the extracted data directly for IDQ evaluation
       binaryIdqResult = await evaluateIdqWithAI(productData.htmlContent, idqConfig, productData);
@@ -91,9 +91,6 @@ LISTING QUALITY EVALUATION RESULTS:
 - Bullets Count: ${binaryIdqResult.checks.has_bullets_5plus ? '≥5' : '<5'}
 - Description Length: ${binaryIdqResult.checks.has_description_200plus ? '≥200 chars' : '<200 chars'}
 - Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
-- Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
-- Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
-- Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
 
 Note: A+ content, premium A+ content, and backend keyword optimization are not included in this analysis as they cannot be reliably detected from visible page content.
 ` : ''}
@@ -221,7 +218,7 @@ export async function analyzeNewSeller(data: NewSellerData, productData?: Generi
         maxTitleLength: 200,
         minBulletCount: 5,
         minDescriptionChars: 200,
-        // Removed minImageCount since we no longer check images_6plus in our 9-point system
+        // Removed minImageCount since we no longer check images_6plus in our 6-point system
       };
       binaryIdqResult = await evaluateIdqWithAI(productData.rawContent, idqConfig);
       console.log('IDQ evaluation completed for new seller:', binaryIdqResult);
@@ -291,9 +288,6 @@ LISTING QUALITY EVALUATION RESULTS (from website analysis):
 - Bullets Count: ${binaryIdqResult.checks.has_bullets_5plus ? '≥5' : '<5'}
 - Description Length: ${binaryIdqResult.checks.has_description_200plus ? '≥200 chars' : '<200 chars'}
 - Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
-- Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
-- Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
-- Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
 ` : ''}
 
 ${accessType === 'account' ? `

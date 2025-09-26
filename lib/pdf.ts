@@ -183,10 +183,7 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
         title_correct_length: 'Title Length OK',
         has_bullets_5plus: 'Bullets Count ≥5',
         has_description_200plus: 'Description Length ≥200',
-        has_main_image: 'Main Image Present',
-        brand_in_bullets_or_desc: 'Brand in Content',
-        has_reviews: 'Reviews Present',
-        has_star_rating: 'Star Rating Present'
+        has_main_image: 'Main Image Present'
       };
       
       Object.entries(binaryResult.checks).forEach(([key, value]) => {
