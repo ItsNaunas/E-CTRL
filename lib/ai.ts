@@ -259,23 +259,10 @@ ${productData.paragraphs.join('\n\n')}` : ''}
 ` : ''}
 ` : `
 PRODUCT DETAILS (user provided):
-- Product Name: ${data.productName || 'Not provided'}
-- Brand: ${data.brand || 'Not provided'}
 - Category: ${data.category}
 - Description: ${data.desc}
 - Keywords: ${data.keywords?.join(', ') || 'None provided'}
-- Fulfilment Intent: ${data.fulfilmentIntent || 'Not specified'}
 - Website: ${data.websiteUrl || 'No website'}
-- No Website Description: ${data.noWebsiteDesc || 'N/A'}
-
-ENHANCED PRODUCT INFORMATION:
-- Target Price: ${data.price || 'Not specified'}
-- Target Audience: ${data.targetAudience || 'Not specified'}
-- Key Features: ${data.keyFeatures || 'Not provided'}
-- Customer Benefits: ${data.benefits || 'Not provided'}
-- Dimensions: ${data.dimensions || 'Not provided'}
-- Materials: ${data.materials || 'Not provided'}
-- Use Case: ${data.useCase || 'Not specified'}
 `}
 
 ${binaryIdqResult ? `

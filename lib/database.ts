@@ -33,7 +33,6 @@ export async function createLead(
     const leadData: Partial<Lead> = {
       email: formData.email,
       name: formData.name,
-      phone: formData.phone,
       audit_type: auditType,
       ip_address: getClientIP(headers),
       user_agent: headers.get('user-agent') || undefined,
@@ -49,10 +48,8 @@ export async function createLead(
     } else {
       const newData = formData as NewSellerData;
       leadData.website_url = newData.websiteUrl;
-      leadData.no_website_desc = newData.noWebsiteDesc;
       leadData.category = newData.category;
       leadData.product_desc = newData.desc;
-      leadData.fulfilment_intent = newData.fulfilmentIntent;
     }
 
     const { data, error } = await supabaseAdmin

@@ -95,8 +95,8 @@ export const productUrl = z
 export const existingSellerSchema = z.object({
   asin: asin,
   keywords: requiredKeywords,
-  fulfilment: z.enum(['FBA', 'FBM', 'SFP'], {
-    errorMap: () => ({ message: "Select FBA, FBM, or SFP" })
+  fulfilment: z.enum(['FBA', 'FBM', 'Unsure'], {
+    errorMap: () => ({ message: "Select FBA, FBM, or Unsure" })
   }),
   name: name,
   email: email
