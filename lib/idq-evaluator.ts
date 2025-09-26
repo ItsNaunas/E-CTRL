@@ -8,7 +8,7 @@ export interface IdqConfig {
   minDescriptionChars?: number;
   // Removed minImageCount - no longer used in 9-point system
   keywords?: string[];
-  requiredAttributes?: string[];
+  // Removed requiredAttributes - maintaining consistent 9-point system
   gradeBands?: {
     A: [number, number];
     B: [number, number];
@@ -70,7 +70,7 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       minDescriptionChars: config.minDescriptionChars || 200,
       // Removed minImageCount - no longer used in 9-point system
       keywords: config.keywords || [],
-      requiredAttributes: config.requiredAttributes || [],
+      // Removed requiredAttributes - maintaining consistent 9-point system
       gradeBands: config.gradeBands || { A: [8, 9], B: [6, 7], C: [0, 5] }
     };
 
@@ -194,7 +194,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     minDescriptionChars: config.minDescriptionChars || 200,
     // Removed minImageCount - no longer used in 9-point system
     keywords: config.keywords || [],
-    requiredAttributes: config.requiredAttributes || [],
+    // Removed requiredAttributes - maintaining consistent 9-point system
       gradeBands: config.gradeBands || { A: [8, 9], B: [6, 7], C: [0, 5] }
   };
 
@@ -245,19 +245,11 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     has_star_rating: (rating !== null && isFinite(rating) && rating > 0) ? 1 : 0
   };
 
-  // Optional attribute coverage check
-  if (cfg.requiredAttributes.length > 0) {
-    const attributeLabels = extractAttributeLabelsFromHtml(html);
-    const minRequired = Math.min(cfg.requiredAttributes.length, 3);
-    const foundAttributes = cfg.requiredAttributes.filter(attr => 
-      attributeLabels.some(label => normText(label).includes(normText(attr)))
-    );
-    (checks as any).relevant_attributes_covered = (foundAttributes.length >= minRequired) ? 1 : 0;
-  }
+  // Removed optional attribute coverage check - maintaining consistent 9-point system
 
   // Calculate score
   const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
-  const maxPossible = cfg.requiredAttributes.length > 0 ? 10 : 9; // Updated to 9 after removing image counting
+  const maxPossible = 9; // Fixed to always use 9-point system (removed image counting completely)
   const qualityPercent = Math.round((score / maxPossible) * 100);
 
   // Determine grade - adjusted for new 9-point scale
@@ -309,9 +301,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
   if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');
   if (!checks.has_star_rating) notes.push('No star rating visible - customers can\'t see your product quality');
-  if ((checks as any).relevant_attributes_covered === 0 && cfg.requiredAttributes.length > 0) {
-    notes.push('Missing important product details - customers need complete information');
-  }
+  // Removed attribute coverage notes - maintaining consistent 9-point system
 
   return {
     score,
