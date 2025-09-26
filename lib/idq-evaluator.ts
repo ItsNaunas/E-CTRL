@@ -116,6 +116,11 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
     const maxPossible = 9; // Updated to 9 after removing unreliable image counting
     const qualityPercent = Math.round((score / maxPossible) * 100);
 
+    // Determine grade - adjusted for new 9-point scale
+    let grade = 'C';
+    if (score >= 8 && score <= 9) grade = 'A'; // 8-9/9 (89-100%)
+    else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/9 (67-88%)
+
     // Debug logging for troubleshooting
     console.log('IDQ AI Method Debug:', {
       method: 'AI',
@@ -136,11 +141,6 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       percentage: qualityPercent,
       grade: grade
     });
-
-    // Determine grade - adjusted for new 9-point scale
-    let grade = 'C';
-    if (score >= 8 && score <= 9) grade = 'A'; // 8-9/9 (89-100%)
-    else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/9 (67-88%)
 
     // Generate notes - only for checks we can actually measure
     if (!checks.has_brand) notes.push('Missing brand information - customers can\'t identify your product');
@@ -258,6 +258,11 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   const maxPossible = cfg.requiredAttributes.length > 0 ? 10 : 9; // Updated to 9 after removing image counting
   const qualityPercent = Math.round((score / maxPossible) * 100);
 
+  // Determine grade - adjusted for new 9-point scale
+  let grade = 'C';
+  if (score >= 8 && score <= 9) grade = 'A'; // 8-9/9 (89-100%)
+  else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/9 (67-88%)
+
   // Debug logging for troubleshooting
   console.log('IDQ Regex Method Debug:', {
     method: 'Regex',
@@ -285,11 +290,6 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     percentage: qualityPercent,
     grade: grade
   });
-
-  // Determine grade - adjusted for new 9-point scale
-  let grade = 'C';
-  if (score >= 8 && score <= 9) grade = 'A'; // 8-9/9 (89-100%)
-  else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/9 (67-88%)
 
   // Generate human-friendly notes for failed checks - only for checks we can actually measure
   if (!checks.has_brand) notes.push('Missing brand information - customers can\'t identify your product');
