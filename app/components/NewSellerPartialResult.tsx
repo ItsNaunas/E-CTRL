@@ -9,7 +9,8 @@ interface NewSellerPartialResultProps {
     category: string;
     description: string;
     keywords: string[];
-    fulfilmentIntent: string;
+    name: string;
+    email: string;
   };
   onUnlock: () => void;
   score?: number;

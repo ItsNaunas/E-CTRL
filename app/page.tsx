@@ -62,7 +62,8 @@ export default function HomePage() {
     category: string;
     description: string;
     keywords: string[];
-    fulfilmentIntent: string;
+    name: string;
+    email: string;
   } | null>(null);
   const [forceManualMode, setForceManualMode] = useState(false);
 
@@ -331,16 +332,8 @@ export default function HomePage() {
     category: string;
     description: string;
     keywords: string[];
-    fulfilmentIntent: string;
-    productName: string;
-    brand: string;
-    price: string;
-    targetAudience: string;
-    keyFeatures: string;
-    benefits: string;
-    dimensions: string;
-    materials: string;
-    useCase: string;
+    name: string;
+    email: string;
   }) => {
     console.log('Manual product data submitted:', data);
     // Store the manual data for later use
@@ -357,28 +350,12 @@ export default function HomePage() {
       const requestBody = {
         type: 'new_seller',
         data: {
-          name: 'Preview User',
-          email: EMAIL_CONSTANTS.PREVIEW_EMAIL, // Temporary email for preview only
+          name: data.name,
+          email: data.email,
           keywords: data.keywords,
           websiteUrl: productUrl || undefined, // Use URL if provided (fallback flow)
           category: data.category,
-          desc: data.description,
-          fulfilmentIntent: data.fulfilmentIntent as "FBA" | "FBM" | "Unsure",
-          image: { // Required field - placeholder
-            name: "placeholder.jpg",
-            size: 1024,
-            type: "image/jpeg"
-          },
-          // Enhanced fields for better AI generation
-          productName: data.productName,
-          brand: data.brand,
-          price: data.price,
-          targetAudience: data.targetAudience,
-          keyFeatures: data.keyFeatures,
-          benefits: data.benefits,
-          dimensions: data.dimensions,
-          materials: data.materials,
-          useCase: data.useCase
+          desc: data.description
         }
       };
 
@@ -491,7 +468,7 @@ export default function HomePage() {
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || 'Unsure'),
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : 'Unsure',
         category: mode === 'create' ? (manualProductData?.category || '') : undefined,
         productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
@@ -553,7 +530,7 @@ export default function HomePage() {
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || 'Unsure'),
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : 'Unsure',
         category: mode === 'create' ? (manualProductData?.category || '') : undefined,
         productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
@@ -607,7 +584,7 @@ export default function HomePage() {
         asin: mode === 'audit' ? asinOrUrl : undefined,
         productUrl: mode === 'create' ? productUrl : undefined,
         keywords: mode === 'audit' ? (manualProductData?.keywords || sampleData.keywords) : (manualProductData?.keywords || []),
-        fulfilment: mode === 'audit' ? sampleData.fulfilment : (manualProductData?.fulfilmentIntent || 'Unsure'),
+        fulfilment: mode === 'audit' ? sampleData.fulfilment : 'Unsure',
         category: mode === 'create' ? (manualProductData?.category || '') : undefined,
         productDesc: mode === 'create' ? (manualProductData?.description || '') : undefined
       };
