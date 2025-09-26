@@ -278,16 +278,40 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
 
     // Extract brand using multiple regex patterns
     const brandPatterns = [
+      // Primary patterns - most common
       /<span[^>]*id="bylineInfo"[^>]*>([^<]+)<\/span>/,
       /<a[^>]*id="bylineInfo"[^>]*>([^<]+)<\/a>/,
-      /<span[^>]*id="brand"[^>]*>([^<]+)<\/span>/
+      /<span[^>]*id="brand"[^>]*>([^<]+)<\/span>/,
+      
+      // Enhanced patterns for modern Amazon pages
+      /Visit the ([^<]+) Store/i,
+      /<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/,
+      /<span[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/span>/,
+      /by\s+<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/i,
+      /brand[^>]*:\s*<[^>]*>([^<]+)<\//i,
+      
+      // Fallback patterns
+      /<td[^>]*class="[^"]*label[^"]*"[^>]*>\s*Brand[^<]*<\/td>\s*<td[^>]*>([^<]+)<\/td>/i,
+      /<th[^>]*>\s*Brand[^<]*<\/th>\s*<td[^>]*>([^<]+)<\/td>/i
     ];
     
     for (const pattern of brandPatterns) {
       const brandMatch = html.match(pattern);
       if (brandMatch && brandMatch[1].trim()) {
-        productData.brand = brandMatch[1].trim();
-        break;
+        let brand = brandMatch[1].trim();
+        
+        // Clean up brand name
+        brand = brand.replace(/^Visit the /i, '').replace(/ Store$/i, '');
+        
+        // Filter out common false positives
+        if (brand.length > 1 && 
+            !brand.includes('Visit the') && 
+            !brand.includes('Brand:') &&
+            !brand.includes('by ') &&
+            brand.length < 50) {
+          productData.brand = brand;
+          break;
+        }
       }
     }
 
