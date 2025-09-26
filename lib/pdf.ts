@@ -15,7 +15,6 @@ export interface PDFData {
     bullets?: { current?: string[]; issues?: string[]; optimised?: string[] };
     description?: { current?: string; issues?: string[]; optimised?: string };
     keywords?: { current?: string[]; issues?: string[]; optimised?: { primary?: string[]; secondary?: string[]; longTail?: string[] } };
-    images?: { current?: string[]; issues?: string[]; required?: { mainImage?: string; lifestyleImage?: string; benefitsInfographic?: string; howToUse?: string; measurements?: string; comparison?: string } };
     compliance?: { current?: string; issues?: string[]; requirements?: string[] };
   };
   summary?: {
@@ -27,14 +26,12 @@ export interface PDFData {
   productData?: {
     currentTitle?: string;
     currentBullets?: string[];
-    currentImages?: number;
     currentDescription?: string;
     missingElements?: string[];
   };
   contentQuality?: {
     titleScore?: number;
     bulletsScore?: number;
-    imagesScore?: number;
     descriptionScore?: number;
     informationScore?: number;
   };
@@ -167,20 +164,60 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
     // Listing Quality Score and Grade
     doc.setFontSize(14);
     doc.setTextColor(31, 41, 55);
-    doc.text(`Binary Score: ${binaryResult.score}/${binaryResult.maxPossible} (${binaryResult.qualityPercent}%)`, 20, yPosition);
+    doc.text(`IDQ Score: ${binaryResult.score}/${binaryResult.maxPossible} (${binaryResult.qualityPercent}%)`, 20, yPosition);
     yPosition += 6;
     doc.text(`Grade: ${binaryResult.grade}`, 20, yPosition);
     yPosition += 10;
     
+    // Detailed checks breakdown
+    if (binaryResult.checks) {
+      doc.setFontSize(12);
+      doc.setTextColor(30, 64, 175);
+      doc.text('Quality Checks:', 20, yPosition);
+      yPosition += 6;
+      
+      doc.setFontSize(10);
+      const checkLabels = {
+        has_brand: 'Brand Found',
+        title_starts_with_brand: 'Title Starts with Brand',
+        title_correct_length: 'Title Length OK',
+        has_bullets_5plus: 'Bullets Count ≥5',
+        has_description_200plus: 'Description Length ≥200',
+        has_main_image: 'Main Image Present',
+        brand_in_bullets_or_desc: 'Brand in Content',
+        has_reviews: 'Reviews Present',
+        has_star_rating: 'Star Rating Present'
+      };
+      
+      Object.entries(binaryResult.checks).forEach(([key, value]) => {
+        if (checkLabels[key as keyof typeof checkLabels]) {
+          if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          const status = value === 1 ? '✅' : '❌';
+          const label = checkLabels[key as keyof typeof checkLabels];
+          if (value === 1) {
+            doc.setTextColor(22, 163, 74); // Green for pass
+          } else {
+            doc.setTextColor(239, 68, 68); // Red for fail
+          }
+          doc.text(`${status} ${label}: ${value === 1 ? 'Yes' : 'No'}`, 25, yPosition);
+          yPosition += 5;
+        }
+      });
+      yPosition += 5;
+    }
+    
     // Sales opportunities
     if (binaryResult.notes && binaryResult.notes.length > 0) {
       doc.setFontSize(12);
-      doc.setTextColor(30, 64, 175); // Dark blue for opportunities - better contrast
+      doc.setTextColor(30, 64, 175);
       doc.text('Conversion Opportunities:', 20, yPosition);
       yPosition += 6;
       
       doc.setFontSize(10);
-      doc.setTextColor(17, 24, 39); // Darker text for better readability
+      doc.setTextColor(17, 24, 39);
       binaryResult.notes.forEach((note: string) => {
         if (yPosition > 250) {
           doc.addPage();
@@ -360,43 +397,6 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
       yPosition += 5;
     }
     
-    // Product Images Analysis
-    if (data.detailedAnalysis?.productImages) {
-      if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      doc.setFontSize(12);
-      doc.setTextColor(31, 41, 55);
-      doc.text('Product Images Analysis:', 20, yPosition);
-      yPosition += 6;
-      
-      doc.setFontSize(10);
-      doc.setTextColor(75, 85, 99);
-      const imageText = String(data.detailedAnalysis.productImages);
-      if (imageText.length > 80) {
-        const words = imageText.split(' ');
-        let line = '';
-        words.forEach(word => {
-          if ((line + word).length > 80) {
-            doc.text(line, 25, yPosition);
-            yPosition += 5;
-            line = word + ' ';
-          } else {
-            line += word + ' ';
-          }
-        });
-        if (line) {
-          doc.text(line, 25, yPosition);
-          yPosition += 5;
-        }
-      } else {
-        doc.text(imageText, 25, yPosition);
-        yPosition += 5;
-      }
-      yPosition += 5;
-    }
     
     // Product Description Analysis
     if (data.detailedAnalysis?.productDescription) {
@@ -509,12 +509,6 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
         yPosition += 3;
       }
       
-      if (data.productData.currentImages) {
-        doc.setFontSize(10);
-        doc.setTextColor(75, 85, 99);
-        doc.text(`Current Images: ${data.productData.currentImages}`, 20, yPosition);
-        yPosition += 6;
-      }
       
       if (data.productData.currentDescription) {
         doc.setFontSize(10);
@@ -545,10 +539,6 @@ export function generateAuditReportPDF(data: PDFData): jsPDF {
       }
       if (data.contentQuality.bulletsScore !== undefined) {
         doc.text(`Bullet Points: ${data.contentQuality.bulletsScore}/100`, 20, yPosition);
-        yPosition += 6;
-      }
-      if (data.contentQuality.imagesScore !== undefined) {
-        doc.text(`Images: ${data.contentQuality.imagesScore}/100`, 20, yPosition);
         yPosition += 6;
       }
       if (data.contentQuality.descriptionScore !== undefined) {

@@ -32,3 +32,5 @@ next-env.d.ts
 
 # Embedded repository
 E-CTRL/
+
+.vercel

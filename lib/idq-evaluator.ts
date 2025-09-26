@@ -116,7 +116,19 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
     // Calculate score
     const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
     const maxPossible = 9; // Updated to 9 after removing unreliable image counting
-    const qualityPercent = Math.round((score / maxPossible) * 100);
+    
+    // Adjusted scoring: If product passes most scrapable checks, it's likely 100% IDQ
+    // Amazon 100% IDQ products should score 100% in our system too (we can't check everything Amazon checks)
+    let qualityPercent;
+    if (score >= 8) {
+      qualityPercent = 100; // 8-9/9 = 100% (accounts for checks we can't verify that Amazon does)
+    } else if (score === 7) {
+      qualityPercent = 89; // 7/9 = Good but not perfect
+    } else {
+      qualityPercent = Math.round((score / maxPossible) * 100); // Standard percentage for lower scores
+    }
+    
+    console.log(`IDQ Scoring: ${score}/${maxPossible} checks passed = ${qualityPercent}%`);
 
     // Determine grade - adjusted for new 9-point scale
     let grade = 'C';
@@ -250,7 +262,19 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   // Calculate score
   const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
   const maxPossible = 9; // Fixed to always use 9-point system (removed image counting completely)
-  const qualityPercent = Math.round((score / maxPossible) * 100);
+  
+  // Adjusted scoring: If product passes most scrapable checks, it's likely 100% IDQ
+  // Amazon 100% IDQ products should score 100% in our system too (we can't check everything Amazon checks)
+  let qualityPercent;
+  if (score >= 8) {
+    qualityPercent = 100; // 8-9/9 = 100% (accounts for checks we can't verify that Amazon does)
+  } else if (score === 7) {
+    qualityPercent = 89; // 7/9 = Good but not perfect
+  } else {
+    qualityPercent = Math.round((score / maxPossible) * 100); // Standard percentage for lower scores
+  }
+  
+  console.log(`IDQ Scoring (Regex): ${score}/${maxPossible} checks passed = ${qualityPercent}%`);
 
   // Determine grade - adjusted for new 9-point scale
   let grade = 'C';
@@ -329,52 +353,180 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
 
 // HTML extraction helper functions
 function extractBrandFromHtml(html: string): string | null {
+  // Comprehensive brand extraction patterns
   const patterns = [
+    // Primary patterns - most common
     /<span[^>]*id="bylineInfo"[^>]*>([^<]+)<\/span>/,
     /<a[^>]*id="bylineInfo"[^>]*>([^<]+)<\/a>/,
-    /<span[^>]*id="brand"[^>]*>([^<]+)<\/span>/
+    /<span[^>]*id="brand"[^>]*>([^<]+)<\/span>/,
+    
+    // Alternative patterns for different layouts
+    /<a[^>]*href="[^"]*\/brand\/[^"]*"[^>]*>([^<]+)<\/a>/,
+    /<span[^>]*class="[^"]*brand[^"]*"[^>]*>([^<]+)<\/span>/,
+    /by\s+<a[^>]*href="[^"]*\/stores\/[^"]*"[^>]*>([^<]+)<\/a>/i,
+    /brand[^>]*:\s*<[^>]*>([^<]+)<\//i,
+    
+    // Fallback patterns
+    /<td[^>]*class="[^"]*label[^"]*"[^>]*>\s*Brand[^<]*<\/td>\s*<td[^>]*>([^<]+)<\/td>/i,
+    /<th[^>]*>\s*Brand[^<]*<\/th>\s*<td[^>]*>([^<]+)<\/td>/i
   ];
   
   for (const pattern of patterns) {
     const match = html.match(pattern);
-    if (match && match[1].trim()) {
-      return match[1].trim();
+    if (match && match[1]) {
+      const brand = match[1].trim();
+      // Filter out common false positives
+      if (brand.length > 1 && 
+          !brand.includes('Visit the') && 
+          !brand.includes('Brand:') &&
+          !brand.includes('by ') &&
+          brand.length < 50) {
+        return brand;
+      }
     }
   }
   return null;
 }
 
 function extractTitleFromHtml(html: string): string | null {
-  const match = html.match(/<span[^>]*id="productTitle"[^>]*>([^<]+)<\/span>/);
-  return match ? match[1].trim() : null;
+  // Multiple patterns for title extraction
+  const patterns = [
+    // Primary pattern
+    /<span[^>]*id="productTitle"[^>]*>([^<]+)<\/span>/,
+    
+    // Alternative patterns
+    /<h1[^>]*id="title"[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>[\s\S]*?<\/h1>/,
+    /<h1[^>]*class="[^"]*title[^"]*"[^>]*>([^<]+)<\/h1>/,
+    /<title>([^<]*Amazon[^<]*)<\/title>/, // Extract from page title as fallback
+    
+    // Fallback patterns
+    /<div[^>]*id="title"[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/,
+    /<span[^>]*class="[^"]*product-title[^"]*"[^>]*>([^<]+)<\/span>/
+  ];
+  
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match && match[1]) {
+      let title = match[1].trim();
+      
+      // Clean up title if it's from page title
+      if (pattern === patterns[3]) {
+        title = title.replace(/Amazon\.com\s*:\s*/i, '')
+                     .replace(/\s*-\s*Amazon\.com$/i, '')
+                     .replace(/\s*\|\s*Amazon\.com$/i, '');
+      }
+      
+      // Validate title
+      if (title.length > 5 && title.length < 500) {
+        return title;
+      }
+    }
+  }
+  return null;
 }
 
 function extractBulletsFromHtml(html: string): string[] {
   const bullets: string[] = [];
-  const pattern = /<li[^>]*class="[^"]*a-list-item[^"]*"[^>]*>([^<]+)<\/li>/g;
-  let match;
   
-  while ((match = pattern.exec(html)) !== null) {
-    const text = match[1].trim();
-    if (text && text.length > 10) {
-      bullets.push(text);
+  // Enhanced patterns for bullet extraction
+  const patterns = [
+    // Primary patterns - focus on product feature sections
+    /<div[^>]*id="feature-bullets"[^>]*>[\s\S]*?<\/div>/,
+    /<div[^>]*class="[^"]*feature[^"]*"[^>]*>[\s\S]*?<\/div>/,
+    /<ul[^>]*class="[^"]*a-unordered-list[^"]*"[^>]*>[\s\S]*?<\/ul>/
+  ];
+  
+  // Try to find product-specific bullet sections first
+  let bulletSection = '';
+  for (const pattern of patterns) {
+    const sectionMatch = html.match(pattern);
+    if (sectionMatch) {
+      bulletSection = sectionMatch[0];
+      break;
     }
   }
-  return bullets;
+  
+  // If no specific section found, use entire HTML but be more selective
+  if (!bulletSection) {
+    bulletSection = html;
+  }
+  
+  // Extract bullets from the identified section
+  const bulletPatterns = [
+    /<li[^>]*class="[^"]*a-list-item[^"]*"[^>]*><span[^>]*class="[^"]*a-list-item[^"]*"[^>]*>([^<]+)<\/span><\/li>/g,
+    /<li[^>]*class="[^"]*a-list-item[^"]*"[^>]*>([^<]+)<\/li>/g,
+    /<li[^>]*>[\s]*<span[^>]*>([^<]+)<\/span>[\s]*<\/li>/g,
+    /<li[^>]*>\s*([^<]+)\s*<\/li>/g
+  ];
+  
+  for (const pattern of bulletPatterns) {
+    let match;
+    while ((match = pattern.exec(bulletSection)) !== null) {
+      const text = match[1].trim();
+      
+      // Enhanced filtering for quality bullets
+      if (text && 
+          text.length > 15 && 
+          text.length < 200 &&
+          !text.includes('Make sure this fits') &&
+          !text.includes('Enter your model number') &&
+          !text.includes('Customers say') &&
+          !text.includes('Reviews with images') &&
+          !text.includes('Top reviews') &&
+          !text.includes('Style:') &&
+          !text.includes('Color:') &&
+          !text.includes('Size:') &&
+          !text.includes('›') &&
+          !bullets.includes(text)) {
+        bullets.push(text);
+      }
+    }
+    
+    // If we found quality bullets, stop searching
+    if (bullets.length >= 5) {
+      break;
+    }
+  }
+  
+  // Sort by length (longer bullets are typically more informative)
+  return bullets.sort((a, b) => b.length - a.length).slice(0, 10);
 }
 
 function extractDescriptionFromHtml(html: string): string | null {
+  // Enhanced patterns for description extraction
   const patterns = [
+    // Primary patterns
     /<div[^>]*id="productDescription"[^>]*>([\s\S]*?)<\/div>/,
-    /<div[^>]*data-feature-name="productDescription"[^>]*>([\s\S]*?)<\/div>/
+    /<div[^>]*data-feature-name="productDescription"[^>]*>([\s\S]*?)<\/div>/,
+    
+    // Alternative patterns
+    /<div[^>]*class="[^"]*product-description[^"]*"[^>]*>([\s\S]*?)<\/div>/,
+    /<div[^>]*id="aplus"[^>]*>([\s\S]*?)<\/div>/,
+    /<div[^>]*class="[^"]*aplus-v2[^"]*"[^>]*>([\s\S]*?)<\/div>/,
+    
+    // Fallback patterns - look for any substantial text content
+    /<div[^>]*data-cel-widget="[^"]*productDescription[^"]*"[^>]*>([\s\S]*?)<\/div>/,
+    /<section[^>]*class="[^"]*description[^"]*"[^>]*>([\s\S]*?)<\/section>/
   ];
   
   for (const pattern of patterns) {
     const match = html.match(pattern);
     if (match && match[1]) {
       // Strip HTML tags and get plain text
-      const text = match[1].replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-      if (text.length > 50) {
+      let text = match[1]
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove styles
+        .replace(/<[^>]*>/g, ' ') // Remove HTML tags
+        .replace(/&nbsp;/g, ' ') // Replace non-breaking spaces
+        .replace(/&[a-zA-Z0-9#]+;/g, ' ') // Replace HTML entities
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim();
+      
+      // Filter out short or irrelevant content
+      if (text.length > 100 && 
+          !text.includes('JavaScript is disabled') &&
+          !text.includes('Enable JavaScript') &&
+          !text.includes('Please enable cookies')) {
         return text;
       }
     }
@@ -433,14 +585,40 @@ function extractReviewCountFromHtml(html: string): number {
 }
 
 function extractRatingFromHtml(html: string): number | null {
-  const match = html.match(/<span[^>]*id="acrPopover"[^>]*>[\s\S]*?aria-label="([^"]+)"/);
-  if (match && match[1]) {
-    const ratingText = match[1];
-    const ratingMatch = ratingText.match(/([\d.]+)\s+out of/);
+  // Use flexible patterns to handle Amazon's changing HTML structure
+  const ratingPatterns = [
+    // Common rating patterns from product pages
+    /<span[^>]*class="a-icon-alt"[^>]*>([^<]+)<\/span>/,
+    /<span[^>]*class="a-icon a-icon-star a-star-([0-9]+)"[^>]*><\/span>/,
+    /(\d+\.?\d*)\s+out\s+of\s+5\s+stars/i,
+    /<span[^>]*id="acrPopover"[^>]*>[\s\S]*?aria-label="([^"]+)"/,
+    /<span[^>]*class="a-offscreen"[^>]*>([^<]*out of[^<]*)<\/span>/,
+    /data-hook="average-star-rating"[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/
+  ];
+  
+  for (const pattern of ratingPatterns) {
+    const ratingMatch = html.match(pattern);
     if (ratingMatch) {
-      return parseFloat(ratingMatch[1]);
+      if (pattern === ratingPatterns[1]) {
+        // Handle star rating pattern (convert from 100-point to 5-point scale)
+        const starValue = parseInt(ratingMatch[1]);
+        if (starValue >= 0 && starValue <= 100) {
+          return starValue / 20; // Convert 0-100 to 0-5 scale
+        }
+      } else {
+        const ratingText = ratingMatch[1];
+        const ratingNumMatch = ratingText.match(/(\d+\.?\d*)/);
+        if (ratingNumMatch) {
+          const rating = parseFloat(ratingNumMatch[1]);
+          // Ensure rating is in valid range (0-5)
+          if (rating >= 0 && rating <= 5) {
+            return rating;
+          }
+        }
+      }
     }
   }
+  
   return null;
 }
 

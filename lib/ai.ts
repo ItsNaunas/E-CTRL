@@ -39,7 +39,13 @@ export async function analyzeExistingSeller(data: ExistingSellerData, productDat
       };
       // Use the extracted data directly for IDQ evaluation
       binaryIdqResult = await evaluateIdqWithAI(productData.htmlContent, idqConfig, productData);
+      console.log('=== IDQ EVALUATION RESULT ===');
       console.log('IDQ evaluation completed:', binaryIdqResult);
+      console.log('Score:', binaryIdqResult?.score);
+      console.log('Max Possible:', binaryIdqResult?.maxPossible);
+      console.log('Quality Percent:', binaryIdqResult?.qualityPercent);
+      console.log('Grade:', binaryIdqResult?.grade);
+      console.log('===========================');
     } catch (error) {
       console.error('IDQ evaluation failed:', error);
       // Continue without IDQ results
@@ -120,7 +126,6 @@ Please provide a comprehensive Amazon LISTING QUALITY AUDIT for this EXISTING SE
 4. **Detailed Analysis**: In-depth breakdown of what needs to be FIXED and OPTIMIZED:
    - Title Quality: What's wrong with their current title and how to fix it
    - Bullet Points: What's missing from their bullets and how to improve conversion
-   - Product Images: What's wrong with their images and how to fix them
    - Product Description: What's missing from their description and how to improve it
    - Product Information: What details are missing and how to add them
 
@@ -132,21 +137,18 @@ Format your response as JSON:
   "detailedAnalysis": {
     "titleQuality": string,
     "bulletPoints": string,
-    "productImages": string,
     "productDescription": string,
     "productInformation": string
   },
   "productData": {
     "currentTitle": string,
     "currentBullets": string[],
-    "currentImages": number,
     "currentDescription": string,
     "missingElements": string[]
   },
   "contentQuality": {
     "titleScore": number,
     "bulletsScore": number,
-    "imagesScore": number,
     "descriptionScore": number,
     "informationScore": number
   },
@@ -624,7 +626,6 @@ function parseAIResponse(text: string) {
     detailedAnalysis: {
       titleQuality: 'Title analysis completed',
       bulletPoints: 'Bullet point analysis completed',
-      productImages: 'Image analysis completed',
       productDescription: 'Description analysis completed',
       productInformation: 'Product information analysis completed',
       keywords: 'Keyword analysis completed'
@@ -632,16 +633,14 @@ function parseAIResponse(text: string) {
     productData: {
       currentTitle: 'Analysis in progress',
       currentBullets: ['Analysis in progress'],
-      currentImages: 0,
       currentDescription: 'Analysis in progress',
       missingElements: ['Analysis in progress']
     },
     contentQuality: {
-      titleScore: Math.floor(score * 0.25) || 15,
-      bulletsScore: Math.floor(score * 0.25) || 15,
-      imagesScore: Math.floor(score * 0.20) || 12,
-      descriptionScore: Math.floor(score * 0.15) || 10,
-      informationScore: Math.floor(score * 0.10) || 7,
+      titleScore: Math.floor(score * 0.30) || 20,
+      bulletsScore: Math.floor(score * 0.30) || 20,
+      descriptionScore: Math.floor(score * 0.25) || 17,
+      informationScore: Math.floor(score * 0.15) || 10,
       keywordsScore: Math.floor(score * 0.05) || 3
     },
     binaryIdqResult: null as any // Will be set by the calling function if available
@@ -672,6 +671,12 @@ function generateDeterministicFallback(
 ) {
   const score = generateDeterministicScore(data.asin, data.keywords);
   
+  console.log('=== DETERMINISTIC FALLBACK DEBUG ===');
+  console.log('binaryIdqResult:', binaryIdqResult);
+  console.log('binaryIdqResult.qualityPercent:', binaryIdqResult?.qualityPercent);
+  console.log('deterministic score:', score);
+  console.log('====================================');
+  
   // Use binary IDQ result if available, otherwise use deterministic score
   const finalScore = binaryIdqResult ? binaryIdqResult.qualityPercent : score;
   
@@ -682,22 +687,19 @@ function generateDeterministicFallback(
     detailedAnalysis: {
       titleQuality: "Title optimization needed for better search visibility and conversion",
       bulletPoints: "Bullet points should focus on customer benefits and key features",
-      productImages: "Add more high-quality product images including lifestyle shots",
       productDescription: "Enhance product description with detailed features and benefits",
       productInformation: "Include comprehensive product specifications and details"
     },
     productData: {
       currentTitle: data.asin ? `Product ${data.asin}` : "Product Title",
       currentBullets: ["Current bullet point 1", "Current bullet point 2"],
-      currentImages: 3,
       currentDescription: "Current product description",
-      missingElements: ["Lifestyle images", "Detailed specifications", "Customer benefits"]
+      missingElements: ["Detailed specifications", "Customer benefits"]
     },
     contentQuality: {
-      titleScore: Math.floor(finalScore * 0.25),
-      bulletsScore: Math.floor(finalScore * 0.25),
-      imagesScore: Math.floor(finalScore * 0.20),
-      descriptionScore: Math.floor(finalScore * 0.15),
+      titleScore: Math.floor(finalScore * 0.30),
+      bulletsScore: Math.floor(finalScore * 0.30),
+      descriptionScore: Math.floor(finalScore * 0.25),
       informationScore: Math.floor(finalScore * 0.15)
     },
     binaryIdqResult: binaryIdqResult,
