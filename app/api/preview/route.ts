@@ -92,6 +92,15 @@ export async function POST(request: NextRequest) {
           }, { status: 404 });
         }
         
+        if (scrapedData.code === 'BOT_DETECTED') {
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Amazon is currently blocking automated requests. Please try again later or use a different ASIN for testing.',
+            code: scrapedData.code,
+            suggestion: 'rate_limited'
+          }, { status: 429 });
+        }
+        
         // For other scraping errors, continue with limited data
       } else {
         console.log('Successfully scraped Amazon product data for preview');

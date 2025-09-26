@@ -153,6 +153,21 @@ export async function scrapeAmazonProductCheerio(asin: string): Promise<AmazonPr
 
     const html = await response.text();
 
+    // Check if Amazon is serving a bot detection/captcha page
+    if (html.includes('automated access') || 
+        html.includes('captcha') || 
+        html.includes('opfcaptcha') ||
+        html.length < 20000 || // Normal Amazon pages are much larger
+        !html.includes('productTitle') ||
+        html.includes('api-services-support@amazon.com')) {
+      console.warn('Amazon bot detection triggered for ASIN:', asin);
+      return {
+        error: 'Amazon bot detection triggered',
+        code: 'BOT_DETECTED',
+        details: 'Amazon is blocking automated requests. This may be due to rate limiting or bot detection.'
+      };
+    }
+
     // Extract product data using regex patterns
     console.log('Extracting product data using regex patterns');
 
