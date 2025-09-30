@@ -87,10 +87,8 @@ LISTING QUALITY EVALUATION RESULTS:
 - Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
 - Image Count: ${binaryIdqResult.checks.images_6plus ? '≥6' : '<6'}
 - Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
-- Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
-- Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
 
-Note: A+ content, premium A+ content, and backend keyword optimization are not included in this analysis as they cannot be reliably detected from visible page content.
+Note: Reviews, star ratings, A+ content, premium A+ content, and backend keyword optimization are not included in this IDQ binary score as they either cannot be reliably detected from visible page content or are not part of Amazon's actual IDQ scoring system.
 ` : ''}
 
 ${accessType === 'account' ? `
@@ -285,8 +283,6 @@ LISTING QUALITY EVALUATION RESULTS (from website analysis):
 - Main Image: ${binaryIdqResult.checks.has_main_image ? 'Yes' : 'No'}
 - Image Count: ${binaryIdqResult.checks.images_6plus ? '≥6' : '<6'}
 - Brand in Content: ${binaryIdqResult.checks.brand_in_bullets_or_desc ? 'Yes' : 'No'}
-- Reviews: ${binaryIdqResult.checks.has_reviews ? 'Yes' : 'No'}
-- Star Rating: ${binaryIdqResult.checks.has_star_rating ? 'Yes' : 'No'}
 ` : ''}
 
 ${accessType === 'account' ? `

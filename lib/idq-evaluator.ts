@@ -1,5 +1,6 @@
-// Binary IDQ (Item Data Quality) Evaluator
-// Implements 13 binary checks based on Amazon PDP HTML scraping
+// Binary IDQ (Item Data Quality) Evaluator v2
+// Implements 8 binary checks based on Amazon PDP HTML scraping
+// Removed reviews and star rating checks to match actual IDQ score
 // Removed AI scraper import - using regex extraction data directly
 
 export interface IdqConfig {
@@ -30,8 +31,6 @@ export interface IdqResult {
     has_main_image: number;
     images_6plus: number;
     brand_in_bullets_or_desc: number;
-    has_reviews: number;
-    has_star_rating: number;
     relevant_attributes_covered?: number;
   };
   notes: string[];
@@ -72,7 +71,7 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       minImageCount: config.minImageCount || 6,
       keywords: config.keywords || [],
       requiredAttributes: config.requiredAttributes || [],
-      gradeBands: config.gradeBands || { A: [11, 13], B: [8, 10], C: [0, 7] }
+      gradeBands: config.gradeBands || { A: [7, 8], B: [5, 6], C: [0, 4] }
     };
 
     const notes: string[] = [];
@@ -98,7 +97,7 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
     };
 
     // Binary checks using extracted data - only score what we can reliably extract
-    // Removed has_keywords, has_aplus, has_premium_aplus as we can't access Amazon's internal systems
+    // Removed has_reviews and has_star_rating to match actual IDQ score
     const checks = {
       has_brand: dataToAnalyze.brand ? 1 : 0,
       title_starts_with_brand: (dataToAnalyze.brand && dataToAnalyze.title && startsWithBrand(dataToAnalyze.title, dataToAnalyze.brand)) ? 1 : 0,
@@ -108,20 +107,18 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
       has_main_image: (dataToAnalyze.images && dataToAnalyze.images.length > 0) ? 1 : 0,
       images_6plus: (dataToAnalyze.images && dataToAnalyze.images.length >= cfg.minImageCount) ? 1 : 0,
       brand_in_bullets_or_desc: (dataToAnalyze.brand && (dataToAnalyze.bullets && dataToAnalyze.bullets.some((bullet: string) => includesAny(bullet, [dataToAnalyze.brand])) || 
-        (dataToAnalyze.description && includesAny(dataToAnalyze.description, [dataToAnalyze.brand])))) ? 1 : 0,
-      has_reviews: (dataToAnalyze.reviewCount && dataToAnalyze.reviewCount >= 1) ? 1 : 0,
-      has_star_rating: (dataToAnalyze.rating !== null && isFinite(dataToAnalyze.rating) && dataToAnalyze.rating > 0) ? 1 : 0
+        (dataToAnalyze.description && includesAny(dataToAnalyze.description, [dataToAnalyze.brand])))) ? 1 : 0
     };
 
     // Calculate score
     const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
-    const maxPossible = 10; // Updated from 13 to 10 after removing problematic checks
+    const maxPossible = 8; // Updated from 10 to 8 after removing reviews and star rating
     const qualityPercent = Math.round((score / maxPossible) * 100);
 
-    // Determine grade - adjusted for new 10-point scale
+    // Determine grade - adjusted for new 8-point scale
     let grade = 'C';
-    if (score >= 8 && score <= 10) grade = 'A'; // 8-10/10 (80-100%)
-    else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/10 (60-79%)
+    if (score >= 7 && score <= 8) grade = 'A'; // 7-8/8 (87.5-100%)
+    else if (score >= 5 && score <= 6) grade = 'B'; // 5-6/8 (62.5-75%)
 
     // Generate notes - only for checks we can actually measure
     if (!checks.has_brand) notes.push('Missing brand information - customers can\'t identify your product');
@@ -132,8 +129,6 @@ export async function evaluateIdqWithAI(html: string, config: IdqConfig = {}, ex
     if (!checks.has_main_image) notes.push('Main product image missing - first impression is everything');
     if (!checks.images_6plus) notes.push(`Only ${dataToAnalyze.images ? dataToAnalyze.images.length : 0} images - customers need to see more to feel confident buying`);
     if (!checks.brand_in_bullets_or_desc && dataToAnalyze.brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
-    if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');
-    if (!checks.has_star_rating) notes.push('No star rating visible - customers can\'t see your product quality');
 
     return {
       score,
@@ -175,7 +170,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     minImageCount: config.minImageCount || 6,
     keywords: config.keywords || [],
     requiredAttributes: config.requiredAttributes || [],
-    gradeBands: config.gradeBands || { A: [11, 13], B: [8, 10], C: [0, 7] }
+    gradeBands: config.gradeBands || { A: [7, 8], B: [5, 6], C: [0, 4] }
   };
 
   const notes: string[] = [];
@@ -209,10 +204,9 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   const hasPremiumAplus = checkPremiumAplusFromHtml(html);
   const hasMainImage = checkMainImageFromHtml(html);
   const imageCount = countImagesFromHtml(html);
-  const reviewCount = extractReviewCountFromHtml(html);
-  const rating = extractRatingFromHtml(html);
 
   // Binary checks (1 for pass, 0 for fail) - only checks we can reliably measure
+  // Removed has_reviews and has_star_rating to match actual IDQ score
   const checks = {
     has_brand: brand ? 1 : 0,
     title_starts_with_brand: (brand && title && startsWithBrand(title, brand)) ? 1 : 0,
@@ -222,9 +216,7 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
     has_main_image: hasMainImage ? 1 : 0,
     images_6plus: (imageCount >= cfg.minImageCount) ? 1 : 0,
     brand_in_bullets_or_desc: (brand && (bullets.some(bullet => includesAny(bullet, [brand])) || 
-      (description && includesAny(description, [brand])))) ? 1 : 0,
-    has_reviews: (reviewCount >= 1) ? 1 : 0,
-    has_star_rating: (rating !== null && isFinite(rating)) ? 1 : 0
+      (description && includesAny(description, [brand])))) ? 1 : 0
   };
 
   // Optional attribute coverage check
@@ -239,13 +231,13 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
 
   // Calculate score
   const score = Object.values(checks).reduce((sum, check) => sum + check, 0);
-  const maxPossible = cfg.requiredAttributes.length > 0 ? 11 : 10; // Updated from 14:13 to 11:10
+  const maxPossible = cfg.requiredAttributes.length > 0 ? 9 : 8; // Updated from 11:10 to 9:8
   const qualityPercent = Math.round((score / maxPossible) * 100);
 
-  // Determine grade - adjusted for new 10-point scale
+  // Determine grade - adjusted for new 8-point scale
   let grade = 'C';
-  if (score >= 8 && score <= 10) grade = 'A'; // 8-10/10 (80-100%)
-  else if (score >= 6 && score <= 7) grade = 'B'; // 6-7/10 (60-79%)
+  if (score >= 7 && score <= 8) grade = 'A'; // 7-8/8 (87.5-100%)
+  else if (score >= 5 && score <= 6) grade = 'B'; // 5-6/8 (62.5-75%)
 
   // Generate human-friendly notes for failed checks - only for checks we can actually measure
   if (!checks.has_brand) notes.push('Missing brand information - customers can\'t identify your product');
@@ -256,8 +248,6 @@ export function evaluateIdq(html: string, config: IdqConfig = {}): IdqResult {
   if (!checks.has_main_image) notes.push('Main product image missing - first impression is everything');
   if (!checks.images_6plus) notes.push(`Only ${imageCount} images - customers need to see more to feel confident buying`);
   if (!checks.brand_in_bullets_or_desc && brand) notes.push('Brand not mentioned in product details - missed trust-building opportunity');
-  if (!checks.has_reviews) notes.push('No customer reviews - social proof is crucial for conversions');
-  if (!checks.has_star_rating) notes.push('No star rating visible - customers can\'t see your product quality');
   if ((checks as any).relevant_attributes_covered === 0 && cfg.requiredAttributes.length > 0) {
     notes.push('Missing important product details - customers need complete information');
   }
@@ -385,37 +375,6 @@ function countImagesFromHtml(html: string): number {
   });
   
   return count;
-}
-
-function extractReviewCountFromHtml(html: string): number {
-  const patterns = [
-    /<span[^>]*id="acrCustomerReviewText"[^>]*>([^<]+)<\/span>/,
-    /<span[^>]*id="averageCustomerReviews"[^>]*>([^<]+)<\/span>/
-  ];
-  
-  for (const pattern of patterns) {
-    const match = html.match(pattern);
-    if (match && match[1]) {
-      const text = match[1];
-      const numMatch = text.match(/([\d,]+)/);
-      if (numMatch) {
-        return parseInt(numMatch[1].replace(/,/g, ''));
-      }
-    }
-  }
-  return 0;
-}
-
-function extractRatingFromHtml(html: string): number | null {
-  const match = html.match(/<span[^>]*id="acrPopover"[^>]*>[\s\S]*?aria-label="([^"]+)"/);
-  if (match && match[1]) {
-    const ratingText = match[1];
-    const ratingMatch = ratingText.match(/([\d.]+)\s+out of/);
-    if (ratingMatch) {
-      return parseFloat(ratingMatch[1]);
-    }
-  }
-  return null;
 }
 
 function extractAttributeLabelsFromHtml(html: string): string[] {

@@ -696,10 +696,10 @@ export default function HomePage() {
       )}
 
       {/* Before/After Proof - Visual Transformation */}
-      <BeforeAfterProof onCtaClick={scrollToHeroForm} />
+      {/* <BeforeAfterProof onCtaClick={scrollToHeroForm} /> */}
 
       {/* Section Divider */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
+      {/* <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" /> */}
 
       {/* How It Works - Process Explanation */}
       <HowItWorksSection onCtaClick={scrollToHeroForm} />
