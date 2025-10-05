@@ -720,8 +720,8 @@ export default function HomePage() {
       {/* Section Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
 
-      {/* Testimonials - Social Proof */}
-      <TestimonialsCarousel />
+      {/* Testimonials - Social Proof - HIDDEN FOR LATER USE */}
+      {/* <TestimonialsCarousel /> */}
 
       {/* Section Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 md:my-16" />
