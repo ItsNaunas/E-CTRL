@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import UnifiedCTA from '@/components/UnifiedCTA';
-import ClientTestimonials from '@/components/ClientTestimonials';
+// import ClientTestimonials from '@/components/ClientTestimonials'; // HIDDEN FOR LATER USE
 import { parseAsinOrUrl } from '@/app/utils/validators';
 
 interface HeroProps {
@@ -111,15 +111,15 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
               Instant results. 100% free. Secure &amp; private.
             </p>
 
-            {/* Client Testimonials - Social Proof (Mobile only) */}
-            <div className="mt-6 md:hidden">
+            {/* Client Testimonials - Social Proof (Mobile only) - HIDDEN FOR LATER USE */}
+            {/* <div className="mt-6 md:hidden">
               <div className="text-center mb-3">
                 <p className="text-xs text-white/40">
                   Trusted by Amazon sellers worldwide
                 </p>
               </div>
               <ClientTestimonials />
-            </div>
+            </div> */}
 
           </div>
 
@@ -137,15 +137,15 @@ export default function Hero({ onAsinSubmit }: HeroProps) {
           </div>
         </div>
 
-        {/* Client Testimonials - Social Proof (Desktop only - below image) */}
-        <div className="hidden md:block mt-8">
+        {/* Client Testimonials - Social Proof (Desktop only - below image) - HIDDEN FOR LATER USE */}
+        {/* <div className="hidden md:block mt-8">
           <div className="text-center mb-3">
             <p className="text-xs text-white/40">
               Trusted by Amazon sellers worldwide
             </p>
           </div>
           <ClientTestimonials />
-        </div>
+        </div> */}
       </div>
     </section>
   );

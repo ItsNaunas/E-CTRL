@@ -97,7 +97,7 @@ export default function FooterGlow({ onCtaClick }: FooterGlowProps) {
               <li><a href="#hero" className="hover:text-white transition">Free Audit</a></li>
               <li><a href="#how-it-works" className="hover:text-white transition">How It Works</a></li>
               <li><a href="#benefits" className="hover:text-white transition">Benefits</a></li>
-              <li><a href="#testimonials" className="hover:text-white transition">Testimonials</a></li>
+              {/* <li><a href="#testimonials" className="hover:text-white transition">Testimonials</a></li> */} {/* HIDDEN FOR LATER USE */}
             </ul>
           </div>
 
